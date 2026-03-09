@@ -1,0 +1,363 @@
+/* ═══════════════════════════════════════════════════════════════
+   KNZN – Wunschkennzeichen  |  style.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Reset & base ─────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  background: #f5f5f5;
+  color: #111;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.btn-primary {
+  display: inline-block;
+  background: #003399;
+  color: #fff;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary:hover { background: #0044cc; }
+
+/* ── HERO ─────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 480px;
+  max-height: 800px;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ISSUE 1 — object-position: center 55% so the Audi plate is visible */
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 55%;
+  display: block;
+}
+
+/* Two-column grid inside the hero */
+.hero-content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 0 5%;
+}
+
+/* Left column – headline + CTA */
+.hero-text {
+  color: #fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+  z-index: 2;
+}
+.hero-text h1 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.1;
+}
+.hero-text p {
+  font-size: 1.1rem;
+  margin-bottom: 1.75rem;
+  max-width: 38ch;
+}
+
+/* ISSUE 2 — right column wrapper; canvas pushed toward the bottom
+   to align with where the Audi plate sits in the photo             */
+.hero-plate-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  /* push the canvas toward the bottom of the column so it sits over
+     the license plate area in the background photo                  */
+  align-self: flex-end;
+  padding-bottom: 14%;
+  z-index: 2;
+}
+
+#heroPlate {
+  /* subtle drop-shadow so it reads over the photo */
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  max-width: 100%;
+}
+
+/* ── KONFIGURATOR ──────────────────────────────────────────────── */
+.konfigurator {
+  padding: 4rem 0;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.konfigurator h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Live preview canvas */
+.canvas-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+#plateCanvas {
+  max-width: 100%;
+  border-radius: 6px;
+}
+
+/* Input row */
+.input-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.input-group {
+  flex: 1 1 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.input-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.input-group input {
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input-group input:focus {
+  border-color: #003399;
+}
+
+/* Section labels */
+.section-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #555;
+  margin-bottom: 0.75rem;
+}
+
+/* ── ISSUE 4 — Plate type strip ────────────────────────────────── */
+.plate-type-strip {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;           /* horizontal scroll on mobile */
+  white-space: nowrap;        /* prevent wrapping */
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  /* hide scrollbar on webkit */
+  -webkit-overflow-scrolling: touch;
+}
+.plate-type-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.plate-type-strip::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.plate-type-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.plate-type-btn:hover {
+  border-color: #003399;
+}
+/* ISSUE 4 — active state: navy border + subtle box-shadow */
+.plate-type-btn.active {
+  border-color: #003399;
+  box-shadow: 0 0 0 3px rgba(0, 51, 153, 0.25);
+}
+.plate-type-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* ── Suffix buttons ────────────────────────────────────────────── */
+.suffix-btns {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.suffix-btn {
+  padding: 0.45rem 1rem;
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.suffix-btn:hover { border-color: #003399; }
+.suffix-btn.active {
+  border-color: #003399;
+  box-shadow: 0 0 0 3px rgba(0, 51, 153, 0.25);
+  background: #f0f4ff;
+}
+
+/* ── Order summary ─────────────────────────────────────────────── */
+.order-summary {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.summary-plate-wrapper {
+  flex-shrink: 0;
+}
+#summaryPlate {
+  max-width: 260px;
+  display: block;
+}
+.summary-details {
+  flex: 1;
+  min-width: 180px;
+}
+.summary-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 0.75rem;
+}
+.summary-row label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.summary-row select {
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+}
+.summary-total {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #003399;
+}
+
+/* ── ISSUE 5 — checkout error div ─────────────────────────────── */
+.checkout-error {
+  background: #ffeaea;
+  border: 1.5px solid #e53935;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #b71c1c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Checkout button */
+.btn-checkout {
+  width: 100%;
+  padding: 1rem;
+  background: #003399;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-checkout:hover { background: #0044cc; }
+.btn-checkout:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+/* ── FOOTER ────────────────────────────────────────────────────── */
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #222;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+.footer a { color: #ccc; }
+.footer a:hover { color: #fff; }
+
+/* ── Responsive ────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    padding: 0 6%;
+  }
+  /* On mobile the plate wrapper sits below the text */
+  .hero-plate-wrapper {
+    align-self: center;
+    padding-bottom: 0;
+    padding-top: 1rem;
+  }
+  .hero-text h1 { font-size: 1.6rem; }
+}
