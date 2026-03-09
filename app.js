@@ -9,69 +9,71 @@ const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 
 
 /* ─── PLATE RENDERING ─── */
 function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
-    const canvas = document.getElementById(canvasId);
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const W = canvas.width, H = canvas.height;
-    const s = W / 520;
-    ctx.clearRect(0, 0, W, H);
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const s = W / 520;
+  ctx.clearRect(0, 0, W, H);
+  const isCarbon = material === 'carbon';
+  const isElektro = suffix === 'E';
 
-    const isCarbon = material === 'carbon';
+  // Background
+  if (isCarbon) {
+    const pc = document.createElement('canvas');
+    pc.width = 8; pc.height = 8;
+    const px = pc.getContext('2d');
+    px.fillStyle = '#1a1a1a'; px.fillRect(0,0,8,8);
+    px.fillStyle = '#2a2a2a'; px.fillRect(0,0,4,4); px.fillRect(4,4,4,4);
+    ctx.fillStyle = ctx.createPattern(pc, 'repeat');
+  } else {
+    ctx.fillStyle = '#FFFFFF';
+  }
+  ctx.beginPath();
+  ctx.roundRect(0, 0, W, H, 6*s);
+  ctx.fill();
 
-    // Background
-    if (isCarbon) {
-        const pc = document.createElement('canvas');
-        pc.width = 8; pc.height = 8;
-        const px = pc.getContext('2d');
-        px.fillStyle = '#222'; px.fillRect(0,0,8,8);
-        px.fillStyle = '#2e2e2e'; px.fillRect(0,0,4,4); px.fillRect(4,4,4,4);
-        ctx.fillStyle = ctx.createPattern(pc, 'repeat');
-    } else {
-        ctx.fillStyle = '#FFFFFF';
-    }
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(0, 0, W, H, 5*s);
-    else ctx.rect(0, 0, W, H);
-    ctx.fill();
+  // Outer border
+  ctx.strokeStyle = '#000000';
+  ctx.lineWidth = 2.5*s;
+  ctx.beginPath();
+  ctx.roundRect(1.5*s, 1.5*s, W-3*s, H-3*s, 5*s);
+  ctx.stroke();
 
-    // Border
-    ctx.strokeStyle = isCarbon ? '#444' : '#aaaaaa';
-    ctx.lineWidth = 2*s;
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(1*s, 1*s, W-2*s, H-2*s, 4*s);
-    else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
-    ctx.stroke();
+  // EU band
+  const bw = 44*s;
+  ctx.fillStyle = isElektro ? '#006400' : '#003399';
+  ctx.beginPath();
+  ctx.roundRect(2.5*s, 2.5*s, bw, H-5*s, [4*s, 0, 0, 4*s]);
+  ctx.fill();
 
-    // EU band
-    const bw = 38*s;
-    ctx.fillStyle = '#003399';
-    ctx.fillRect(2*s, 2*s, bw, H-4*s);
+  // Stars in circle
+  const scx = 2.5*s + bw/2;
+  const scy = H * 0.38;
+  const sr = H * 0.22;
+  for (let i = 0; i < 12; i++) {
+    const a = (i/12)*Math.PI*2 - Math.PI/2;
+    drawStar(ctx, scx + Math.cos(a)*sr, scy + Math.sin(a)*sr, 2.4*s, '#FFD700');
+  }
 
-    // Stars
-    const cx = 2*s + bw/2, starsTop = 6*s, starsH = H*0.52;
-    for (let i = 0; i < 12; i++) {
-        const a = (i/12)*Math.PI*2 - Math.PI/2;
-        const r = starsH/2 * 0.48;
-        drawStar(ctx, cx + Math.cos(a)*r*0.55, starsTop + starsH/2 + Math.sin(a)*r*0.55, 2.2*s, '#FFD700');
-    }
+  // D letter
+  ctx.fillStyle = '#FFD700';
+  ctx.font = `bold ${13*s}px Arial`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('D', scx, H * 0.78);
 
-    // D letter
-    ctx.fillStyle = '#FFD700';
-    ctx.font = `bold ${11*s}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.fillText('D', cx, H - 7*s);
-
-    // Plate text
-    const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
-    const textX = bw + 6*s + (W - bw - 8*s)/2;
-    const textY = H/2 + 17*s;
-    const len = plateText.replace(/[·\s]/g, '').length;
-    const fs = len <= 6 ? 54*s : len <= 8 ? 48*s : 42*s;
-
-    ctx.fillStyle = isCarbon ? '#e0e0e0' : '#000000';
-    ctx.textAlign = 'center';
-    ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
-    ctx.fillText(plateText, textX, textY);
+  // Plate text
+  const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
+  const textX = bw + 6*s + (W - bw - 8*s) / 2;
+  const textY = H * 0.64;
+  const charCount = plateText.replace(/[·\s]/g, '').length;
+  const fs = charCount <= 6 ? 56*s : charCount <= 8 ? 50*s : 44*s;
+  ctx.fillStyle = isCarbon ? '#e8e8e8' : '#000000';
+  ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(plateText, textX, textY);
 }
 
 function drawStar(ctx, cx, cy, r, color) {
