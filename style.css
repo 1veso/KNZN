@@ -56,7 +56,7 @@ input, button { font-family: inherit; }
 .stat-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
 .btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--navy); color: var(--white); font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: var(--radius); border: none; cursor: pointer; transition: background var(--t), transform var(--t), box-shadow var(--t); text-decoration: none; box-shadow: 0 4px 16px rgba(26,39,68,0.2); }
 .btn-primary:hover { background: var(--navy-light); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,39,68,0.28); }
-.hero-visual { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.hero-visual { display: flex; flex-direction: column; align-items: center; gap: 14px; align-self: flex-end; padding-bottom: 12%; }
 .plate-frame { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); border-radius: var(--radius-lg); padding: 20px 28px; box-shadow: 0 12px 48px rgba(0,0,0,0.3); }
 .plate-frame canvas { display: block; max-width: 100%; animation: slideIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards; }
 @keyframes slideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
@@ -251,7 +251,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 /* ─── HERO PHOTO BACKGROUND ─── */
 .hero { position: relative; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-.hero-bg-img { width: 100%; height: 100%; object-fit: cover; object-position: center 30%; filter: brightness(0.35) saturate(0.7); }
+.hero-bg-img { width: 100%; height: 100%; object-fit: cover; object-position: center 55%; filter: brightness(0.35) saturate(0.7); }
 .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,20,40,0.75) 0%, rgba(26,39,68,0.55) 60%, rgba(36,53,96,0.45) 100%); }
 .hero-container { position: relative; z-index: 1; }
 

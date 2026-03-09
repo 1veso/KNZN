@@ -1,136 +1,65 @@
-// functions/create-checkout.js
-// Cloudflare Pages Function — runs server-side, secrets are safe here
-
 export async function onRequestPost(context) {
-    const { request, env } = context;
+  const { env, request } = context;
+  const body = await request.json();
+  const { plateText, plateFormat, material, addons, totalAmount } = body;
 
-    try {
-        const body = await request.json();
-        const {
-            plateText, plateFormat, material, size,
-            addons, totalAmount,
-            buyerName, buyerEmail, buyerPhone, buyerAddress
-        } = body;
+  const lineItems = [];
 
-        // Build Stripe line items from order
-        const lineItems = [];
+  lineItems.push({
+    price_data: {
+      currency: 'eur',
+      product_data: { name: `2 Kennzeichen (${material === 'carbon' ? 'Carbon' : 'Standard'}) — ${plateText}` },
+      unit_amount: material === 'carbon' ? 2000 : 1000,
+    },
+    quantity: 1,
+  });
 
-        // Kennzeichen
-        lineItems.push({
-            price_data: {
-                currency: 'eur',
-                product_data: {
-                    name: `Kennzeichen ${plateText} (${material === 'carbon' ? 'Carbon' : 'Standard'}, ${size === 'klein' ? '460×110mm' : '520×110mm'})`,
-                    description: '2 Schilder, DIN-zertifiziert'
-                },
-                unit_amount: material === 'carbon' ? 2000 : 1000,
-            },
-            quantity: 1,
-        });
+  if (addons.zulassung) lineItems.push({
+    price_data: { currency: 'eur', product_data: { name: 'KFZ Zulassung' }, unit_amount: 2000 },
+    quantity: 1,
+  });
 
-        // Add-ons
-        if (addons.zulassung) {
-            lineItems.push({
-                price_data: {
-                    currency: 'eur',
-                    product_data: { name: 'KFZ Zulassung', description: 'Anmeldung / Ummeldung / Abmeldung' },
-                    unit_amount: 2000,
-                },
-                quantity: 1,
-            });
-        }
+  if (addons.plakette) lineItems.push({
+    price_data: { currency: 'eur', product_data: { name: 'Umweltplakette' }, unit_amount: 500 },
+    quantity: 1,
+  });
 
-        if (addons.plakette) {
-            lineItems.push({
-                price_data: {
-                    currency: 'eur',
-                    product_data: { name: 'Umweltplakette', description: 'Grüne Umweltplakette' },
-                    unit_amount: 500,
-                },
-                quantity: 1,
-            });
-        }
+  if (addons.versand) lineItems.push({
+    price_data: { currency: 'eur', product_data: { name: 'DHL Versand' }, unit_amount: 500 },
+    quantity: 1,
+  });
 
-        if (addons.versand) {
-            lineItems.push({
-                price_data: {
-                    currency: 'eur',
-                    product_data: { name: 'DHL Versand', description: 'Deutschlandweiter Versand' },
-                    unit_amount: 500,
-                },
-                quantity: 1,
-            });
-        }
+  const origin = new URL(request.url).origin;
 
-        // Determine success URL base
-        const url = new URL(request.url);
-        const baseUrl = `${url.protocol}//${url.host}`;
+  const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      mode: 'payment',
+      'line_items[0][price_data][currency]': 'eur',
+      'success_url': `${origin}/?success=1`,
+      'cancel_url': `${origin}/`,
+      ...buildStripeParams(lineItems),
+    }),
+  });
 
-        // Create Stripe Checkout Session
-        const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                'payment_method_types[]': 'card',
-                'customer_email': buyerEmail,
-                'mode': 'payment',
-                'success_url': `${baseUrl}/?success=1&session_id={CHECKOUT_SESSION_ID}`,
-                'cancel_url': `${baseUrl}/`,
-                'metadata[plateText]': plateText,
-                'metadata[plateFormat]': plateFormat,
-                'metadata[buyerName]': buyerName,
-                'metadata[buyerPhone]': buyerPhone,
-                'metadata[buyerAddress]': buyerAddress,
-                ...lineItems.reduce((acc, item, i) => {
-                    acc[`line_items[${i}][price_data][currency]`] = item.price_data.currency;
-                    acc[`line_items[${i}][price_data][product_data][name]`] = item.price_data.product_data.name;
-                    if (item.price_data.product_data.description) {
-                        acc[`line_items[${i}][price_data][product_data][description]`] = item.price_data.product_data.description;
-                    }
-                    acc[`line_items[${i}][price_data][unit_amount]`] = item.price_data.unit_amount;
-                    acc[`line_items[${i}][quantity]`] = item.quantity;
-                    return acc;
-                }, {})
-            }).toString()
-        });
-
-        if (!stripeRes.ok) {
-            const stripeErr = await stripeRes.json();
-            console.error('Stripe error:', stripeErr);
-            return new Response(JSON.stringify({ error: 'Stripe-Fehler: ' + stripeErr.error?.message }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        const session = await stripeRes.json();
-
-        return new Response(JSON.stringify({ url: session.url }), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            }
-        });
-
-    } catch (err) {
-        console.error('Checkout function error:', err);
-        return new Response(JSON.stringify({ error: 'Interner Fehler' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
+  const session = await stripeRes.json();
+  if (!stripeRes.ok) return new Response(JSON.stringify({ error: session.error?.message }), { status: 500 });
+  return new Response(JSON.stringify({ url: session.url }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
-export async function onRequestOptions() {
-    return new Response(null, {
-        headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-        }
-    });
+function buildStripeParams(lineItems) {
+  const params = {};
+  lineItems.forEach((item, i) => {
+    params[`line_items[${i}][price_data][currency]`] = item.price_data.currency;
+    params[`line_items[${i}][price_data][product_data][name]`] = item.price_data.product_data.name;
+    params[`line_items[${i}][price_data][unit_amount]`] = item.price_data.unit_amount;
+    params[`line_items[${i}][quantity]`] = item.quantity;
+  });
+  return params;
 }

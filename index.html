@@ -99,15 +99,30 @@
             <div class="plate-type-label">Kennzeichentyp:</div>
             <div class="plate-type-scroll">
                 <button class="plate-type-btn active" onclick="setPlateType(this,'standard')" data-type="standard">
-                    <img src="/assets/images/plate-types.jpg" alt="Standardkennzeichen" class="plate-type-img" style="object-position: 10% 8%" />
+                    <svg width="72" height="16" viewBox="0 0 72 16" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="72" height="16" rx="2" fill="white" stroke="#aaa" stroke-width="0.5"/>
+                        <rect x="1" y="1" width="10" height="14" rx="1" fill="#003399"/>
+                        <text x="6" y="10" font-size="5" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="41" y="9" font-size="7" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle">DÜ · AB 12</text>
+                    </svg>
                     <span>Standard</span>
                 </button>
                 <button class="plate-type-btn" onclick="setPlateType(this,'h')" data-type="h">
-                    <img src="/assets/images/plate-types.jpg" alt="H-Kennzeichen" class="plate-type-img" style="object-position: 55% 8%" />
+                    <svg width="72" height="16" viewBox="0 0 72 16" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="72" height="16" rx="2" fill="white" stroke="#aaa" stroke-width="0.5"/>
+                        <rect x="1" y="1" width="10" height="14" rx="1" fill="#003399"/>
+                        <text x="6" y="10" font-size="5" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="41" y="9" font-size="7" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle">AB · 12 H</text>
+                    </svg>
                     <span>H — Oldtimer</span>
                 </button>
                 <button class="plate-type-btn" onclick="setPlateType(this,'e')" data-type="e">
-                    <img src="/assets/images/bmw-elektro.jpg" alt="E-Kennzeichen" class="plate-type-img" style="object-position: center 40%" />
+                    <svg width="72" height="16" viewBox="0 0 72 16" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="72" height="16" rx="2" fill="white" stroke="#aaa" stroke-width="0.5"/>
+                        <rect x="1" y="1" width="10" height="14" rx="1" fill="#006400"/>
+                        <text x="6" y="10" font-size="5" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="41" y="9" font-size="7" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle">AB · 12 E</text>
+                    </svg>
                     <span>E — Elektro</span>
                 </button>
             </div>
