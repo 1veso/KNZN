@@ -1,7 +1,6 @@
-// config.js
-// Public config only — secrets live in Cloudflare environment variables
+// config.js — public config only, secrets stay in Cloudflare env vars
 const CONFIG = {
-    stripePublishableKey: window.STRIPE_PUBLISHABLE_KEY || '',
-    supabaseUrl: window.SUPABASE_URL || '',
-    supabaseAnonKey: window.SUPABASE_ANON_KEY || '',
+    stripePublishableKey: typeof STRIPE_PUBLISHABLE_KEY !== 'undefined' ? STRIPE_PUBLISHABLE_KEY : '',
+    supabaseUrl: typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : '',
+    supabaseAnonKey: typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : '',
 };
