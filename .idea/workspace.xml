@@ -5,7 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cb4ed08b-223c-460f-af46-a4709dc57e92" name="Changes" comment="mkdir KNZN &amp;&amp; cd KNZN&#10;git init&#10;touch index.html style.css app.js">
-      <change afterPath="$PROJECT_DIR$/assets/images/hero-audi.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -76,7 +75,7 @@
       <updated>1773064065186</updated>
       <workItem from="1773064067014" duration="1795000" />
       <workItem from="1773068902015" duration="103000" />
-      <workItem from="1773069047374" duration="6053000" />
+      <workItem from="1773069047374" duration="9369000" />
     </task>
     <servers />
   </component>
