@@ -46,36 +46,40 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
     else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
     ctx.stroke();
 
-    // EU band
-    const bw = 38*s;
+    // EU band with rounded left corners
+    const bw = 42*s;
     ctx.fillStyle = isElektro ? '#006400' : '#003399';
-    ctx.fillRect(2*s, 2*s, bw, H-4*s);
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
+    else ctx.rect(2*s, 2*s, bw, H-4*s);
+    ctx.fill();
 
-    // Stars
-    const cx = 2*s + bw/2, starsTop = 6*s, starsH = H*0.52;
+    // Stars — tight circle in upper 58% of band
+    const cx = 2*s + bw/2;
+    const starCY = H * 0.38;
+    const starR = H * 0.21;
     for (let i = 0; i < 12; i++) {
         const a = (i/12)*Math.PI*2 - Math.PI/2;
-        const r = starsH/2 * 0.48;
-        drawStar(ctx, cx + Math.cos(a)*r*0.55, starsTop + starsH/2 + Math.sin(a)*r*0.55, 2.2*s, '#FFD700');
+        drawStar(ctx, cx + Math.cos(a)*starR, starCY + Math.sin(a)*starR, 2.0*s, '#FFD700');
     }
 
-    // D letter
+    // D letter — centered in lower 30% of band
     ctx.fillStyle = '#FFD700';
-    ctx.font = `bold ${11*s}px Arial`;
+    ctx.font = `bold ${10*s}px Arial`;
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
-    ctx.fillText('D', cx, H - 7*s);
+    ctx.textBaseline = 'middle';
+    ctx.fillText('D', cx, H * 0.76);
 
-    // Plate text
+    // Plate text — vertically centered in white area
     const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
-    const textX = bw + 6*s + (W - bw - 8*s)/2;
-    const textY = H/2 + 17*s;
+    const textX = bw + 4*s + (W - bw - 6*s)/2;
+    const textY = H * 0.62;
     const len = plateText.replace(/[·\s]/g, '').length;
-    const fs = len <= 6 ? 54*s : len <= 8 ? 48*s : 42*s;
+    const fs = len <= 6 ? 56*s : len <= 8 ? 50*s : 44*s;
 
-    ctx.fillStyle = isCarbon ? '#e0e0e0' : '#000000';
+    ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
     ctx.textAlign = 'center';
-    ctx.textBaseline = 'alphabetic';
+    ctx.textBaseline = 'middle';
     ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
     ctx.fillText(plateText, textX, textY);
 }
@@ -257,6 +261,13 @@ function toggleAddon(key) {
 
 /* ─── PRICING ─── */
 function calcTotal() {
+    const isKomplett = state.addons.zulassung && state.addons.plakette && state.material === 'standard';
+    if (isKomplett) {
+        // Komplettpaket: Zulassung + Standard Kennzeichen + Plakette = €30 flat
+        let t = 30;
+        if (state.addons.versand) t += PRICES.versand;
+        return t;
+    }
     let t = PRICES[state.material];
     if (state.addons.zulassung) t += PRICES.zulassung;
     if (state.addons.plakette) t += PRICES.plakette;
@@ -280,49 +291,48 @@ function updateSummary() {
 
 /* ─── PROGRESS — scroll-driven ─── */
 function initScrollProgress() {
-    const sections = [
-        { id: 'configurator', step: 'step1', line: null },
-        { id: 'addons',       step: 'step2', line: 'line1' },
-        { id: 'checkout-block', step: 'step3', line: 'line2' },
-    ];
+    // Map each section to a progress step
+    // Step 1 active from start, done when addons section reached
+    // Step 2 active when addons reached, done when checkout block reached
+    // Step 3 active when checkout block reached
 
     function updateProgress() {
-        const scrollY = window.scrollY + window.innerHeight * 0.5;
+        const scrollY = window.scrollY + window.innerHeight * 0.55;
+        const configuratorEl = document.getElementById('configurator');
+        const addonsEl = document.getElementById('addons');
+        const checkoutEl = document.querySelector('.checkout-block');
 
-        sections.forEach(({ id, step, line }) => {
-            const el = document.getElementById(id) || document.querySelector('.' + id);
-            if (!el) return;
-            const reached = el.offsetTop <= scrollY;
-            const stepEl = document.getElementById(step);
-            const lineEl = line ? document.getElementById(line) : null;
-            if (reached) {
-                stepEl.classList.add('done');
-                stepEl.classList.remove('active');
-                if (lineEl) lineEl.classList.add('done');
-            } else {
-                stepEl.classList.remove('done');
-                if (lineEl) lineEl.classList.remove('done');
-            }
-        });
+        if (!configuratorEl || !addonsEl || !checkoutEl) return;
 
-        // Active = first not-done step
-        let foundActive = false;
-        ['step1','step2','step3'].forEach(id => {
-            const el = document.getElementById(id);
-            if (!el.classList.contains('done') && !foundActive) {
-                el.classList.add('active');
-                foundActive = true;
-            } else {
-                el.classList.remove('active');
-            }
-        });
+        const atAddons   = addonsEl.offsetTop <= scrollY;
+        const atCheckout = checkoutEl.offsetTop <= scrollY;
+
+        const s1 = document.getElementById('step1');
+        const s2 = document.getElementById('step2');
+        const s3 = document.getElementById('step3');
+        const l1 = document.getElementById('line1');
+        const l2 = document.getElementById('line2');
+
+        // Reset all
+        [s1,s2,s3].forEach(s => s.className = 'progress-step');
+        [l1,l2].forEach(l => l.className = 'progress-line');
+
+        if (atCheckout) {
+            s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('active');
+            l1.classList.add('done'); l2.classList.add('done');
+        } else if (atAddons) {
+            s1.classList.add('done'); s2.classList.add('active');
+            l1.classList.add('done');
+        } else {
+            s1.classList.add('active');
+        }
     }
 
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
 }
 
-// Keep for compatibility with toggleAddon calls
+// Stub — scroll drives progress now, kept for toggleAddon compatibility
 function updateProgress() {}
 
 /* ─── CHECKOUT ─── */
@@ -363,25 +373,7 @@ async function handleCheckout() {
     }
 }
 
-/* ─── SOCIAL PROOF STRIP ─── */
-function initProofStrip() {
-    const proofs = [
-        { plate:'DÜ · MK 420', time:'vor 3 Min.', label:'gerade bestellt' },
-        { plate:'AC · JH 7', time:'vor 8 Min.', label:'Komplettpaket' },
-        { plate:'DN · AB 1234', time:'vor 12 Min.', label:'Carbon Schilder' },
-        { plate:'BM · ST 99', time:'vor 19 Min.', label:'gerade bestellt' },
-        { plate:'K · XY 500E', time:'vor 24 Min.', label:'Elektro Kennzeichen' },
-        { plate:'BI · LM 33', time:'vor 31 Min.', label:'Komplettpaket' },
-        { plate:'MS · WR 2024', time:'vor 45 Min.', label:'Standard Schilder' },
-        { plate:'BO · FG 88H', time:'vor 52 Min.', label:'Oldtimer' },
-    ];
-    const track = document.getElementById('proofTrack');
-    if (!track) return;
-    const items = [...proofs, ...proofs].map(p =>
-        `<div class="proof-item"><span>🚗</span><span class="proof-plate">${p.plate}</span><span>${p.label}</span><span class="proof-time">${p.time}</span></div>`
-    ).join('');
-    track.innerHTML = items;
-}
+/* social proof strip removed */
 
 /* ─── ANCHOR BANNER — scrolling ticker ─── */
 function initAnchorBanner() {
@@ -439,7 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderHeroPlate();
     updateSummary();
     initScrollProgress();
-    initProofStrip();
     initAnchorBanner();
     initFAQ();
     initReveal();
