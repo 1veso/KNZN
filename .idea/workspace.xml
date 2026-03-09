@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cb4ed08b-223c-460f-af46-a4709dc57e92" name="Changes" comment="mkdir KNZN &amp;&amp; cd KNZN&#10;git init&#10;touch index.html style.css app.js">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +23,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
@@ -75,7 +76,7 @@
       <updated>1773064065186</updated>
       <workItem from="1773064067014" duration="1795000" />
       <workItem from="1773068902015" duration="103000" />
-      <workItem from="1773069047374" duration="9369000" />
+      <workItem from="1773069047374" duration="12941000" />
     </task>
     <servers />
   </component>

@@ -5,75 +5,79 @@ const state = {
     addons: { zulassung: false, plakette: false, versand: false }
 };
 
+// Hero has its own independent state — typewriter only, never pollutes configurator
+const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
+
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
 /* ─── PLATE RENDERING ─── */
 function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  const s = W / 520;
-  ctx.clearRect(0, 0, W, H);
-  const isCarbon = material === 'carbon';
-  const isElektro = suffix === 'E';
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const s = W / 520;
+    ctx.clearRect(0, 0, W, H);
 
-  // Background
-  if (isCarbon) {
-    const pc = document.createElement('canvas');
-    pc.width = 8; pc.height = 8;
-    const px = pc.getContext('2d');
-    px.fillStyle = '#1a1a1a'; px.fillRect(0,0,8,8);
-    px.fillStyle = '#2a2a2a'; px.fillRect(0,0,4,4); px.fillRect(4,4,4,4);
-    ctx.fillStyle = ctx.createPattern(pc, 'repeat');
-  } else {
-    ctx.fillStyle = '#FFFFFF';
-  }
-  ctx.beginPath();
-  ctx.roundRect(0, 0, W, H, 6*s);
-  ctx.fill();
+    const isCarbon = material === 'carbon';
+    const isElektro = (suffix || '').toUpperCase() === 'E';
 
-  // Outer border
-  ctx.strokeStyle = '#000000';
-  ctx.lineWidth = 2.5*s;
-  ctx.beginPath();
-  ctx.roundRect(1.5*s, 1.5*s, W-3*s, H-3*s, 5*s);
-  ctx.stroke();
+    // Background
+    if (isCarbon) {
+        const pc = document.createElement('canvas');
+        pc.width = 8; pc.height = 8;
+        const px = pc.getContext('2d');
+        px.fillStyle = '#222'; px.fillRect(0,0,8,8);
+        px.fillStyle = '#2e2e2e'; px.fillRect(0,0,4,4); px.fillRect(4,4,4,4);
+        ctx.fillStyle = ctx.createPattern(pc, 'repeat');
+    } else {
+        ctx.fillStyle = '#FFFFFF';
+    }
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(0, 0, W, H, 5*s);
+    else ctx.rect(0, 0, W, H);
+    ctx.fill();
 
-  // EU band
-  const bw = 44*s;
-  ctx.fillStyle = isElektro ? '#006400' : '#003399';
-  ctx.beginPath();
-  ctx.roundRect(2.5*s, 2.5*s, bw, H-5*s, [4*s, 0, 0, 4*s]);
-  ctx.fill();
+    // Border
+    ctx.strokeStyle = isCarbon ? '#444' : '#aaaaaa';
+    ctx.lineWidth = 2*s;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(1*s, 1*s, W-2*s, H-2*s, 4*s);
+    else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
+    ctx.stroke();
 
-  // Stars in circle
-  const scx = 2.5*s + bw/2;
-  const scy = H * 0.38;
-  const sr = H * 0.22;
-  for (let i = 0; i < 12; i++) {
-    const a = (i/12)*Math.PI*2 - Math.PI/2;
-    drawStar(ctx, scx + Math.cos(a)*sr, scy + Math.sin(a)*sr, 2.4*s, '#FFD700');
-  }
+    // EU band
+    const bw = 38*s;
+    ctx.fillStyle = isElektro ? '#006400' : '#003399';
+    ctx.fillRect(2*s, 2*s, bw, H-4*s);
 
-  // D letter
-  ctx.fillStyle = '#FFD700';
-  ctx.font = `bold ${13*s}px Arial`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('D', scx, H * 0.78);
+    // Stars
+    const cx = 2*s + bw/2, starsTop = 6*s, starsH = H*0.52;
+    for (let i = 0; i < 12; i++) {
+        const a = (i/12)*Math.PI*2 - Math.PI/2;
+        const r = starsH/2 * 0.48;
+        drawStar(ctx, cx + Math.cos(a)*r*0.55, starsTop + starsH/2 + Math.sin(a)*r*0.55, 2.2*s, '#FFD700');
+    }
 
-  // Plate text
-  const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
-  const textX = bw + 6*s + (W - bw - 8*s) / 2;
-  const textY = H * 0.64;
-  const charCount = plateText.replace(/[·\s]/g, '').length;
-  const fs = charCount <= 6 ? 56*s : charCount <= 8 ? 50*s : 44*s;
-  ctx.fillStyle = isCarbon ? '#e8e8e8' : '#000000';
-  ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(plateText, textX, textY);
+    // D letter
+    ctx.fillStyle = '#FFD700';
+    ctx.font = `bold ${11*s}px Arial`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('D', cx, H - 7*s);
+
+    // Plate text
+    const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
+    const textX = bw + 6*s + (W - bw - 8*s)/2;
+    const textY = H/2 + 17*s;
+    const len = plateText.replace(/[·\s]/g, '').length;
+    const fs = len <= 6 ? 54*s : len <= 8 ? 48*s : 42*s;
+
+    ctx.fillStyle = isCarbon ? '#e0e0e0' : '#000000';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
+    ctx.fillText(plateText, textX, textY);
 }
 
 function drawStar(ctx, cx, cy, r, color) {
@@ -103,11 +107,16 @@ function buildPlateText(ort, b, z, suffix) {
     return t;
 }
 
+// Configurator + summary only — hero is independent
 function renderAllPlates() {
     const { ort, buchstaben, ziffern, suffix, material } = state;
     drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material);
-    drawPlate('heroPlate', ort, buchstaben, ziffern, suffix, material);
     drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material);
+}
+
+// Hero only
+function renderHeroPlate() {
+    drawPlate('heroPlate', heroState.ort, heroState.buchstaben, heroState.ziffern, heroState.suffix, state.material);
 }
 
 /* ─── TYPEWRITER HERO ANIMATION ─── */
@@ -132,16 +141,16 @@ function typewriterPlate() {
             if (ci < target.length) {
                 ci++;
                 const partial = target.slice(0, ci);
-                state[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = partial;
-                renderAllPlates();
+                heroState[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = partial;
+                renderHeroPlate();
                 setTimeout(next, delays.type);
             } else if (fieldIdx < fields.length - 1) {
                 field = fields[fieldIdx + 1];
                 ci = 0;
                 setTimeout(next, delays.type);
             } else {
-                state.suffix = cur.s;
-                renderAllPlates();
+                heroState.suffix = cur.s;
+                renderHeroPlate();
                 phase = 'pause';
                 setTimeout(next, delays.pause);
             }
@@ -154,8 +163,8 @@ function typewriterPlate() {
             if (ci > 0) {
                 ci--;
                 const partial = target.slice(0, ci);
-                state[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = partial;
-                renderAllPlates();
+                heroState[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = partial;
+                renderHeroPlate();
                 setTimeout(next, delays.erase);
             } else {
                 const fi = fields.indexOf(field);
@@ -163,7 +172,7 @@ function typewriterPlate() {
                 else {
                     si = (si+1) % sequence.length;
                     phase = 'type'; field = 'ort'; ci = 0;
-                    state.ort=''; state.buchstaben=''; state.ziffern=''; state.suffix='';
+                    heroState.ort=''; heroState.buchstaben=''; heroState.ziffern=''; heroState.suffix='';
                     setTimeout(next, 300);
                 }
             }
@@ -198,7 +207,6 @@ function setSuffix(btn, val) {
     state.suffix = val;
     document.querySelectorAll('.suffix-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    // Sync plate type strip
     const typeMap = { '': 'standard', 'H': 'h', 'E': 'e' };
     const typeBtn = document.querySelector(`.plate-type-btn[data-type="${typeMap[val] || 'standard'}"]`);
     if (typeBtn) {
@@ -211,7 +219,6 @@ function setSuffix(btn, val) {
 function setPlateType(btn, type) {
     document.querySelectorAll('.plate-type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    // Sync suffix buttons
     const suffixMap = { standard: '', h: 'H', e: 'E' };
     const suffix = suffixMap[type] || '';
     state.suffix = suffix;
@@ -224,7 +231,6 @@ function setPlateType(btn, type) {
 
 function setSize(btn, val) {
     state.size = val;
-    document.querySelectorAll('.toggle-group').forEach(g => {});
     document.getElementById('sizeStd').classList.toggle('active', val==='standard');
     document.getElementById('sizeKlein').classList.toggle('active', val==='klein');
 }
@@ -234,6 +240,7 @@ function setMaterial(btn, val) {
     document.getElementById('matStd').classList.toggle('active', val==='standard');
     document.getElementById('matCarbon').classList.toggle('active', val==='carbon');
     renderAllPlates();
+    renderHeroPlate();
     updateSummary();
 }
 
@@ -263,7 +270,6 @@ function updateSummary() {
     if (state.addons.plakette) lines.push({ name:'Umweltplakette', price:PRICES.plakette });
     if (state.addons.versand) lines.push({ name:'DHL Versand', price:PRICES.versand });
     const total = calcTotal();
-
     document.getElementById('checkoutLines').innerHTML = lines.map(l =>
         `<div class="checkout-line"><span class="cl-name">${l.name}</span><span class="cl-price">€${l.price}</span></div>`
     ).join('');
@@ -272,17 +278,52 @@ function updateSummary() {
     if (mob) mob.textContent = `€${total}`;
 }
 
-/* ─── PROGRESS ─── */
-function updateProgress() {
-    const hasPlate = state.ort && state.buchstaben && state.ziffern;
-    const hasAddon = Object.values(state.addons).some(Boolean);
+/* ─── PROGRESS — scroll-driven ─── */
+function initScrollProgress() {
+    const sections = [
+        { id: 'configurator', step: 'step1', line: null },
+        { id: 'addons',       step: 'step2', line: 'line1' },
+        { id: 'checkout-block', step: 'step3', line: 'line2' },
+    ];
 
-    document.getElementById('step1').className = 'progress-step' + (hasPlate ? ' done' : ' active');
-    document.getElementById('line1').className = 'progress-line' + (hasPlate ? ' done' : '');
-    document.getElementById('step2').className = 'progress-step' + (hasAddon ? ' done' : hasPlate ? ' active' : '');
-    document.getElementById('line2').className = 'progress-line' + (hasAddon ? ' done' : '');
-    document.getElementById('step3').className = 'progress-step' + (hasAddon ? ' active' : '');
+    function updateProgress() {
+        const scrollY = window.scrollY + window.innerHeight * 0.5;
+
+        sections.forEach(({ id, step, line }) => {
+            const el = document.getElementById(id) || document.querySelector('.' + id);
+            if (!el) return;
+            const reached = el.offsetTop <= scrollY;
+            const stepEl = document.getElementById(step);
+            const lineEl = line ? document.getElementById(line) : null;
+            if (reached) {
+                stepEl.classList.add('done');
+                stepEl.classList.remove('active');
+                if (lineEl) lineEl.classList.add('done');
+            } else {
+                stepEl.classList.remove('done');
+                if (lineEl) lineEl.classList.remove('done');
+            }
+        });
+
+        // Active = first not-done step
+        let foundActive = false;
+        ['step1','step2','step3'].forEach(id => {
+            const el = document.getElementById(id);
+            if (!el.classList.contains('done') && !foundActive) {
+                el.classList.add('active');
+                foundActive = true;
+            } else {
+                el.classList.remove('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
 }
+
+// Keep for compatibility with toggleAddon calls
+function updateProgress() {}
 
 /* ─── CHECKOUT ─── */
 async function handleCheckout() {
@@ -311,7 +352,6 @@ async function handleCheckout() {
                 totalAmount: calcTotal()
             })
         });
-
         if (!res.ok) throw new Error('Checkout failed');
         const { url } = await res.json();
         window.location.href = url;
@@ -323,7 +363,7 @@ async function handleCheckout() {
     }
 }
 
-/* ─── SOCIAL PROOF ─── */
+/* ─── SOCIAL PROOF STRIP ─── */
 function initProofStrip() {
     const proofs = [
         { plate:'DÜ · MK 420', time:'vor 3 Min.', label:'gerade bestellt' },
@@ -335,17 +375,34 @@ function initProofStrip() {
         { plate:'MS · WR 2024', time:'vor 45 Min.', label:'Standard Schilder' },
         { plate:'BO · FG 88H', time:'vor 52 Min.', label:'Oldtimer' },
     ];
-
     const track = document.getElementById('proofTrack');
+    if (!track) return;
     const items = [...proofs, ...proofs].map(p =>
-        `<div class="proof-item">
-      <span>🚗</span>
-      <span class="proof-plate">${p.plate}</span>
-      <span>${p.label}</span>
-      <span class="proof-time">${p.time}</span>
-    </div>`
+        `<div class="proof-item"><span>🚗</span><span class="proof-plate">${p.plate}</span><span>${p.label}</span><span class="proof-time">${p.time}</span></div>`
     ).join('');
     track.innerHTML = items;
+}
+
+/* ─── ANCHOR BANNER — scrolling ticker ─── */
+function initAnchorBanner() {
+    const banner = document.querySelector('.anchor-banner');
+    if (!banner) return;
+
+    const messages = [
+        '🏆 Komplettpaket nur €30 — Zulassung + 2 Kennzeichen + Umweltplakette',
+        '⚡ Blitzschnelle Bearbeitung unter 24 Stunden',
+        '🚗 DIN-zertifizierte Kennzeichen — gültig in ganz Deutschland',
+        '📦 DHL-Versand deutschlandweit — nur €5',
+        '✅ Niedrigster Preis im Umkreis — kein versteckter Aufpreis',
+    ];
+
+    // Replace static content with scrolling ticker
+    banner.innerHTML = `<div class="anchor-ticker-wrap"><div class="anchor-ticker" id="anchorTicker"></div></div>`;
+    const ticker = document.getElementById('anchorTicker');
+    const items = [...messages, ...messages].map(m =>
+        `<span class="anchor-ticker-item">${m}</span>`
+    ).join('');
+    ticker.innerHTML = items;
 }
 
 /* ─── FAQ ─── */
@@ -361,7 +418,7 @@ function initFAQ() {
 
 /* ─── SCROLL REVEAL ─── */
 function initReveal() {
-    const els = document.querySelectorAll('section, .anchor-banner, .proof-strip');
+    const els = document.querySelectorAll('section, .proof-strip');
     const obs = new IntersectionObserver(entries => {
         entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('reveal','visible'); obs.unobserve(e.target); } });
     }, { threshold: 0.07 });
@@ -379,9 +436,11 @@ function checkSuccess() {
 /* ─── INIT ─── */
 document.addEventListener('DOMContentLoaded', () => {
     renderAllPlates();
+    renderHeroPlate();
     updateSummary();
-    updateProgress();
+    initScrollProgress();
     initProofStrip();
+    initAnchorBanner();
     initFAQ();
     initReveal();
     checkSuccess();
