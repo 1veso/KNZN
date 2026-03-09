@@ -78,12 +78,12 @@ input, button { font-family: inherit; }
 .progress-step { display: flex; align-items: center; gap: 8px; }
 .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--gray-200); color: var(--gray-600); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all var(--t); }
 .step-label { font-size: 12px; font-weight: 500; color: var(--gray-400); transition: color var(--t); }
-.progress-step.active .step-num { background: var(--gold); color: var(--navy); }
-.progress-step.active .step-label { color: var(--navy); font-weight: 700; }
-.progress-step.done .step-num { background: var(--navy); color: var(--white); }
-.progress-step.done .step-label { color: var(--navy); }
+.progress-step.active .step-num { background: var(--navy); color: var(--white); }
+.progress-step.active .step-label { color: var(--navy); font-weight: 600; }
+.progress-step.done .step-num { background: var(--gray-400); color: var(--white); }
+.progress-step.done .step-label { color: var(--gray-400); }
 .progress-line { flex: 1; height: 2px; background: var(--gray-200); margin: 0 12px; min-width: 40px; transition: background var(--t); }
-.progress-line.done { background: var(--navy); }
+.progress-line.done { background: var(--gray-400); }
 
 /* SECTION HEADERS */
 .section-header { margin-bottom: 40px; }
@@ -245,7 +245,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 /* ─── HERO PHOTO BACKGROUND ─── */
 .hero { position: relative; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-.hero-bg-img { width: 100%; height: 100%; object-fit: cover; object-position: center center; filter: brightness(0.32) saturate(0.65); }
+.hero-bg-img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 52%; filter: brightness(0.32) saturate(0.65); }
 .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,20,40,0.75) 0%, rgba(26,39,68,0.55) 60%, rgba(36,53,96,0.45) 100%); }
 .hero-container { position: relative; z-index: 1; }
 
@@ -305,7 +305,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 }
 
 /* ─── ANCHOR TICKER ─── */
-.anchor-banner { overflow: hidden; padding: 0; }
+.anchor-banner { background: var(--gold); overflow: hidden; padding: 0; }
 .anchor-ticker-wrap { overflow: hidden; width: 100%; }
 .anchor-ticker { display: flex; white-space: nowrap; animation: tickerScroll 32s linear infinite; }
 .anchor-ticker-item { display: inline-flex; align-items: center; padding: 12px 40px; font-size: 14px; font-weight: 600; color: var(--navy); border-right: 1px solid rgba(26,39,68,0.15); flex-shrink: 0; }

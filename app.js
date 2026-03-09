@@ -1,7 +1,7 @@
 /* ─── STATE ─── */
 const state = {
     ort: '', buchstaben: '', ziffern: '', suffix: '',
-    size: 'standard', material: 'standard',
+    size: 'standard', material: 'standard', plateType: 'standard',
     addons: { zulassung: false, plakette: false, versand: false }
 };
 
@@ -48,27 +48,32 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
 
     // EU band with rounded left corners
     const bw = 42*s;
-    ctx.fillStyle = isElektro ? '#006400' : '#003399';
+    const isElektroType = (typeof state !== 'undefined' && state.plateType === 'e') || isElektro;
+    ctx.fillStyle = isElektroType ? '#006400' : '#003399';
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
     else ctx.rect(2*s, 2*s, bw, H-4*s);
     ctx.fill();
 
-    // Stars — tight circle in upper 58% of band
+    // Stars — circle in upper portion of EU band (original working layout)
     const cx = 2*s + bw/2;
-    const starCY = H * 0.38;
-    const starR = H * 0.21;
+    const starsTop = 5*s;
+    const starsH = H * 0.60;
+    const starR = starsH/2 * 0.44;
     for (let i = 0; i < 12; i++) {
         const a = (i/12)*Math.PI*2 - Math.PI/2;
-        drawStar(ctx, cx + Math.cos(a)*starR, starCY + Math.sin(a)*starR, 2.0*s, '#FFD700');
+        drawStar(ctx,
+            cx + Math.cos(a) * starR,
+            starsTop + starsH/2 + Math.sin(a) * starR,
+            2.1*s, '#FFD700');
     }
 
-    // D letter — centered in lower 30% of band
+    // D letter — sits below star circle with breathing room
     ctx.fillStyle = '#FFD700';
     ctx.font = `bold ${10*s}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('D', cx, H * 0.76);
+    ctx.fillText('D', cx, starsTop + starsH + 6*s);
 
     // Plate text — vertically centered in white area
     const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
@@ -211,25 +216,15 @@ function setSuffix(btn, val) {
     state.suffix = val;
     document.querySelectorAll('.suffix-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const typeMap = { '': 'standard', 'H': 'h', 'E': 'e' };
-    const typeBtn = document.querySelector(`.plate-type-btn[data-type="${typeMap[val] || 'standard'}"]`);
-    if (typeBtn) {
-        document.querySelectorAll('.plate-type-btn').forEach(b => b.classList.remove('active'));
-        typeBtn.classList.add('active');
-    }
     renderAllPlates();
 }
 
 function setPlateType(btn, type) {
     document.querySelectorAll('.plate-type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    const suffixMap = { standard: '', h: 'H', e: 'E' };
-    const suffix = suffixMap[type] || '';
-    state.suffix = suffix;
-    const suffixIdMap = { '': 'suffixNone', 'H': 'suffixH', 'E': 'suffixE' };
-    document.querySelectorAll('.suffix-btn').forEach(b => b.classList.remove('active'));
-    const sBtn = document.getElementById(suffixIdMap[suffix]);
-    if (sBtn) sBtn.classList.add('active');
+    // Plate type only controls EU band color via state.plateType
+    // It does NOT change the suffix (H/E suffix is a separate choice)
+    state.plateType = type; // 'standard' | 'h' | 'e'
     renderAllPlates();
 }
 
