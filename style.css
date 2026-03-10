@@ -241,7 +241,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.5); }
 
 /* MOBILE STICKY BAR */
-.mobile-sticky { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: var(--white); border-top: 1px solid var(--gray-200); padding: 12px 20px; box-shadow: 0 -4px 20px rgba(26,39,68,0.12); align-items: center; justify-content: space-between; gap: 16px; }
+.mobile-sticky { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--white); border-top: 1px solid var(--gray-200); padding: 12px 20px; box-shadow: 0 -4px 20px rgba(26,39,68,0.12); align-items: center; justify-content: space-between; gap: 16px; }
 .mobile-sticky-left { display: flex; flex-direction: column; }
 .mobile-sticky-label { font-size: 10px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em; }
 .mobile-sticky-price { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1; }
@@ -746,4 +746,128 @@ a.bento-card:hover .bento-link { gap: 8px; }
     .service-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE — 768px (tablet / large mobile)
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* ── General ── */
+    .container { padding: 0 16px; }
+
+    /* ── Nav ── */
+    .nav-inner { padding: 0 16px; }
+    .logo-primary { font-size: 13px; }
+    .nav-cta { padding: 9px 16px; font-size: 13px; min-height: 44px; display: inline-flex; align-items: center; }
+
+    /* ── Hero ── */
+    .hero { padding: 88px 0 56px; }
+    .hero-title { font-size: 32px; }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-wrap: unset; }
+    .stat-divider { display: none; }
+    .hero-btn { width: 100%; justify-content: center; }
+
+    /* ── Anchor ticker ── */
+    .anchor-ticker-item { font-size: 13px; padding: 10px 20px; }
+
+    /* ── Progress bar ── */
+    .progress-bar { padding: 12px 16px; }
+
+    /* ── Configurator ── */
+    .configurator { padding: 60px 0; }
+    .plate-preview-wrap canvas { width: 100%; }
+    .options-grid { grid-template-columns: 1fr; max-width: 100%; }
+    .input-group input { font-size: 16px; }
+
+    /* ── Add-ons ── */
+    .addons { padding: 60px 0; }
+    .addon-price-tag { align-self: center; }
+    .checkout-block { padding: 20px 16px; gap: 20px; }
+    .btn-checkout { width: 100%; }
+
+    /* ── Bento (Warum wir) ── */
+    .why-us { padding: 60px 0; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-din,
+    .bento-speed,
+    .bento-price,
+    .bento-service,
+    .bento-stats { grid-column: 1; grid-row: auto; }
+    .bento-big { font-size: 48px; }
+
+    /* ── Wissen (Kennt-edu) ── */
+    .kennt-edu { padding: 60px 0; }
+    .kennt-structure-plate svg { width: 100%; height: auto; }
+
+    /* ── Service ── */
+    .service { padding: 60px 0; }
+
+    /* ── Downloads ── */
+    .downloads { padding: 60px 0; }
+
+    /* ── FAQ ── */
+    .faq { padding: 60px 0; }
+
+    /* ── Contact ── */
+    .contact { padding: 60px 0; }
+    .contact-grid-three { grid-template-columns: 1fr; }
+    .contact-map { grid-column: 1; min-height: unset; }
+    .contact-map iframe { height: 220px; min-height: unset; }
+
+    /* ── Footer ── */
+    .footer-inner { flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+    .footer-links { justify-content: center; flex-wrap: wrap; }
+
+    /* ── Minimum tap targets (44 × 44 px) ── */
+    .btn-primary,
+    .btn-checkout,
+    .btn-download,
+    .btn-whatsapp,
+    .mobile-sticky-btn { min-height: 44px; }
+    .faq-item { padding: 16px 0; }
+    .faq-toggle { min-width: 44px; min-height: 44px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE — 480px (small mobile / iPhone SE)
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+    /* ── Hide hero visual canvas ── */
+    .hero-visual { display: none; }
+
+    /* ── Progress bar: show step numbers only ── */
+    .step-label { display: none; }
+    .progress-bar { padding: 10px 16px; }
+    .progress-inner { gap: 0; }
+
+    /* ── iOS: prevent auto-zoom on input focus (min 16px) ── */
+    .input-group input,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea { font-size: 16px; }
+
+    /* ── Mobile sticky sits above browser chrome ── */
+    .whatsapp-float { bottom: 84px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   TOUCH: remove sticky translateY hover states
+   ═══════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+    .nav-cta:hover { transform: none; }
+    .btn-primary:hover { transform: none; box-shadow: 0 4px 16px rgba(26,39,68,0.2); }
+    .btn-checkout:hover { transform: none; box-shadow: 0 4px 20px rgba(245,196,0,0.35); }
+    .btn-download:hover { transform: none; }
+    .btn-whatsapp:hover { transform: none; }
+    .bento-card:hover { transform: none; }
+    .addon-card:hover { transform: none; }
+    .service-card:hover { transform: none; }
+    .kennt-card:hover { transform: none; }
+    .download-card:hover { transform: none; }
+    .plate-type-btn:hover { transform: none; box-shadow: var(--shadow); }
 }
