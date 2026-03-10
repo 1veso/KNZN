@@ -51,9 +51,9 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
     ctx.stroke();
 
-    // EU band with rounded left corners — green for Elektro, blue otherwise
+    // EU band with rounded left corners — always blue
     const bw = 42*s;
-    ctx.fillStyle = (pt === 'e') ? '#006400' : '#003399';
+    ctx.fillStyle = '#003399';
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
     else ctx.rect(2*s, 2*s, bw, H-4*s);
@@ -79,19 +79,57 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     ctx.textBaseline = 'middle';
     ctx.fillText('D', cx, starsTop + starsH + 6*s);
 
-    // Plate text — in type-suffix mode the text area is narrower
+    // Plate text — split into city code, seal circles, and letter/number
     const textAreaEnd = W - suffixW;
-    const plateText = buildPlateText(ort, buchstaben, ziffern, hasSuffix ? '' : suffix);
-    const textX = bw + 4*s + (textAreaEnd - bw - 6*s) / 2;
-    const textY = H * 0.62;
-    const len = plateText.replace(/[·\s]/g, '').length;
-    const fs = len <= 6 ? 56*s : len <= 8 ? 50*s : 44*s;
+
+    const isEmpty = !ort && !buchstaben && !ziffern;
+    const displayOrt = isEmpty ? 'DN' : (ort||'').toUpperCase().trim();
+    const displayBu  = isEmpty ? 'AB' : (buchstaben||'').toUpperCase().trim();
+    const displayZi  = isEmpty ? '1234' : (ziffern||'').trim();
+    const displaySuffix = hasSuffix ? '' : (suffix||'').toUpperCase().trim();
+    const buziText = displayBu + (displayBu && displayZi ? ' ' : '') + displayZi
+                   + (displaySuffix ? ' ' + displaySuffix : '');
+
+    const totalChars = displayOrt.length + displayBu.length + displayZi.length + displaySuffix.length;
+    const fs = totalChars <= 5 ? 56*s : totalChars <= 7 ? 50*s : 44*s;
+
+    ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
+    ctx.textBaseline = 'middle';
+
+    const ortWidth  = ctx.measureText(displayOrt).width;
+    const buziWidth = buziText ? ctx.measureText(buziText).width : 0;
+
+    // Seal circles sizing — two circles stacked vertically
+    const sealR   = H * 0.145;
+    const sealGap = H * 0.05;
+    const sealBlockW = sealR * 2 + 10*s;
+
+    const textAreaStart = bw + 6*s;
+    const textAreaWidth = textAreaEnd - textAreaStart - 6*s;
+    const totalContentW = ortWidth + sealBlockW + buziWidth;
+    const startX = textAreaStart + Math.max(0, (textAreaWidth - totalContentW) / 2);
+    const textY  = H * 0.55;
 
     ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
-    ctx.fillText(plateText, textX, textY);
+    ctx.textAlign = 'left';
+
+    // 1. City code
+    ctx.fillText(displayOrt, startX, textY);
+
+    // 2. Two stacked seal circles (Plakette/Umwelt seals)
+    const sealCX   = startX + ortWidth + sealBlockW / 2;
+    const sealTopY = H / 2 - sealR - sealGap / 2;
+    const sealBotY = H / 2 + sealR + sealGap / 2;
+    ctx.strokeStyle = isCarbon ? '#888' : '#666';
+    ctx.lineWidth = 1.5*s;
+    ctx.beginPath(); ctx.arc(sealCX, sealTopY, sealR, 0, Math.PI*2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(sealCX, sealBotY, sealR, 0, Math.PI*2); ctx.stroke();
+
+    // 3. Letter/number combination (+ optional suffix for standard type)
+    if (buziText) {
+        ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
+        ctx.fillText(buziText, startX + ortWidth + sealBlockW, textY);
+    }
 
     // ── Type-specific suffix rendering ──────────────────────────────────
     if (pt === 'e' || pt === 'h') {
@@ -111,7 +149,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
         ctx.font = `bold ${50*s}px 'Arial Black', Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(letter, divX + suffixW / 2, H * 0.62);
+        ctx.fillText(letter, divX + suffixW / 2, H * 0.55);
 
     } else if (pt === 'saisonal') {
         const boxX = textAreaEnd + 2*s;
@@ -162,9 +200,9 @@ function buildPlateText(ort, b, z, suffix) {
     const bu = (b||'').toUpperCase().trim();
     const zi = (z||'').trim();
     const su = (suffix||'').toUpperCase().trim();
-    if (!o && !bu && !zi) return 'DÜ · AB 1234';
+    if (!o && !bu && !zi) return 'DN AB 1234';
     let t = o;
-    if (bu||zi) t += ' · ';
+    if (bu||zi) t += ' ';
     if (bu) t += bu + ' ';
     if (zi) t += zi;
     if (su) t += ' ' + su;
@@ -186,9 +224,9 @@ function renderHeroPlate() {
 /* ─── TYPEWRITER HERO ANIMATION ─── */
 function typewriterPlate() {
     const sequence = [
-        {ort:'DÜ', b:'AB', z:'1234', s:''},
-        {ort:'AC', b:'JH', z:'42', s:''},
-        {ort:'K',  b:'MX', z:'500', s:'E'},
+        {ort:'DN', b:'AB', z:'1234', s:''},
+        {ort:'DN', b:'JH', z:'42', s:''},
+        {ort:'DN', b:'MX', z:'500', s:'E'},
         {ort:'DN', b:'LB', z:'88', s:'H'},
     ];
     let si = 0, ci = 0, phase = 'type', field = 'ort';
