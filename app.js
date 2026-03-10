@@ -284,31 +284,26 @@ function updateSummary() {
     if (mob) mob.textContent = `€${total}`;
 }
 
-/* ─── PROGRESS — scroll-driven ─── */
+/* ─── PROGRESS — viewport-relative scroll tracking ─── */
 function initScrollProgress() {
-    // Map each section to a progress step
-    // Step 1 active from start, done when addons section reached
-    // Step 2 active when addons reached, done when checkout block reached
-    // Step 3 active when checkout block reached
+    const addonsEl  = document.getElementById('addons');
+    const checkoutEl = document.querySelector('.checkout-block');
 
-    function updateProgress() {
-        const scrollY = window.scrollY + window.innerHeight * 0.55;
-        const configuratorEl = document.getElementById('configurator');
-        const addonsEl = document.getElementById('addons');
-        const checkoutEl = document.querySelector('.checkout-block');
-
-        if (!configuratorEl || !addonsEl || !checkoutEl) return;
-
-        const atAddons   = addonsEl.offsetTop <= scrollY;
-        const atCheckout = checkoutEl.offsetTop <= scrollY;
+    function update() {
+        if (!addonsEl || !checkoutEl) return;
+        // getBoundingClientRect().top gives distance from viewport top — works
+        // correctly regardless of element nesting or sticky offsets
+        const triggerY   = window.innerHeight * 0.55;
+        const atAddons   = addonsEl.getBoundingClientRect().top   < triggerY;
+        const atCheckout = checkoutEl.getBoundingClientRect().top < triggerY;
 
         const s1 = document.getElementById('step1');
         const s2 = document.getElementById('step2');
         const s3 = document.getElementById('step3');
         const l1 = document.getElementById('line1');
         const l2 = document.getElementById('line2');
+        if (!s1 || !s2 || !s3) return;
 
-        // Reset all
         [s1,s2,s3].forEach(s => s.className = 'progress-step');
         [l1,l2].forEach(l => l.className = 'progress-line');
 
@@ -323,8 +318,8 @@ function initScrollProgress() {
         }
     }
 
-    window.addEventListener('scroll', updateProgress, { passive: true });
-    updateProgress();
+    window.addEventListener('scroll', update, { passive: true });
+    update();
 }
 
 // Stub — scroll drives progress now, kept for toggleAddon compatibility
@@ -345,7 +340,7 @@ async function handleCheckout() {
     btnText.textContent = 'Wird weitergeleitet...';
 
     try {
-        const res = await fetch('/functions/create-checkout', {
+        const res = await fetch('/create-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

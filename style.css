@@ -324,6 +324,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .plate-type-btn.active span:not(.plate-type-contact-badge) { color: var(--navy); }
 .plate-type-contact { opacity: 0.75; }
 .plate-type-contact-badge { position: absolute; top: -7px; right: -4px; background: var(--navy); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 4px; letter-spacing: 0.04em; }
+.plate-type-svg { display: block; width: 140px; height: auto; }
 
 /* ─── CONTACT PROMPT ─── */
 .plate-type-contact-prompt { display: flex; align-items: center; gap: 14px; background: #f0f4ff; border: 1px solid #c7d3f5; border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 24px; flex-wrap: wrap; }
