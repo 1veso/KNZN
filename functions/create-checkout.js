@@ -1,65 +1,76 @@
 export async function onRequestPost(context) {
   const { env, request } = context;
-  const body = await request.json();
-  const { plateText, plateFormat, material, addons, totalAmount } = body;
 
-  const lineItems = [];
+  try {
+    const body = await request.json();
+    const { plateText, plateFormat, material, addons } = body;
 
-  lineItems.push({
-    price_data: {
-      currency: 'eur',
-      product_data: { name: `2 Kennzeichen (${material === 'carbon' ? 'Carbon' : 'Standard'}) — ${plateText}` },
-      unit_amount: material === 'carbon' ? 2000 : 1000,
-    },
-    quantity: 1,
-  });
+    const origin = new URL(request.url).origin;
+    const params = new URLSearchParams();
 
-  if (addons.zulassung) lineItems.push({
-    price_data: { currency: 'eur', product_data: { name: 'KFZ Zulassung' }, unit_amount: 2000 },
-    quantity: 1,
-  });
+    params.set('mode', 'payment');
+    params.set('success_url', `${origin}/?success=1`);
+    params.set('cancel_url', `${origin}/`);
 
-  if (addons.plakette) lineItems.push({
-    price_data: { currency: 'eur', product_data: { name: 'Umweltplakette' }, unit_amount: 500 },
-    quantity: 1,
-  });
+    let i = 0;
 
-  if (addons.versand) lineItems.push({
-    price_data: { currency: 'eur', product_data: { name: 'DHL Versand' }, unit_amount: 500 },
-    quantity: 1,
-  });
+    // Kennzeichen
+    params.set(`line_items[${i}][price_data][currency]`, 'eur');
+    params.set(`line_items[${i}][price_data][product_data][name]`, `2 Kennzeichen (${material === 'carbon' ? 'Carbon' : 'Standard'}) - ${plateText}`);
+    params.set(`line_items[${i}][price_data][unit_amount]`, material === 'carbon' ? '2000' : '1000');
+    params.set(`line_items[${i}][quantity]`, '1');
+    i++;
 
-  const origin = new URL(request.url).origin;
+    if (addons.zulassung) {
+      params.set(`line_items[${i}][price_data][currency]`, 'eur');
+      params.set(`line_items[${i}][price_data][product_data][name]`, 'KFZ Zulassung');
+      params.set(`line_items[${i}][price_data][unit_amount]`, '2000');
+      params.set(`line_items[${i}][quantity]`, '1');
+      i++;
+    }
 
-  const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      mode: 'payment',
-      'line_items[0][price_data][currency]': 'eur',
-      'success_url': `${origin}/?success=1`,
-      'cancel_url': `${origin}/`,
-      ...buildStripeParams(lineItems),
-    }),
-  });
+    if (addons.plakette) {
+      params.set(`line_items[${i}][price_data][currency]`, 'eur');
+      params.set(`line_items[${i}][price_data][product_data][name]`, 'Umweltplakette');
+      params.set(`line_items[${i}][price_data][unit_amount]`, '500');
+      params.set(`line_items[${i}][quantity]`, '1');
+      i++;
+    }
 
-  const session = await stripeRes.json();
-  if (!stripeRes.ok) return new Response(JSON.stringify({ error: session.error?.message }), { status: 500 });
-  return new Response(JSON.stringify({ url: session.url }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
-}
+    if (addons.versand) {
+      params.set(`line_items[${i}][price_data][currency]`, 'eur');
+      params.set(`line_items[${i}][price_data][product_data][name]`, 'DHL Versand');
+      params.set(`line_items[${i}][price_data][unit_amount]`, '500');
+      params.set(`line_items[${i}][quantity]`, '1');
+      i++;
+    }
 
-function buildStripeParams(lineItems) {
-  const params = {};
-  lineItems.forEach((item, i) => {
-    params[`line_items[${i}][price_data][currency]`] = item.price_data.currency;
-    params[`line_items[${i}][price_data][product_data][name]`] = item.price_data.product_data.name;
-    params[`line_items[${i}][price_data][unit_amount]`] = item.price_data.unit_amount;
-    params[`line_items[${i}][quantity]`] = item.quantity;
-  });
-  return params;
+    const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params.toString(),
+    });
+
+    const session = await stripeRes.json();
+
+    if (!stripeRes.ok) {
+      return new Response(JSON.stringify({ error: session.error?.message || 'Stripe error' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({ url: session.url }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+  } catch (err) {
+    return new Response(JSON.stringify({ error: err.message }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
 }
