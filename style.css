@@ -184,7 +184,13 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 /* FAQ */
 .faq { padding: 80px 24px; background: var(--off-white); }
+.faq-inner { display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: start; }
+.faq-left { min-width: 0; }
 .faq-list { max-width: 720px; }
+.faq-cta { background: var(--navy); border-radius: var(--radius-lg); padding: 32px; min-width: 260px; max-width: 300px; }
+.faq-cta-title { font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+.faq-cta p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
+.faq-cta .btn-whatsapp { margin-top: 20px; }
 .faq-item { border-bottom: 1px solid var(--gray-200); padding: 20px 0; cursor: pointer; }
 .faq-q { display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; color: var(--navy); gap: 16px; }
 .faq-toggle { width: 26px; height: 26px; min-width: 26px; border: 2px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--gray-400); transition: all var(--t); font-weight: 300; }
@@ -287,6 +293,12 @@ a.bento-card:hover .bento-link { gap: 8px; }
     gap: 32px;
     align-items: stretch;
 }
+.contact-grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: stretch;
+}
 
 .contact-map {
     border-radius: var(--radius-lg);
@@ -314,6 +326,9 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 @media (max-width: 600px) {
     .contact-grid-three {
+        grid-template-columns: 1fr;
+    }
+    .contact-grid-two {
         grid-template-columns: 1fr;
     }
 }
@@ -445,6 +460,9 @@ a.bento-card:hover .bento-link { gap: 8px; }
     .bento-speed, .bento-price, .bento-service, .bento-stats { grid-column: auto; grid-row: auto; }
     .checkout-block { grid-template-columns: 1fr; gap: 28px; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid-two { grid-template-columns: 1fr; gap: 32px; }
+    .faq-inner { grid-template-columns: 1fr; }
+    .faq-cta { max-width: 100%; }
     .addon-grid { grid-template-columns: 1fr; }
     .options-grid { grid-template-columns: 1fr; max-width: 400px; }
 }
@@ -510,6 +528,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .kennt-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
 .kennt-card-plate { background: var(--gray-100); padding: 16px; display: flex; align-items: center; justify-content: center; }
 .kennt-card-plate svg { display: block; max-width: 100%; }
+.kennt-card-plate img { display: block; max-width: 100%; height: 60px; object-fit: contain; }
 .kennt-card-body { padding: 16px; }
 .kennt-card-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
 .kennt-card-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
