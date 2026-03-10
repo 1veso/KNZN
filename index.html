@@ -99,16 +99,48 @@
             <div class="plate-type-label">Kennzeichentyp:</div>
             <div class="plate-type-scroll">
                 <button class="plate-type-btn active" onclick="setPlateType(this,'standard')" data-type="standard">
-                    <img src="/assets/images/plate-types.jpg" alt="Standardkennzeichen" class="plate-type-img" style="object-position: 10% 8%" />
+                    <svg class="plate-type-svg" viewBox="0 0 160 44" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="160" height="44" rx="3" fill="white" stroke="#aaa" stroke-width="1"/>
+                        <rect x="1.5" y="1.5" width="22" height="41" rx="2" fill="#003399"/>
+                        <text x="12.5" y="22" font-size="9" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="93" y="24" font-size="19" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">DÜ AB 1</text>
+                    </svg>
                     <span>Standard</span>
                 </button>
+                <button class="plate-type-btn" onclick="setPlateType(this,'e')" data-type="e">
+                    <svg class="plate-type-svg" viewBox="0 0 160 44" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="160" height="44" rx="3" fill="white" stroke="#aaa" stroke-width="1"/>
+                        <rect x="1.5" y="1.5" width="22" height="41" rx="2" fill="#006400"/>
+                        <text x="12.5" y="22" font-size="9" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="79" y="24" font-size="17" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1234</text>
+                        <line x1="128" y1="4" x2="128" y2="40" stroke="#aaa" stroke-width="1"/>
+                        <text x="144" y="24" font-size="19" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">E</text>
+                    </svg>
+                    <span>Elektro</span>
+                </button>
                 <button class="plate-type-btn" onclick="setPlateType(this,'h')" data-type="h">
-                    <img src="/assets/images/plate-types.jpg" alt="H-Kennzeichen" class="plate-type-img" style="object-position: 55% 8%" />
+                    <svg class="plate-type-svg" viewBox="0 0 160 44" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="160" height="44" rx="3" fill="white" stroke="#aaa" stroke-width="1"/>
+                        <rect x="1.5" y="1.5" width="22" height="41" rx="2" fill="#003399"/>
+                        <text x="12.5" y="22" font-size="9" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="79" y="24" font-size="17" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1234</text>
+                        <line x1="128" y1="4" x2="128" y2="40" stroke="#aaa" stroke-width="1"/>
+                        <text x="144" y="24" font-size="19" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">H</text>
+                    </svg>
                     <span>Oldtimer</span>
                 </button>
-                <button class="plate-type-btn" onclick="setPlateType(this,'e')" data-type="e">
-                    <img src="/assets/images/bmw-elektro.jpg" alt="E-Kennzeichen" class="plate-type-img" style="object-position: center 40%" />
-                    <span>Elektro</span>
+                <button class="plate-type-btn" onclick="setPlateType(this,'saisonal')" data-type="saisonal">
+                    <svg class="plate-type-svg" viewBox="0 0 160 44" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="160" height="44" rx="3" fill="white" stroke="#aaa" stroke-width="1"/>
+                        <rect x="1.5" y="1.5" width="22" height="41" rx="2" fill="#003399"/>
+                        <text x="12.5" y="22" font-size="9" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
+                        <text x="77" y="24" font-size="17" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1234</text>
+                        <rect x="128" y="1.5" width="30.5" height="41" rx="2" fill="#003399"/>
+                        <text x="143" y="16" font-size="9" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">04</text>
+                        <line x1="130" y1="23" x2="157" y2="23" stroke="white" stroke-width="0.8"/>
+                        <text x="143" y="31" font-size="9" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">10</text>
+                    </svg>
+                    <span>Saisonal</span>
                 </button>
             </div>
         </div>
@@ -118,19 +150,19 @@
         </div>
         <div class="plate-inputs">
             <div class="input-group">
-                <label>Ortskenzeichen</label>
+                <label for="ort">Ortskenzeichen</label>
                 <input type="text" id="ort" maxlength="3" placeholder="DÜ" oninput="updatePlate()" autocomplete="off" />
                 <span class="input-hint">z.B. DÜ, AC, K</span>
             </div>
             <div class="input-sep">·</div>
             <div class="input-group">
-                <label>Buchstaben</label>
+                <label for="buchstaben">Buchstaben</label>
                 <input type="text" id="buchstaben" maxlength="2" placeholder="AB" oninput="updatePlate()" autocomplete="off" />
                 <span class="input-hint">1–2 Buchstaben</span>
             </div>
             <div class="input-sep">·</div>
             <div class="input-group">
-                <label>Ziffern</label>
+                <label for="ziffern">Ziffern</label>
                 <input type="text" id="ziffern" maxlength="4" placeholder="1234" oninput="updatePlate()" autocomplete="off" />
                 <span class="input-hint">1–4 Ziffern</span>
             </div>
