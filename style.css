@@ -487,19 +487,18 @@ a.bento-card:hover .bento-link { gap: 8px; }
 @keyframes tickerScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
 /* ─── PLATE TYPE STRIP v2 ─── */
-.plate-type-strip { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.plate-type-strip { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
 .plate-type-label { font-size: 12px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; padding-top: 8px; }
-.plate-type-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; flex-wrap: wrap; }
-.plate-type-scroll::-webkit-scrollbar { height: 3px; }
-.plate-type-scroll::-webkit-scrollbar-thumb { background: var(--gray-400); border-radius: 2px; }
-.plate-type-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 10px; border: 2px solid var(--gray-200); border-radius: var(--radius); background: var(--white); cursor: pointer; transition: all var(--t); position: relative; min-width: 80px; }
+.plate-type-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; flex-wrap: nowrap; scrollbar-width: none; }
+.plate-type-scroll::-webkit-scrollbar { display: none; }
+.plate-type-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 12px; border: 1.5px solid var(--gray-200); border-radius: 12px; background: var(--white); cursor: pointer; transition: all var(--t); position: relative; min-width: 160px; overflow: visible; }
 .plate-type-btn:hover { border-color: var(--navy-light); transform: translateY(-2px); box-shadow: var(--shadow); }
-.plate-type-btn.active { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.12); }
-.plate-type-btn span:not(.plate-type-contact-badge) { font-size: 10px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
+.plate-type-btn.active { border: 2px solid var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.12); }
+.plate-type-btn span:not(.plate-type-contact-badge) { font-size: 13px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
 .plate-type-btn.active span:not(.plate-type-contact-badge) { color: var(--navy); }
 .plate-type-contact { opacity: 0.75; }
 .plate-type-contact-badge { position: absolute; top: -7px; right: -4px; background: var(--navy); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 4px; letter-spacing: 0.04em; }
-.plate-type-svg { display: block; width: 140px; height: auto; }
+.plate-type-svg { display: block; width: 140px; height: 37px; }
 
 /* ─── CONTACT PROMPT ─── */
 .plate-type-contact-prompt { display: flex; align-items: center; gap: 14px; background: #f0f4ff; border: 1px solid #c7d3f5; border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 24px; flex-wrap: wrap; }
