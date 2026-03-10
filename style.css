@@ -184,7 +184,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 /* FAQ */
 .faq { padding: 80px 24px; background: var(--off-white); }
-.faq-list { max-width: 720px; }
+.faq-list { max-width: 720px; margin: 0 auto; }
 .faq-item { border-bottom: 1px solid var(--gray-200); padding: 20px 0; cursor: pointer; }
 .faq-q { display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; color: var(--navy); gap: 16px; }
 .faq-toggle { width: 26px; height: 26px; min-width: 26px; border: 2px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--gray-400); transition: all var(--t); font-weight: 300; }
@@ -510,6 +510,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .kennt-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
 .kennt-card-plate { background: var(--gray-100); padding: 16px; display: flex; align-items: center; justify-content: center; }
 .kennt-card-plate svg { display: block; max-width: 100%; }
+.kennt-card-plate img { display: block; max-width: 100%; height: 60px; object-fit: contain; }
 .kennt-card-body { padding: 16px; }
 .kennt-card-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
 .kennt-card-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
