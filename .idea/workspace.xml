@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cb4ed08b-223c-460f-af46-a4709dc57e92" name="Changes" comment="mkdir KNZN &amp;&amp; cd KNZN&#10;git init&#10;touch index.html style.css app.js" />
+    <list default="true" id="cb4ed08b-223c-460f-af46-a4709dc57e92" name="Changes" comment="mkdir KNZN &amp;&amp; cd KNZN&#10;git init&#10;touch index.html style.css app.js">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/functions/create-checkout.js" beforeDir="false" afterPath="$PROJECT_DIR$/functions/create-checkout.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,7 +78,7 @@
       <workItem from="1773068902015" duration="103000" />
       <workItem from="1773069047374" duration="14694000" />
       <workItem from="1773145937012" duration="1063000" />
-      <workItem from="1773148097320" duration="312000" />
+      <workItem from="1773148097320" duration="2063000" />
     </task>
     <servers />
   </component>
