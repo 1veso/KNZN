@@ -11,7 +11,9 @@ const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
 /* ─── PLATE RENDERING ─── */
-function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
+// plateType: 'standard' | 'e' | 'h' | 'saisonal' — when provided, renders type suffix visually.
+// Omit plateType (hero/typewriter) to fall back to text-based suffix.
+function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -19,8 +21,11 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
     const s = W / 520;
     ctx.clearRect(0, 0, W, H);
 
+    const pt = plateType || 'standard';
     const isCarbon = material === 'carbon';
-    const isElektro = (suffix || '').toUpperCase() === 'E';
+    // Suffix box: E, H, or saisonal occupies the rightmost 20% of the plate
+    const hasSuffix = (pt === 'e' || pt === 'h' || pt === 'saisonal');
+    const suffixW = hasSuffix ? W * 0.20 : 0;
 
     // Background
     if (isCarbon) {
@@ -46,16 +51,15 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
     else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
     ctx.stroke();
 
-    // EU band with rounded left corners
+    // EU band with rounded left corners — green for Elektro, blue otherwise
     const bw = 42*s;
-    const isElektroType = (typeof state !== 'undefined' && state.plateType === 'e') || isElektro;
-    ctx.fillStyle = isElektroType ? '#006400' : '#003399';
+    ctx.fillStyle = (pt === 'e') ? '#006400' : '#003399';
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
     else ctx.rect(2*s, 2*s, bw, H-4*s);
     ctx.fill();
 
-    // Stars — circle in upper portion of EU band (original working layout)
+    // Stars — circle in upper portion of EU band
     const cx = 2*s + bw/2;
     const starsTop = 5*s;
     const starsH = H * 0.60;
@@ -68,16 +72,17 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
             2.1*s, '#FFD700');
     }
 
-    // D letter — sits below star circle with breathing room
+    // D letter — sits below star circle
     ctx.fillStyle = '#FFD700';
     ctx.font = `bold ${10*s}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('D', cx, starsTop + starsH + 6*s);
 
-    // Plate text — vertically centered in white area
-    const plateText = buildPlateText(ort, buchstaben, ziffern, suffix);
-    const textX = bw + 4*s + (W - bw - 6*s)/2;
+    // Plate text — in type-suffix mode the text area is narrower
+    const textAreaEnd = W - suffixW;
+    const plateText = buildPlateText(ort, buchstaben, ziffern, hasSuffix ? '' : suffix);
+    const textX = bw + 4*s + (textAreaEnd - bw - 6*s) / 2;
     const textY = H * 0.62;
     const len = plateText.replace(/[·\s]/g, '').length;
     const fs = len <= 6 ? 56*s : len <= 8 ? 50*s : 44*s;
@@ -87,6 +92,56 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material) {
     ctx.textBaseline = 'middle';
     ctx.font = `bold ${fs}px 'Arial Black', Arial, sans-serif`;
     ctx.fillText(plateText, textX, textY);
+
+    // ── Type-specific suffix rendering ──────────────────────────────────
+    if (pt === 'e' || pt === 'h') {
+        const divX = textAreaEnd;
+        const letter = pt === 'e' ? 'E' : 'H';
+
+        // Vertical separator
+        ctx.strokeStyle = '#aaaaaa';
+        ctx.lineWidth = 1.5*s;
+        ctx.beginPath();
+        ctx.moveTo(divX, 5*s);
+        ctx.lineTo(divX, H - 5*s);
+        ctx.stroke();
+
+        // Suffix letter
+        ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
+        ctx.font = `bold ${50*s}px 'Arial Black', Arial, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(letter, divX + suffixW / 2, H * 0.62);
+
+    } else if (pt === 'saisonal') {
+        const boxX = textAreaEnd + 2*s;
+        const boxW = suffixW - 4*s;
+
+        // Blue seasonal box with rounded right corners
+        ctx.fillStyle = '#003399';
+        ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(boxX, 2*s, boxW, H-4*s, [0, 4*s, 4*s, 0]);
+        else ctx.rect(boxX, 2*s, boxW, H-4*s);
+        ctx.fill();
+
+        // Month numbers
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `bold ${14*s}px Arial, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        const boxCenterX = boxX + boxW / 2;
+        ctx.fillText('04', boxCenterX, H * 0.30);
+
+        // Horizontal separator inside box
+        ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+        ctx.lineWidth = 1*s;
+        ctx.beginPath();
+        ctx.moveTo(boxX + 4*s, H / 2);
+        ctx.lineTo(boxX + boxW - 4*s, H / 2);
+        ctx.stroke();
+
+        ctx.fillText('10', boxCenterX, H * 0.73);
+    }
 }
 
 function drawStar(ctx, cx, cy, r, color) {
@@ -118,9 +173,9 @@ function buildPlateText(ort, b, z, suffix) {
 
 // Configurator + summary only — hero is independent
 function renderAllPlates() {
-    const { ort, buchstaben, ziffern, suffix, material } = state;
-    drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material);
-    drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material);
+    const { ort, buchstaben, ziffern, suffix, material, plateType } = state;
+    drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material, plateType);
+    drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material, plateType);
 }
 
 // Hero only
@@ -222,9 +277,7 @@ function setSuffix(btn, val) {
 function setPlateType(btn, type) {
     document.querySelectorAll('.plate-type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    // Plate type only controls EU band color via state.plateType
-    // It does NOT change the suffix (H/E suffix is a separate choice)
-    state.plateType = type; // 'standard' | 'h' | 'e'
+    state.plateType = type;
     renderAllPlates();
 }
 
@@ -340,11 +393,12 @@ async function handleCheckout() {
     btnText.textContent = 'Wird weitergeleitet...';
 
     try {
+        const typeSuffix = state.plateType === 'e' ? 'E' : state.plateType === 'h' ? 'H' : state.plateType === 'saisonal' ? '04-10' : state.suffix;
         const res = await fetch('/create-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                plateText: buildPlateText(ort, b, z, state.suffix),
+                plateText: buildPlateText(ort, b, z, typeSuffix),
                 plateFormat: `${state.size}_${state.material}`,
                 material: state.material,
                 size: state.size,
