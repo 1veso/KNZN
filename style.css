@@ -310,3 +310,58 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .anchor-ticker { display: flex; white-space: nowrap; animation: tickerScroll 32s linear infinite; }
 .anchor-ticker-item { display: inline-flex; align-items: center; padding: 12px 40px; font-size: 14px; font-weight: 600; color: var(--navy); border-right: 1px solid rgba(26,39,68,0.15); flex-shrink: 0; }
 @keyframes tickerScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── PLATE TYPE STRIP v2 ─── */
+.plate-type-strip { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.plate-type-label { font-size: 12px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; padding-top: 8px; }
+.plate-type-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; flex-wrap: wrap; }
+.plate-type-scroll::-webkit-scrollbar { height: 3px; }
+.plate-type-scroll::-webkit-scrollbar-thumb { background: var(--gray-400); border-radius: 2px; }
+.plate-type-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 10px; border: 2px solid var(--gray-200); border-radius: var(--radius); background: var(--white); cursor: pointer; transition: all var(--t); position: relative; min-width: 80px; }
+.plate-type-btn:hover { border-color: var(--navy-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+.plate-type-btn.active { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.12); }
+.plate-type-btn span:not(.plate-type-contact-badge) { font-size: 10px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
+.plate-type-btn.active span:not(.plate-type-contact-badge) { color: var(--navy); }
+.plate-type-contact { opacity: 0.75; }
+.plate-type-contact-badge { position: absolute; top: -7px; right: -4px; background: var(--navy); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 4px; letter-spacing: 0.04em; }
+
+/* ─── CONTACT PROMPT ─── */
+.plate-type-contact-prompt { display: flex; align-items: center; gap: 14px; background: #f0f4ff; border: 1px solid #c7d3f5; border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 24px; flex-wrap: wrap; }
+.ptcp-icon { font-size: 28px; }
+.ptcp-text { flex: 1; min-width: 200px; }
+.ptcp-text strong { display: block; font-size: 14px; color: var(--navy); margin-bottom: 3px; }
+.ptcp-text span { font-size: 13px; color: var(--text-muted); }
+.ptcp-btn { background: var(--navy); color: var(--white); font-size: 13px; font-weight: 600; padding: 9px 18px; border-radius: var(--radius); transition: all var(--t); white-space: nowrap; }
+.ptcp-btn:hover { background: var(--navy-light); }
+.ptcp-btn-outline { background: transparent; color: var(--navy); border: 2px solid var(--navy); margin-left: 6px; }
+.ptcp-btn-outline:hover { background: var(--navy); color: var(--white); }
+
+/* ─── KENNZEICHENTYPEN EDUCATIONAL SECTION ─── */
+.kennt-edu { padding: 80px 24px; background: var(--off-white); }
+.section-intro { font-size: 15px; color: var(--text-muted); line-height: 1.75; max-width: 720px; margin: 16px auto 0; text-align: center; }
+.kennt-structure { display: flex; align-items: center; gap: 40px; background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 28px 32px; margin-bottom: 48px; flex-wrap: wrap; box-shadow: var(--shadow); }
+.kennt-structure-plate { flex-shrink: 0; }
+.kennt-structure-plate svg { display: block; max-width: 100%; }
+.kennt-structure-labels { display: flex; flex-direction: column; gap: 14px; flex: 1; min-width: 220px; }
+.ks-label { display: flex; align-items: flex-start; gap: 12px; }
+.ks-tag { width: 24px; height: 24px; min-width: 24px; background: var(--navy); color: var(--gold); font-size: 12px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.ks-label strong { font-size: 13px; color: var(--navy); display: block; margin-bottom: 2px; }
+.ks-label p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5; }
+.kennt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.kennt-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: all var(--t); }
+.kennt-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.kennt-card-plate { background: var(--gray-100); padding: 16px; display: flex; align-items: center; justify-content: center; }
+.kennt-card-plate svg { display: block; max-width: 100%; }
+.kennt-card-body { padding: 16px; }
+.kennt-card-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
+.kennt-card-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+.kennt-card-body p { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+
+@media (max-width: 960px) {
+    .kennt-grid { grid-template-columns: repeat(2, 1fr); }
+    .kennt-structure { flex-direction: column; }
+}
+@media (max-width: 600px) {
+    .kennt-grid { grid-template-columns: 1fr; }
+    .plate-type-scroll { flex-wrap: nowrap; }
+}
