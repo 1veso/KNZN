@@ -501,10 +501,10 @@ async function submitEmailAndCheckout() {
 
 (function initEmailModal() {
     document.addEventListener('DOMContentLoaded', function() {
-        var closeBtn = document.getElementById('emailModalClose');
-        var overlay = document.getElementById('emailModal');
-        var submitBtn = document.getElementById('emailSubmitBtn');
-        var input = document.getElementById('emailInput');
+        const closeBtn = document.getElementById('emailModalClose');
+        const overlay = document.getElementById('emailModal');
+        const submitBtn = document.getElementById('emailSubmitBtn');
+        const input = document.getElementById('emailInput');
 
         if (closeBtn) closeBtn.addEventListener('click', closeEmailModal);
         if (overlay) overlay.addEventListener('click', function(e) {
