@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cb4ed08b-223c-460f-af46-a4709dc57e92" name="Changes" comment="mkdir KNZN &amp;&amp; cd KNZN&#10;git init&#10;touch index.html style.css app.js">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +87,7 @@
       <workItem from="1773148097320" duration="2063000" />
       <workItem from="1773316918007" duration="2269000" />
       <workItem from="1773321644587" duration="931000" />
-      <workItem from="1773323740366" duration="2458000" />
+      <workItem from="1773323740366" duration="2774000" />
     </task>
     <servers />
   </component>

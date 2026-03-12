@@ -2,57 +2,58 @@ export async function onRequestPost(context) {
   const { env, request } = context;
 
   try {
-    // Content-Type check
-    const contentType = request.headers.get('content-type') || '';
+    // --- Content-Type guard ---
+    const contentType = request.headers.get('Content-Type') || '';
     if (!contentType.includes('application/json')) {
       return new Response(JSON.stringify({ error: 'Invalid content type' }), {
-        status: 400,
+        status: 415,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
     const body = await request.json();
-    const { plateText, plateFormat, material, size, type, addons, email } = body;
+    const { plateText, plateFormat, material, size, type, addons, emailDiscount, customerEmail } = body;
 
-    // Input validation
-    if (typeof plateText !== 'string' || plateText.length > 20) {
-      return new Response(JSON.stringify({ error: 'Invalid plate text' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    // --- Input allowlist validation ---
+    const validMaterials = ['standard', 'carbon'];
+    const validSizes = ['standard', 'klein'];
+    const validTypes = ['standard', 'elektro', 'oldtimer', 'saisonal'];
+
+    if (!validMaterials.includes(material)) {
+      return new Response(JSON.stringify({ error: 'Invalid material' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    if (!validSizes.includes(size)) {
+      return new Response(JSON.stringify({ error: 'Invalid size' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    if (!validTypes.includes(type)) {
+      return new Response(JSON.stringify({ error: 'Invalid type' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    }
+    if (!Array.isArray(addons) && typeof addons !== 'object') {
+      return new Response(JSON.stringify({ error: 'Invalid addons' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
     }
 
-    const allowedMaterials = ['standard', 'carbon'];
-    const allowedSizes = ['standard', 'klein'];
-    if (!allowedMaterials.includes(material) || !allowedSizes.includes(size)) {
-      return new Response(JSON.stringify({ error: 'Invalid material or size' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (typeof addons !== 'object' || addons === null || Array.isArray(addons)) {
-      return new Response(JSON.stringify({ error: 'Invalid addons' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Validate email
-    if (typeof email !== 'string' || !/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email) || email.length > 254) {
-      return new Response(JSON.stringify({ error: 'Invalid email' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    // --- Sanitize email if provided ---
+    let sanitizedEmail = null;
+    if (emailDiscount && customerEmail) {
+      // Basic email format check — no external calls, just format validation
+      const emailRegex = /^[^\s@<>"']{1,64}@[^\s@<>"']{1,255}\.[^\s@<>"']{2,}$/;
+      if (emailRegex.test(customerEmail)) {
+        sanitizedEmail = customerEmail.toLowerCase().trim().slice(0, 254);
+      }
+      // If email is malformed, silently skip discount — don't error out the checkout
     }
 
     const origin = new URL(request.url).origin;
     const params = new URLSearchParams();
 
     params.set('mode', 'payment');
-    params.set('customer_email', email.trim());
     params.set('success_url', `${origin}/?success=1`);
     params.set('cancel_url', `${origin}/`);
+
+    // Pre-fill Stripe checkout email field if we have it
+    if (sanitizedEmail) {
+      params.set('customer_email', sanitizedEmail);
+    }
 
     let i = 0;
 
@@ -66,19 +67,15 @@ export async function onRequestPost(context) {
             : type === 'saisonal' ? 'Saisonal'
                 : 'Standard';
 
-    // Sanitize metadata values - strip HTML tags, entities, and dangerous chars
-    const sanitize = (val, maxLen = 50) => {
-      let s = String(val || '');
-      let prev;
-      do { prev = s; s = s.replace(/<[^>]*>?/g, ''); } while (s !== prev);
-      return s.replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
-    };
-
     params.set(`line_items[${i}][price]`, kennzeichenPriceId);
     params.set(`line_items[${i}][quantity]`, '1');
-    params.set(`metadata[kennzeichen_text]`, sanitize(plateText, 20));
-    params.set(`metadata[groesse]`, sanitize(sizeLabel, 10));
-    params.set(`metadata[typ]`, sanitize(typeLabel, 10));
+    params.set(`metadata[kennzeichen_text]`, plateText || '');
+    params.set(`metadata[groesse]`, sizeLabel);
+    params.set(`metadata[typ]`, typeLabel);
+    params.set(`metadata[email_discount_applied]`, sanitizedEmail ? 'true' : 'false');
+    if (sanitizedEmail) {
+      params.set(`metadata[lead_email]`, sanitizedEmail);
+    }
     i++;
 
     if (addons.zulassung) {
@@ -99,9 +96,17 @@ export async function onRequestPost(context) {
       i++;
     }
 
+    // --- Discount logic ---
+    // Stripe allows only ONE discount per session.
+    // Sonderangebot coupon takes priority (higher value).
+    // Email discount only applies when Sonderangebot is NOT triggered.
     const isSonderangebot = material !== 'carbon' && addons.zulassung && addons.plakette;
+
     if (isSonderangebot) {
       params.set('discounts[0][coupon]', 'Zu15xPHh');
+    } else if (sanitizedEmail && addons.versand) {
+      // Email discount only makes sense when versand is selected (it's a shipping discount)
+      params.set('discounts[0][coupon]', 'EMAIL5EUR');
     }
 
     const stripeRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
@@ -116,10 +121,50 @@ export async function onRequestPost(context) {
     const session = await stripeRes.json();
 
     if (!stripeRes.ok) {
-      return new Response(JSON.stringify({ error: session.error?.message || 'Stripe error' }), {
+      return new Response(JSON.stringify({ error: 'Checkout session creation failed' }), {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    // --- Fire lead to Supabase + n8n (non-blocking, won't affect checkout if they fail) ---
+    if (sanitizedEmail) {
+      const leadPayload = {
+        email: sanitizedEmail,
+        plate_text: plateText || '',
+        material,
+        size: sizeLabel,
+        type: typeLabel,
+        versand: !!addons.versand,
+        sonderangebot: isSonderangebot,
+        discount_applied: isSonderangebot ? 'sonderangebot' : 'email5eur',
+        stripe_session_id: session.id,
+        created_at: new Date().toISOString(),
+        source: 'knzn_checkout_modal',
+      };
+
+      // Supabase insert
+      if (env.SUPABASE_URL && env.SUPABASE_SERVICE_KEY) {
+        fetch(`${env.SUPABASE_URL}/rest/v1/leads`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': env.SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify(leadPayload),
+        }).catch(() => {}); // silent fail
+      }
+
+      // n8n webhook
+      if (env.N8N_LEAD_WEBHOOK_URL) {
+        fetch(env.N8N_LEAD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(leadPayload),
+        }).catch(() => {}); // silent fail
+      }
     }
 
     return new Response(JSON.stringify({ url: session.url }), {
@@ -127,7 +172,7 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'An error occurred' }), {
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
