@@ -6,7 +6,7 @@
     <title>Zulassungsdienst Duren - Kennzeichen online bestellen</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
 <nav class="nav">
     <div class="nav-inner">
         <div class="nav-logo">
-            <span class="logo-mark">ZD</span>
+            <img src="/assets/images/logo-watermark.svg" alt="Logo" class="logo-mark-img" />
             <div class="logo-text">
                 <span class="logo-primary">Zulassungsdienst</span>
                 <span class="logo-secondary">Düren</span>
@@ -691,7 +691,7 @@
     <div class="container">
         <div class="footer-inner">
             <div class="footer-logo">
-                <span class="logo-mark">ZD</span>
+                <img src="/assets/images/logo-watermark.svg" alt="Logo" class="logo-mark-img" />
                 <div class="logo-text"><span class="logo-primary">Zulassungsdienst</span><span class="logo-secondary">Düren</span></div>
             </div>
             <div class="footer-links"><a href="#">Impressum</a><a href="#">Datenschutz</a><a href="#">AGB</a></div>
@@ -710,6 +710,11 @@
         <span class="mobile-sticky-price" id="mobileTotalPrice">€10</span>
     </div>
     <button class="mobile-sticky-btn" onclick="handleCheckout()">Jetzt bestellen →</button>
+</div>
+
+<!-- Watermark logo -->
+<div class="watermark-logo" aria-hidden="true">
+    <img src="/assets/images/logo-watermark.svg" alt="" />
 </div>
 
 <script src="config.js"></script>

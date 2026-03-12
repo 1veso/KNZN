@@ -2,8 +2,41 @@ export async function onRequestPost(context) {
   const { env, request } = context;
 
   try {
+    // Content-Type check
+    const contentType = request.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      return new Response(JSON.stringify({ error: 'Invalid content type' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const body = await request.json();
     const { plateText, plateFormat, material, size, type, addons } = body;
+
+    // Input validation
+    if (typeof plateText !== 'string' || plateText.length > 20) {
+      return new Response(JSON.stringify({ error: 'Invalid plate text' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const allowedMaterials = ['standard', 'carbon'];
+    const allowedSizes = ['standard', 'klein'];
+    if (!allowedMaterials.includes(material) || !allowedSizes.includes(size)) {
+      return new Response(JSON.stringify({ error: 'Invalid material or size' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (typeof addons !== 'object' || addons === null) {
+      return new Response(JSON.stringify({ error: 'Invalid addons' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     const origin = new URL(request.url).origin;
     const params = new URLSearchParams();
@@ -24,11 +57,15 @@ export async function onRequestPost(context) {
             : type === 'saisonal' ? 'Saisonal'
                 : 'Standard';
 
+    // Sanitize metadata values - strip any HTML/script tags and limit length
+    const sanitize = (val, maxLen = 50) =>
+      String(val || '').replace(/<[^>]*>/g, '').slice(0, maxLen);
+
     params.set(`line_items[${i}][price]`, kennzeichenPriceId);
     params.set(`line_items[${i}][quantity]`, '1');
-    params.set(`metadata[kennzeichen_text]`, plateText || '');
-    params.set(`metadata[groesse]`, sizeLabel);
-    params.set(`metadata[typ]`, typeLabel);
+    params.set(`metadata[kennzeichen_text]`, sanitize(plateText, 20));
+    params.set(`metadata[groesse]`, sanitize(sizeLabel, 10));
+    params.set(`metadata[typ]`, sanitize(typeLabel, 10));
     i++;
 
     if (addons.zulassung) {
@@ -77,7 +114,7 @@ export async function onRequestPost(context) {
     });
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), {
+    return new Response(JSON.stringify({ error: 'An error occurred' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
