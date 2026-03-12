@@ -444,7 +444,7 @@ function closeEmailModal() {
 }
 
 function validateEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email);
 }
 
 async function submitEmailAndCheckout() {
@@ -505,14 +505,24 @@ async function submitEmailAndCheckout() {
         const overlay = document.getElementById('emailModal');
         const submitBtn = document.getElementById('emailSubmitBtn');
         const input = document.getElementById('emailInput');
+        const errEl = document.getElementById('emailError');
 
         if (closeBtn) closeBtn.addEventListener('click', closeEmailModal);
         if (overlay) overlay.addEventListener('click', function(e) {
             if (e.target === overlay) closeEmailModal();
         });
         if (submitBtn) submitBtn.addEventListener('click', submitEmailAndCheckout);
-        if (input) input.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') submitEmailAndCheckout();
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') submitEmailAndCheckout();
+            });
+            input.addEventListener('input', function() {
+                input.classList.remove('error');
+                if (errEl) errEl.textContent = '';
+            });
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeEmailModal();
         });
     });
 })();
