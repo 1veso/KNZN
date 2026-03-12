@@ -32,10 +32,11 @@ input, button { font-family: inherit; }
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-200); box-shadow: 0 2px 12px rgba(26,39,68,0.07); }
 .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark-img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; }
 .logo-mark { width: 36px; height: 36px; background: var(--navy); color: var(--gold); font-size: 13px; font-weight: 700; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.04em; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
-.logo-primary { font-size: 14px; font-weight: 700; color: var(--navy); }
-.logo-secondary { font-size: 10px; color: var(--gray-400); letter-spacing: 0.08em; text-transform: uppercase; }
+.logo-primary { font-size: 15px; font-weight: 600; color: var(--navy); font-family: 'Oswald', 'Arial Narrow', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+.logo-secondary { font-size: 10px; color: var(--gray-400); letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Oswald', 'Arial Narrow', sans-serif; }
 .nav-cta { background: var(--gold); color: var(--navy); font-size: 14px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius); transition: background var(--t), transform var(--t); }
 .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
 
@@ -239,6 +240,13 @@ a.bento-card:hover .bento-link { gap: 8px; }
 /* WHATSAPP */
 .whatsapp-float { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 200; transition: transform var(--t), box-shadow var(--t); }
 .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.5); }
+
+/* WATERMARK LOGO */
+.watermark-logo { position: fixed; bottom: 24px; left: 24px; width: 90px; height: 90px; opacity: 0.08; pointer-events: none; z-index: 0; }
+.watermark-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+/* SCROLL OFFSET for sticky nav + progress bar */
+#configurator { scroll-margin-top: 140px; }
 
 /* MOBILE STICKY BAR */
 .mobile-sticky { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--white); border-top: 1px solid var(--gray-200); padding: 12px 20px; box-shadow: 0 -4px 20px rgba(26,39,68,0.12); align-items: center; justify-content: space-between; gap: 16px; }
@@ -522,16 +530,16 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .ks-tag { width: 24px; height: 24px; min-width: 24px; background: var(--navy); color: var(--gold); font-size: 12px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
 .ks-label strong { font-size: 13px; color: var(--navy); display: block; margin-bottom: 2px; }
 .ks-label p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5; }
-.kennt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.kennt-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: all var(--t); }
+.kennt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.kennt-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: all var(--t); display: flex; flex-direction: column; }
 .kennt-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-.kennt-card-plate { background: var(--gray-100); padding: 16px; display: flex; align-items: center; justify-content: center; }
+.kennt-card-plate { background: var(--gray-100); padding: 14px 10px; display: flex; align-items: center; justify-content: center; min-height: 70px; }
 .kennt-card-plate svg { display: block; max-width: 100%; }
-.kennt-card-plate img { display: block; max-width: 100%; height: 60px; object-fit: contain; }
-.kennt-card-body { padding: 16px; }
+.kennt-card-plate img { display: block; max-width: 100%; height: 50px; object-fit: contain; }
+.kennt-card-body { padding: 14px 16px 18px; flex: 1; }
 .kennt-card-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
-.kennt-card-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-.kennt-card-body p { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+.kennt-card-body h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; letter-spacing: 0.01em; line-height: 1.3; }
+.kennt-card-body p { font-size: 12px; color: var(--text-muted); line-height: 1.65; margin: 0; letter-spacing: 0.01em; }
 
 @media (max-width: 960px) {
     .kennt-grid { grid-template-columns: repeat(2, 1fr); }

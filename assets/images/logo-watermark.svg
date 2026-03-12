@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Outer border circle -->
+  <circle cx="200" cy="200" r="195" fill="none" stroke="#1a2744" stroke-width="5"/>
+  <!-- White ring -->
+  <circle cx="200" cy="200" r="185" fill="none" stroke="#ffffff" stroke-width="12"/>
+  <!-- Inner dark circle -->
+  <circle cx="200" cy="200" r="175" fill="#111111"/>
+  <!-- Stylized DX logo with arrow -->
+  <g transform="translate(200,160)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- D shape (left) -->
+    <path d="M-70,30 L-70,-35 C-70,-35 -30,-60 0,-35 C15,-22 15,-5 0,8 L-40,30 Z"
+          fill="url(#metalGrad)" stroke="#888" stroke-width="2"/>
+    <!-- X shape (center-right, stylized with arrow) -->
+    <path d="M-15,-40 L25,15 M25,-40 L-5,5 L40,-5 L50,-20"
+          stroke="url(#metalGrad2)" stroke-width="18" fill="none"/>
+    <!-- Arrow tip -->
+    <polygon points="42,-28 58,-22 46,-10" fill="url(#metalGrad2)"/>
+  </g>
+  <!-- Text: ZULASSUNG -->
+  <text x="200" y="290" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif"
+        font-size="30" font-weight="700" letter-spacing="4" fill="#ffffff">ZULASSUNG</text>
+  <!-- Text: BY GEIER & AYHAN -->
+  <text x="200" y="320" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif"
+        font-size="14" font-weight="300" letter-spacing="3" fill="#cccccc">BY GEIER &amp; AYHAN</text>
+  <!-- Metallic gradients -->
+  <defs>
+    <linearGradient id="metalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d0d0d0"/>
+      <stop offset="30%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#a0a0a0"/>
+      <stop offset="80%" stop-color="#e0e0e0"/>
+      <stop offset="100%" stop-color="#909090"/>
+    </linearGradient>
+    <linearGradient id="metalGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c0c0c0"/>
+      <stop offset="40%" stop-color="#f0f0f0"/>
+      <stop offset="60%" stop-color="#a0a0a0"/>
+      <stop offset="100%" stop-color="#d0d0d0"/>
+    </linearGradient>
+  </defs>
+</svg>
