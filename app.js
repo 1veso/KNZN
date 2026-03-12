@@ -424,13 +424,56 @@ async function handleCheckout() {
         document.getElementById('configurator').scrollIntoView({ behavior:'smooth' });
         return;
     }
+    openEmailModal();
+}
 
-    const btn = document.getElementById('checkoutBtn');
-    const btnText = document.getElementById('checkoutBtnText');
+/* ─── EMAIL MODAL ─── */
+function openEmailModal() {
+    const overlay = document.getElementById('emailModal');
+    const input = document.getElementById('emailInput');
+    const errEl = document.getElementById('emailError');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    if (errEl) errEl.textContent = '';
+    if (input) { input.classList.remove('error'); input.value = ''; input.focus(); }
+}
+
+function closeEmailModal() {
+    document.getElementById('emailModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function validateEmail(email) {
+    return /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email);
+}
+
+async function submitEmailAndCheckout() {
+    const input = document.getElementById('emailInput');
+    const errEl = document.getElementById('emailError');
+    const btn = document.getElementById('emailSubmitBtn');
+    const btnText = document.getElementById('emailSubmitText');
+    const email = (input.value || '').trim();
+
+    if (!email) {
+        input.classList.add('error');
+        errEl.textContent = 'Bitte geben Sie Ihre E-Mail-Adresse ein.';
+        input.focus();
+        return;
+    }
+    if (!validateEmail(email)) {
+        input.classList.add('error');
+        errEl.textContent = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
+        input.focus();
+        return;
+    }
+
+    input.classList.remove('error');
+    errEl.textContent = '';
     btn.disabled = true;
     btnText.textContent = 'Wird weitergeleitet...';
 
     try {
+        const ort = state.ort.trim(), b = state.buchstaben.trim(), z = state.ziffern.trim();
         const typeSuffix = state.plateType === 'e' ? 'E' : state.plateType === 'h' ? 'H' : state.plateType === 'saisonal' ? '04-10' : state.suffix;
         const res = await fetch('/create-checkout', {
             method: 'POST',
@@ -441,7 +484,8 @@ async function handleCheckout() {
                 material: state.material,
                 size: state.size,
                 addons: state.addons,
-                totalAmount: calcTotal()
+                totalAmount: calcTotal(),
+                email: email
             })
         });
         if (!res.ok) throw new Error('Checkout failed');
@@ -449,11 +493,39 @@ async function handleCheckout() {
         window.location.href = url;
     } catch (err) {
         console.error(err);
-        alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut oder kontaktieren Sie uns per WhatsApp.');
+        errEl.textContent = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
         btn.disabled = false;
-        btnText.textContent = 'Jetzt kostenpflichtig bestellen';
+        btnText.textContent = 'Weiter zur Zahlung';
     }
 }
+
+(function initEmailModal() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const closeBtn = document.getElementById('emailModalClose');
+        const overlay = document.getElementById('emailModal');
+        const submitBtn = document.getElementById('emailSubmitBtn');
+        const input = document.getElementById('emailInput');
+        const errEl = document.getElementById('emailError');
+
+        if (closeBtn) closeBtn.addEventListener('click', closeEmailModal);
+        if (overlay) overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) closeEmailModal();
+        });
+        if (submitBtn) submitBtn.addEventListener('click', submitEmailAndCheckout);
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') submitEmailAndCheckout();
+            });
+            input.addEventListener('input', function() {
+                input.classList.remove('error');
+                if (errEl) errEl.textContent = '';
+            });
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeEmailModal();
+        });
+    });
+})();
 
 /* social proof strip removed */
 

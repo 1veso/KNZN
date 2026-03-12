@@ -717,6 +717,23 @@
     <img src="/assets/images/logo-watermark.svg" alt="" />
 </div>
 
+<!-- ── Email Modal ── -->
+<div class="email-modal-overlay" id="emailModal">
+    <div class="email-modal">
+        <button class="email-modal-close" id="emailModalClose" aria-label="Schließen">&times;</button>
+        <div class="email-modal-icon">📧</div>
+        <div class="email-modal-title">Fast geschafft!</div>
+        <div class="email-modal-desc">Bitte geben Sie Ihre E-Mail-Adresse ein, damit wir Ihnen die Bestellbestätigung senden können.</div>
+        <input type="email" class="email-modal-input" id="emailInput" placeholder="ihre@email.de" autocomplete="email" />
+        <div class="email-modal-error" id="emailError"></div>
+        <button class="email-modal-submit" id="emailSubmitBtn">
+            <span id="emailSubmitText">Weiter zur Zahlung</span>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="email-modal-privacy">🔒 Ihre E-Mail wird nur für die Bestellbestätigung verwendet.</div>
+    </div>
+</div>
+
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>

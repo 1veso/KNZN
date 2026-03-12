@@ -12,7 +12,7 @@ export async function onRequestPost(context) {
     }
 
     const body = await request.json();
-    const { plateText, plateFormat, material, size, type, addons } = body;
+    const { plateText, plateFormat, material, size, type, addons, email } = body;
 
     // Input validation
     if (typeof plateText !== 'string' || plateText.length > 20) {
@@ -38,10 +38,19 @@ export async function onRequestPost(context) {
       });
     }
 
+    // Validate email
+    if (typeof email !== 'string' || !/^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email) || email.length > 254) {
+      return new Response(JSON.stringify({ error: 'Invalid email' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const origin = new URL(request.url).origin;
     const params = new URLSearchParams();
 
     params.set('mode', 'payment');
+    params.set('customer_email', email.trim());
     params.set('success_url', `${origin}/?success=1`);
     params.set('cancel_url', `${origin}/`);
 
