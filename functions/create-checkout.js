@@ -57,9 +57,13 @@ export async function onRequestPost(context) {
             : type === 'saisonal' ? 'Saisonal'
                 : 'Standard';
 
-    // Sanitize metadata values - strip HTML tags, entities, and limit length
-    const sanitize = (val, maxLen = 50) =>
-      String(val || '').replace(/<[^>]*>?/g, '').replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
+    // Sanitize metadata values - strip HTML tags, entities, and dangerous chars
+    const sanitize = (val, maxLen = 50) => {
+      let s = String(val || '');
+      let prev;
+      do { prev = s; s = s.replace(/<[^>]*>?/g, ''); } while (s !== prev);
+      return s.replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
+    };
 
     params.set(`line_items[${i}][price]`, kennzeichenPriceId);
     params.set(`line_items[${i}][quantity]`, '1');

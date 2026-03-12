@@ -32,8 +32,12 @@ export async function onRequestPost(context) {
             const meta = session.metadata || {};
 
             // Sanitize metadata before inserting into database
-            const sanitize = (val, maxLen = 255) =>
-                String(val || '').replace(/<[^>]*>?/g, '').replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
+            const sanitize = (val, maxLen = 255) => {
+                let s = String(val || '');
+                let prev;
+                do { prev = s; s = s.replace(/<[^>]*>?/g, ''); } while (s !== prev);
+                return s.replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
+            };
 
             // Save order to Supabase
             const supabaseRes = await fetch(`${env.SUPABASE_URL}/rest/v1/orders`, {
