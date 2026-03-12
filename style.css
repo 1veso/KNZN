@@ -159,6 +159,25 @@ input, button { font-family: inherit; }
 .btn-checkout:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .checkout-trust-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; font-size: 12px; color: var(--gray-400); }
 
+/* ── EMAIL MODAL ── */
+.email-modal-overlay { position: fixed; inset: 0; background: rgba(15,26,48,0.65); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease; }
+.email-modal-overlay.active { opacity: 1; visibility: visible; }
+.email-modal { position: relative; background: var(--white); border-radius: var(--radius-lg); padding: 36px 32px; max-width: 420px; width: 90%; box-shadow: 0 24px 80px rgba(0,0,0,0.3); transform: translateY(20px) scale(0.97); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); text-align: center; }
+.email-modal-overlay.active .email-modal { transform: translateY(0) scale(1); }
+.email-modal-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 22px; color: var(--gray-400); cursor: pointer; line-height: 1; padding: 4px; transition: color var(--t); }
+.email-modal-close:hover { color: var(--navy); }
+.email-modal-icon { font-size: 36px; margin-bottom: 12px; }
+.email-modal-title { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+.email-modal-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px; }
+.email-modal-input { width: 100%; padding: 14px 16px; border: 2px solid var(--gray-200); border-radius: var(--radius); font-size: 15px; color: var(--navy); outline: none; transition: border-color var(--t); font-family: inherit; }
+.email-modal-input:focus { border-color: var(--gold); }
+.email-modal-input.error { border-color: #e53e3e; }
+.email-modal-error { font-size: 12px; color: #e53e3e; margin-top: 6px; min-height: 18px; }
+.email-modal-submit { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: var(--gold); color: var(--navy); font-size: 16px; font-weight: 700; padding: 16px 24px; border-radius: var(--radius); border: none; cursor: pointer; transition: all var(--t); box-shadow: 0 4px 20px rgba(245,196,0,0.35); margin-top: 16px; }
+.email-modal-submit:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(245,196,0,0.45); }
+.email-modal-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.email-modal-privacy { font-size: 11px; color: var(--gray-400); margin-top: 14px; line-height: 1.5; }
+
 /* WARUM WIR — BENTO */
 .why-us { padding: 80px 24px; background: var(--navy); }
 .why-us .section-label { color: rgba(245,196,0,0.85); }
