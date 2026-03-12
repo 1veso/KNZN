@@ -99,128 +99,19 @@
             <div class="plate-type-label">Kennzeichentyp:</div>
             <div class="plate-type-scroll">
                 <button class="plate-type-btn active" onclick="setPlateType(this,'standard')" data-type="standard">
-                    <svg class="plate-type-svg" viewBox="0 0 200 52" width="140" height="37" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="52" rx="4" fill="white" stroke="#bbb" stroke-width="1.5"/>
-                        <rect x="1.5" y="1.5" width="27" height="49" rx="2.5" fill="#003399"/>
-                        <!-- EU stars (12 dots in ring) -->
-                        <circle cx="15.6" cy="11.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="22.5" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="15.6" cy="24.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="8.75" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <!-- D letter below stars -->
-                        <text x="15.6" y="41" font-size="10" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
-                        <!-- City code -->
-                        <text x="39" y="26" font-size="14" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">DN</text>
-                        <!-- Seal circles -->
-                        <circle cx="65" cy="21" r="5.3" fill="none" stroke="#555" stroke-width="1.1"/>
-                        <circle cx="65" cy="34" r="5.3" fill="none" stroke="#555" stroke-width="1.1"/>
-                        <!-- Letter/number -->
-                        <text x="74" y="26" font-size="14" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1</text>
-                    </svg>
+                    <img class="plate-type-img" src="assets/images/standard kennzeichen.png" alt="Standardkennzeichen">
                     <span>Standard</span>
                 </button>
                 <button class="plate-type-btn" onclick="setPlateType(this,'e')" data-type="e">
-                    <svg class="plate-type-svg" viewBox="0 0 200 52" width="140" height="37" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="52" rx="4" fill="white" stroke="#bbb" stroke-width="1.5"/>
-                        <rect x="1.5" y="1.5" width="27" height="49" rx="2.5" fill="#003399"/>
-                        <!-- EU stars (12 dots in ring) -->
-                        <circle cx="15.6" cy="11.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="22.5" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="15.6" cy="24.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="8.75" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <!-- D letter below stars -->
-                        <text x="15.6" y="41" font-size="10" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
-                        <!-- City code -->
-                        <text x="39" y="26" font-size="13" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">DN</text>
-                        <!-- Seal circles -->
-                        <circle cx="63" cy="21" r="5" fill="none" stroke="#555" stroke-width="1"/>
-                        <circle cx="63" cy="34" r="5" fill="none" stroke="#555" stroke-width="1"/>
-                        <!-- Letter/number -->
-                        <text x="71" y="26" font-size="13" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1</text>
-                        <line x1="139" y1="5" x2="139" y2="47" stroke="#aaa" stroke-width="1.2"/>
-                        <text x="170" y="26" font-size="23" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">E</text>
-                    </svg>
+                    <img class="plate-type-img" src="assets/images/Elektro Kennzeichen.png" alt="E-Kennzeichen">
                     <span>Elektro</span>
                 </button>
                 <button class="plate-type-btn" onclick="setPlateType(this,'h')" data-type="h">
-                    <svg class="plate-type-svg" viewBox="0 0 200 52" width="140" height="37" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="52" rx="4" fill="white" stroke="#bbb" stroke-width="1.5"/>
-                        <rect x="1.5" y="1.5" width="27" height="49" rx="2.5" fill="#003399"/>
-                        <!-- EU stars (12 dots in ring) -->
-                        <circle cx="15.6" cy="11.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="22.5" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="15.6" cy="24.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="8.75" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <!-- D letter below stars -->
-                        <text x="15.6" y="41" font-size="10" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
-                        <!-- City code -->
-                        <text x="39" y="26" font-size="13" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">DN</text>
-                        <!-- Seal circles -->
-                        <circle cx="63" cy="21" r="5" fill="none" stroke="#555" stroke-width="1"/>
-                        <circle cx="63" cy="34" r="5" fill="none" stroke="#555" stroke-width="1"/>
-                        <!-- Letter/number -->
-                        <text x="71" y="26" font-size="13" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1</text>
-                        <line x1="139" y1="5" x2="139" y2="47" stroke="#aaa" stroke-width="1.2"/>
-                        <text x="170" y="26" font-size="23" font-weight="bold" fill="black" text-anchor="middle" dominant-baseline="middle" font-family="Arial Black,Arial">H</text>
-                    </svg>
+                    <img class="plate-type-img" src="assets/images/Historische Kennzeichen.png" alt="H-Kennzeichen">
                     <span>Oldtimer</span>
                 </button>
                 <button class="plate-type-btn" onclick="setPlateType(this,'saisonal')" data-type="saisonal">
-                    <svg class="plate-type-svg" viewBox="0 0 200 52" width="140" height="37" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="200" height="52" rx="4" fill="white" stroke="#bbb" stroke-width="1.5"/>
-                        <rect x="1.5" y="1.5" width="27" height="49" rx="2.5" fill="#003399"/>
-                        <!-- EU stars (12 dots in ring) -->
-                        <circle cx="15.6" cy="11.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="22.5" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="21.6" cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="19.1" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="15.6" cy="24.2" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="23.4" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="21.0" r="1.1" fill="#FFD700"/>
-                        <circle cx="8.75" cy="17.7" r="1.1" fill="#FFD700"/>
-                        <circle cx="9.7"  cy="14.5" r="1.1" fill="#FFD700"/>
-                        <circle cx="12.2" cy="12.1" r="1.1" fill="#FFD700"/>
-                        <!-- D letter below stars -->
-                        <text x="15.6" y="41" font-size="10" font-weight="bold" fill="#FFD700" text-anchor="middle" dominant-baseline="middle">D</text>
-                        <!-- City code -->
-                        <text x="39" y="26" font-size="13" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">DN</text>
-                        <!-- Seal circles -->
-                        <circle cx="63" cy="21" r="5" fill="none" stroke="#555" stroke-width="1"/>
-                        <circle cx="63" cy="34" r="5" fill="none" stroke="#555" stroke-width="1"/>
-                        <!-- Letter/number -->
-                        <text x="71" y="26" font-size="13" font-weight="bold" fill="black" text-anchor="start" dominant-baseline="middle" font-family="Arial Black,Arial">AB 1</text>
-                        <!-- Seasonal month box on right -->
-                        <rect x="139" y="1.5" width="59.5" height="49" rx="2.5" fill="#003399"/>
-                        <text x="168.75" y="19" font-size="11" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">04</text>
-                        <line x1="141" y1="27" x2="197" y2="27" stroke="white" stroke-width="1"/>
-                        <text x="168.75" y="37" font-size="11" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">10</text>
-                    </svg>
+                    <img class="plate-type-img" src="assets/images/Saison Kennzeichen.png" alt="Saisonkennzeichen">
                     <span>Saisonal</span>
                 </button>
             </div>
