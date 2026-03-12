@@ -31,7 +31,7 @@ export async function onRequestPost(context) {
       });
     }
 
-    if (typeof addons !== 'object' || addons === null) {
+    if (typeof addons !== 'object' || addons === null || Array.isArray(addons)) {
       return new Response(JSON.stringify({ error: 'Invalid addons' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -57,9 +57,9 @@ export async function onRequestPost(context) {
             : type === 'saisonal' ? 'Saisonal'
                 : 'Standard';
 
-    // Sanitize metadata values - strip any HTML/script tags and limit length
+    // Sanitize metadata values - strip HTML tags, entities, and limit length
     const sanitize = (val, maxLen = 50) =>
-      String(val || '').replace(/<[^>]*>/g, '').slice(0, maxLen);
+      String(val || '').replace(/<[^>]*>?/g, '').replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
 
     params.set(`line_items[${i}][price]`, kennzeichenPriceId);
     params.set(`line_items[${i}][quantity]`, '1');

@@ -35,8 +35,8 @@ input, button { font-family: inherit; }
 .logo-mark-img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; }
 .logo-mark { width: 36px; height: 36px; background: var(--navy); color: var(--gold); font-size: 13px; font-weight: 700; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.04em; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
-.logo-primary { font-size: 15px; font-weight: 600; color: var(--navy); font-family: 'Oswald', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
-.logo-secondary { font-size: 10px; color: var(--gray-400); letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Oswald', sans-serif; }
+.logo-primary { font-size: 15px; font-weight: 600; color: var(--navy); font-family: 'Oswald', 'Arial Narrow', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+.logo-secondary { font-size: 10px; color: var(--gray-400); letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Oswald', 'Arial Narrow', sans-serif; }
 .nav-cta { background: var(--gold); color: var(--navy); font-size: 14px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius); transition: background var(--t), transform var(--t); }
 .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
 

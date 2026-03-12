@@ -33,7 +33,7 @@ export async function onRequestPost(context) {
 
             // Sanitize metadata before inserting into database
             const sanitize = (val, maxLen = 255) =>
-                String(val || '').replace(/<[^>]*>/g, '').slice(0, maxLen);
+                String(val || '').replace(/<[^>]*>?/g, '').replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
 
             // Save order to Supabase
             const supabaseRes = await fetch(`${env.SUPABASE_URL}/rest/v1/orders`, {
