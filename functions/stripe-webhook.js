@@ -5,6 +5,17 @@ export async function onRequestPost(context) {
     const { request, env } = context;
 
     try {
+        // Basic rate limiting using Cloudflare KV (if available)
+        const clientIP = request.headers.get('cf-connecting-ip') || 'unknown';
+        if (env.RATE_LIMIT_KV) {
+            const key = `webhook_rl:${clientIP}`;
+            const count = parseInt(await env.RATE_LIMIT_KV.get(key) || '0', 10);
+            if (count >= 30) {
+                return new Response('Rate limit exceeded', { status: 429 });
+            }
+            await env.RATE_LIMIT_KV.put(key, String(count + 1), { expirationTtl: 60 });
+        }
+
         const body = await request.text();
         const signature = request.headers.get('stripe-signature');
 
@@ -20,6 +31,14 @@ export async function onRequestPost(context) {
             const session = event.data.object;
             const meta = session.metadata || {};
 
+            // Sanitize metadata before inserting into database
+            const sanitize = (val, maxLen = 255) => {
+                let s = String(val || '');
+                let prev;
+                do { prev = s; s = s.replace(/<[^>]*>?/g, ''); } while (s !== prev);
+                return s.replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
+            };
+
             // Save order to Supabase
             const supabaseRes = await fetch(`${env.SUPABASE_URL}/rest/v1/orders`, {
                 method: 'POST',
@@ -30,13 +49,13 @@ export async function onRequestPost(context) {
                     'Prefer': 'return=minimal'
                 },
                 body: JSON.stringify({
-                    plate_text: meta.plateText || '',
-                    plate_format: meta.plateFormat || '',
-                    buyer_name: meta.buyerName || '',
-                    buyer_email: session.customer_email || '',
-                    buyer_phone: meta.buyerPhone || '',
-                    buyer_address: meta.buyerAddress || '',
-                    stripe_session_id: session.id,
+                    plate_text: sanitize(meta.plateText, 20),
+                    plate_format: sanitize(meta.plateFormat, 30),
+                    buyer_name: sanitize(meta.buyerName, 100),
+                    buyer_email: sanitize(session.customer_email, 254),
+                    buyer_phone: sanitize(meta.buyerPhone, 20),
+                    buyer_address: sanitize(meta.buyerAddress, 255),
+                    stripe_session_id: sanitize(session.id, 100),
                     payment_status: 'paid',
                     fulfilled: false
                 })
@@ -48,7 +67,7 @@ export async function onRequestPost(context) {
                 return new Response('DB error', { status: 500 });
             }
 
-            console.log('Order saved:', meta.plateText, session.customer_email);
+            console.log('Order saved:', sanitize(meta.plateText, 20));
         }
 
         return new Response('ok', { status: 200 });
@@ -74,6 +93,10 @@ async function verifyStripeSignature(payload, signature, secret) {
         const sig = parts['v1'];
         if (!timestamp || !sig) return false;
 
+        // Reject signatures older than 5 minutes to prevent replay attacks
+        const now = Math.floor(Date.now() / 1000);
+        if (Math.abs(now - parseInt(timestamp, 10)) > 300) return false;
+
         const signedPayload = `${timestamp}.${payload}`;
         const encoder = new TextEncoder();
         const keyData = encoder.encode(secret);
@@ -88,7 +111,13 @@ async function verifyStripeSignature(payload, signature, secret) {
             .map(b => b.toString(16).padStart(2, '0'))
             .join('');
 
-        return expectedSig === sig;
+        // Timing-safe comparison to prevent timing attacks
+        if (expectedSig.length !== sig.length) return false;
+        let mismatch = 0;
+        for (let i = 0; i < expectedSig.length; i++) {
+            mismatch |= expectedSig.charCodeAt(i) ^ sig.charCodeAt(i);
+        }
+        return mismatch === 0;
     } catch {
         return false;
     }

@@ -32,10 +32,11 @@ input, button { font-family: inherit; }
 .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--gray-200); box-shadow: 0 2px 12px rgba(26,39,68,0.07); }
 .nav-inner { max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark-img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; }
 .logo-mark { width: 36px; height: 36px; background: var(--navy); color: var(--gold); font-size: 13px; font-weight: 700; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; letter-spacing: 0.04em; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
-.logo-primary { font-size: 14px; font-weight: 700; color: var(--navy); }
-.logo-secondary { font-size: 10px; color: var(--gray-400); letter-spacing: 0.08em; text-transform: uppercase; }
+.logo-primary { font-size: 15px; font-weight: 600; color: var(--navy); font-family: 'Oswald', 'Arial Narrow', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+.logo-secondary { font-size: 10px; color: var(--gray-400); letter-spacing: 0.08em; text-transform: uppercase; font-family: 'Oswald', 'Arial Narrow', sans-serif; }
 .nav-cta { background: var(--gold); color: var(--navy); font-size: 14px; font-weight: 700; padding: 10px 22px; border-radius: var(--radius); transition: background var(--t), transform var(--t); }
 .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
 
@@ -184,7 +185,13 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 /* FAQ */
 .faq { padding: 80px 24px; background: var(--off-white); }
+.faq-inner { display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: start; }
+.faq-left { min-width: 0; }
 .faq-list { max-width: 720px; }
+.faq-cta { background: var(--navy); border-radius: var(--radius-lg); padding: 32px; min-width: 260px; max-width: 300px; }
+.faq-cta-title { font-size: 22px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+.faq-cta p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.6; margin: 0; }
+.faq-cta .btn-whatsapp { margin-top: 20px; }
 .faq-item { border-bottom: 1px solid var(--gray-200); padding: 20px 0; cursor: pointer; }
 .faq-q { display: flex; justify-content: space-between; align-items: center; font-size: 15px; font-weight: 600; color: var(--navy); gap: 16px; }
 .faq-toggle { width: 26px; height: 26px; min-width: 26px; border: 2px solid var(--gray-200); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--gray-400); transition: all var(--t); font-weight: 300; }
@@ -234,8 +241,15 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .whatsapp-float { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); box-shadow: 0 4px 20px rgba(37,211,102,0.4); z-index: 200; transition: transform var(--t), box-shadow var(--t); }
 .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 8px 28px rgba(37,211,102,0.5); }
 
+/* WATERMARK LOGO */
+.watermark-logo { position: fixed; bottom: 24px; left: 24px; width: 90px; height: 90px; opacity: 0.08; pointer-events: none; z-index: 0; }
+.watermark-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+/* SCROLL OFFSET for sticky nav + progress bar */
+#configurator { scroll-margin-top: 140px; }
+
 /* MOBILE STICKY BAR */
-.mobile-sticky { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: var(--white); border-top: 1px solid var(--gray-200); padding: 12px 20px; box-shadow: 0 -4px 20px rgba(26,39,68,0.12); align-items: center; justify-content: space-between; gap: 16px; }
+.mobile-sticky { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 999; background: var(--white); border-top: 1px solid var(--gray-200); padding: 12px 20px; box-shadow: 0 -4px 20px rgba(26,39,68,0.12); align-items: center; justify-content: space-between; gap: 16px; }
 .mobile-sticky-left { display: flex; flex-direction: column; }
 .mobile-sticky-label { font-size: 10px; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.08em; }
 .mobile-sticky-price { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1; }
@@ -287,6 +301,12 @@ a.bento-card:hover .bento-link { gap: 8px; }
     gap: 32px;
     align-items: stretch;
 }
+.contact-grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: stretch;
+}
 
 .contact-map {
     border-radius: var(--radius-lg);
@@ -314,6 +334,9 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 @media (max-width: 600px) {
     .contact-grid-three {
+        grid-template-columns: 1fr;
+    }
+    .contact-grid-two {
         grid-template-columns: 1fr;
     }
 }
@@ -445,6 +468,9 @@ a.bento-card:hover .bento-link { gap: 8px; }
     .bento-speed, .bento-price, .bento-service, .bento-stats { grid-column: auto; grid-row: auto; }
     .checkout-block { grid-template-columns: 1fr; gap: 28px; }
     .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .contact-grid-two { grid-template-columns: 1fr; gap: 32px; }
+    .faq-inner { grid-template-columns: 1fr; }
+    .faq-cta { max-width: 100%; }
     .addon-grid { grid-template-columns: 1fr; }
     .options-grid { grid-template-columns: 1fr; max-width: 400px; }
 }
@@ -469,19 +495,18 @@ a.bento-card:hover .bento-link { gap: 8px; }
 @keyframes tickerScroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
 /* ─── PLATE TYPE STRIP v2 ─── */
-.plate-type-strip { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.plate-type-strip { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
 .plate-type-label { font-size: 12px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; padding-top: 8px; }
-.plate-type-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; flex-wrap: wrap; }
-.plate-type-scroll::-webkit-scrollbar { height: 3px; }
-.plate-type-scroll::-webkit-scrollbar-thumb { background: var(--gray-400); border-radius: 2px; }
-.plate-type-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 10px; border: 2px solid var(--gray-200); border-radius: var(--radius); background: var(--white); cursor: pointer; transition: all var(--t); position: relative; min-width: 80px; }
+.plate-type-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; flex-wrap: nowrap; scrollbar-width: none; }
+.plate-type-scroll::-webkit-scrollbar { display: none; }
+.plate-type-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 12px; border: 1.5px solid var(--gray-200); border-radius: 12px; background: var(--white); cursor: pointer; transition: all var(--t); position: relative; min-width: 160px; overflow: visible; }
 .plate-type-btn:hover { border-color: var(--navy-light); transform: translateY(-2px); box-shadow: var(--shadow); }
-.plate-type-btn.active { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.12); }
-.plate-type-btn span:not(.plate-type-contact-badge) { font-size: 10px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
+.plate-type-btn.active { border: 2px solid var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.12); }
+.plate-type-btn span:not(.plate-type-contact-badge) { font-size: 13px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.3; }
 .plate-type-btn.active span:not(.plate-type-contact-badge) { color: var(--navy); }
 .plate-type-contact { opacity: 0.75; }
 .plate-type-contact-badge { position: absolute; top: -7px; right: -4px; background: var(--navy); color: var(--white); font-size: 9px; font-weight: 700; padding: 2px 5px; border-radius: 4px; letter-spacing: 0.04em; }
-.plate-type-svg { display: block; width: 140px; height: auto; }
+.plate-type-svg { display: block; width: 140px; height: 37px; }
 
 /* ─── CONTACT PROMPT ─── */
 .plate-type-contact-prompt { display: flex; align-items: center; gap: 14px; background: #f0f4ff; border: 1px solid #c7d3f5; border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 24px; flex-wrap: wrap; }
@@ -505,15 +530,16 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .ks-tag { width: 24px; height: 24px; min-width: 24px; background: var(--navy); color: var(--gold); font-size: 12px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
 .ks-label strong { font-size: 13px; color: var(--navy); display: block; margin-bottom: 2px; }
 .ks-label p { font-size: 12px; color: var(--text-muted); margin: 0; line-height: 1.5; }
-.kennt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-.kennt-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: all var(--t); }
+.kennt-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.kennt-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); transition: all var(--t); display: flex; flex-direction: column; }
 .kennt-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-.kennt-card-plate { background: var(--gray-100); padding: 16px; display: flex; align-items: center; justify-content: center; }
+.kennt-card-plate { background: var(--gray-100); padding: 14px 10px; display: flex; align-items: center; justify-content: center; min-height: 70px; }
 .kennt-card-plate svg { display: block; max-width: 100%; }
-.kennt-card-body { padding: 16px; }
+.kennt-card-plate img { display: block; max-width: 100%; height: 50px; object-fit: contain; }
+.kennt-card-body { padding: 14px 16px 18px; flex: 1; }
 .kennt-card-tag { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 8px; }
-.kennt-card-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-.kennt-card-body p { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin: 0; }
+.kennt-card-body h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px; letter-spacing: 0.01em; line-height: 1.3; }
+.kennt-card-body p { font-size: 12px; color: var(--text-muted); line-height: 1.65; margin: 0; letter-spacing: 0.01em; }
 
 @media (max-width: 960px) {
     .kennt-grid { grid-template-columns: repeat(2, 1fr); }
@@ -522,4 +548,333 @@ a.bento-card:hover .bento-link { gap: 8px; }
 @media (max-width: 600px) {
     .kennt-grid { grid-template-columns: 1fr; }
     .plate-type-scroll { flex-wrap: nowrap; }
+}
+
+/* ── Unser Service ──────────────────────────────── */
+.service {
+    padding: 80px 0;
+    background: var(--navy-dark);
+}
+
+.service .section-title {
+    color: var(--white);
+}
+
+.service .section-label {
+    color: var(--gold);
+    border-color: rgba(245,196,0,0.3);
+}
+
+.service .section-intro {
+    color: var(--gray-400);
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 48px;
+}
+
+.service-card {
+    background: var(--navy-light);
+    border: 1.5px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    transition: border-color var(--t), transform var(--t);
+}
+
+.service-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+}
+
+.service-card-highlight {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, var(--navy-light) 0%, rgba(245,196,0,0.06) 100%);
+}
+
+.service-highlight-badge {
+    position: absolute;
+    top: -12px;
+    left: 24px;
+    background: var(--gold);
+    color: var(--navy-dark);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 3px 12px;
+    border-radius: 20px;
+}
+
+.service-icon-wrap {
+    width: 52px;
+    height: 52px;
+    background: rgba(245,196,0,0.1);
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+
+.service-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    margin: 0;
+}
+
+.service-card-desc {
+    font-size: 14px;
+    color: var(--gray-400);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.service-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.service-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gold);
+    background: rgba(245,196,0,0.1);
+    border: 1px solid rgba(245,196,0,0.2);
+    border-radius: 20px;
+    padding: 4px 14px;
+}
+
+.service-checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.service-checklist li {
+    font-size: 14px;
+    color: var(--gray-200);
+    padding-left: 24px;
+    position: relative;
+    line-height: 1.5;
+}
+
+.service-checklist li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: 700;
+}
+
+.service-pricing {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: rgba(0,0,0,0.2);
+    border-radius: var(--radius);
+    padding: 16px;
+}
+
+.service-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.service-price-label {
+    font-size: 14px;
+    color: var(--gray-200);
+}
+
+.service-price-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.service-price-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+}
+
+.service-price-note {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin: 0;
+}
+
+.service-hours {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.service-hours-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: var(--gray-200);
+}
+
+.service-hours-time {
+    font-weight: 600;
+    color: var(--white);
+}
+
+.service-hours-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(245,196,0,0.1);
+    border: 1px solid rgba(245,196,0,0.2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gold);
+    align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE — 768px (tablet / large mobile)
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+    /* ── General ── */
+    .container { padding: 0 16px; }
+
+    /* ── Nav ── */
+    .nav-inner { padding: 0 16px; }
+    .logo-primary { font-size: 13px; }
+    .nav-cta { padding: 9px 16px; font-size: 13px; min-height: 44px; display: inline-flex; align-items: center; }
+
+    /* ── Hero ── */
+    .hero { padding: 88px 0 56px; }
+    .hero-title { font-size: 32px; }
+    .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; flex-wrap: unset; }
+    .stat-divider { display: none; }
+    .hero-btn { width: 100%; justify-content: center; }
+
+    /* ── Anchor ticker ── */
+    .anchor-ticker-item { font-size: 13px; padding: 10px 20px; }
+
+    /* ── Progress bar ── */
+    .progress-bar { padding: 12px 16px; }
+
+    /* ── Configurator ── */
+    .configurator { padding: 60px 0; }
+    .plate-preview-wrap canvas { width: 100%; }
+    .options-grid { grid-template-columns: 1fr; max-width: 100%; }
+    .input-group input { font-size: 16px; }
+
+    /* ── Add-ons ── */
+    .addons { padding: 60px 0; }
+    .addon-price-tag { align-self: center; }
+    .checkout-block { padding: 20px 16px; gap: 20px; }
+    .btn-checkout { width: 100%; }
+
+    /* ── Bento (Warum wir) ── */
+    .why-us { padding: 60px 0; }
+    .bento-grid { grid-template-columns: 1fr; }
+    .bento-din,
+    .bento-speed,
+    .bento-price,
+    .bento-service,
+    .bento-stats { grid-column: 1; grid-row: auto; }
+    .bento-big { font-size: 48px; }
+
+    /* ── Wissen (Kennt-edu) ── */
+    .kennt-edu { padding: 60px 0; }
+    .kennt-structure-plate svg { width: 100%; height: auto; }
+
+    /* ── Service ── */
+    .service { padding: 60px 0; }
+
+    /* ── Downloads ── */
+    .downloads { padding: 60px 0; }
+
+    /* ── FAQ ── */
+    .faq { padding: 60px 0; }
+
+    /* ── Contact ── */
+    .contact { padding: 60px 0; }
+    .contact-grid-three { grid-template-columns: 1fr; }
+    .contact-map { grid-column: 1; min-height: unset; }
+    .contact-map iframe { height: 220px; min-height: unset; }
+
+    /* ── Footer ── */
+    .footer-inner { flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+    .footer-links { justify-content: center; flex-wrap: wrap; }
+
+    /* ── Minimum tap targets (44 × 44 px) ── */
+    .btn-primary,
+    .btn-checkout,
+    .btn-download,
+    .btn-whatsapp,
+    .mobile-sticky-btn { min-height: 44px; }
+    .faq-item { padding: 16px 0; }
+    .faq-toggle { min-width: 44px; min-height: 44px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE — 480px (small mobile / iPhone SE)
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+
+    /* ── Hide hero visual canvas ── */
+    .hero-visual { display: none; }
+
+    /* ── Progress bar: show step numbers only ── */
+    .step-label { display: none; }
+    .progress-bar { padding: 10px 16px; }
+    .progress-inner { gap: 0; }
+
+    /* ── iOS: prevent auto-zoom on input focus (min 16px) ── */
+    .input-group input,
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select,
+    textarea { font-size: 16px; }
+
+    /* ── Mobile sticky sits above browser chrome ── */
+    .whatsapp-float { bottom: 84px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   TOUCH: remove sticky translateY hover states
+   ═══════════════════════════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+    .nav-cta:hover { transform: none; }
+    .btn-primary:hover { transform: none; box-shadow: 0 4px 16px rgba(26,39,68,0.2); }
+    .btn-checkout:hover { transform: none; box-shadow: 0 4px 20px rgba(245,196,0,0.35); }
+    .btn-download:hover { transform: none; }
+    .btn-whatsapp:hover { transform: none; }
+    .bento-card:hover { transform: none; }
+    .addon-card:hover { transform: none; }
+    .service-card:hover { transform: none; }
+    .kennt-card:hover { transform: none; }
+    .download-card:hover { transform: none; }
+    .plate-type-btn:hover { transform: none; box-shadow: var(--shadow); }
 }
