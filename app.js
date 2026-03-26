@@ -592,113 +592,137 @@ document.addEventListener('DOMContentLoaded', () => {
     typewriterPlate();
 });
 
-/**
- * ----------------------------------------------------
- * HERO SCROLL ANIMATION (GSAP Canvas)
- * ----------------------------------------------------
- */
+/* ─── SCROLL ANIMATION — Scene 1 (Hero) + Scene 2 (Configurator entry) ─── */
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Check if GSAP loaded
-    if (typeof gsap === 'undefined') {
-        console.error("GSAP not found! Check your HTML script tags.");
+    if (typeof gsap === "undefined") {
+        console.error("GSAP not loaded — check script tags in index.html");
         return;
     }
-    
     gsap.registerPlugin(ScrollTrigger);
 
-    const canvas = document.getElementById("scroll-canvas");
-    if (!canvas) return;
-    
-    const context = canvas.getContext("2d");
-    const loader = document.getElementById("canvas-loader");
+    // ── VERIFY THESE match your actual folder frame counts ──────────────────
+    // Count the files in public/images/section1/ and section2/ and set here.
+   const S1_TOTAL = 300;  // Section 1: files 1.jpg → 300.jpg
+   const S2_TOTAL = 300;  // Section 2: files 301.jpg → 600.jpg (offset by +300)
+    // ────────────────────────────────────────────────────────────────────────
 
-    canvas.width = 1920;
-    canvas.height = 1080;
+    const s1src = i => `public/images/section1/${i}.jpg`;
+    const s2src = i => `public/images/section2/${i + 300}.jpg`;
 
-    const frameCount = 600;
-    const images = [];
-    const airbnb = { frame: 1 };
-    
-    // ⚠️ CRITICAL: The Path. Depending on the server, it's either /public/images/ or just /images/
-    // Try '/public/images/' first. If you still get a black screen, change it to '/images/'
-    const currentFrame = index => `public/images/${index}.jpg`; 
+    const heroCanvas   = document.getElementById("scroll-canvas");
+    const configCanvas = document.getElementById("config-canvas");
+    const staticImg    = document.getElementById("hero-static-img");
+    const loader       = document.getElementById("canvas-loader");
 
-    // Load Frame 1 immediately so the hero section looks good instantly
-    const firstFrame = new Image();
-    firstFrame.src = currentFrame(1);
-    firstFrame.onload = () => {
-        // As soon as frame 1 loads, hide loader, show canvas, draw frame
-        if (loader) loader.style.opacity = '0'; 
-        canvas.style.opacity = '1';
-        context.drawImage(firstFrame, 0, 0, canvas.width, canvas.height);
-        images[1] = firstFrame;
-        
-        // Start loading the rest in the background
-        loadRestOfImages();
-        
-        // Initialize the scroll trigger
-        initAnimation();
-    };
+    if (!heroCanvas || !configCanvas) {
+        console.warn("Animation canvases not found in DOM");
+        return;
+    }
 
-    // If frame 1 fails to load, it will log an error so we know the path is wrong
-    firstFrame.onerror = () => {
-        console.error(`🚨 Image Path Error: Could not find ${firstFrame.src}. Check your folder structure!`);
-        if (loader) loader.innerText = "Error loading animation (Check Console F12)";
-    };
+    const hCtx = heroCanvas.getContext("2d");
+    const cCtx = configCanvas.getContext("2d");
 
-    function loadRestOfImages() {
-        for (let i = 2; i <= frameCount; i++) {
+    // Native resolution — must match your exported frame dimensions
+    heroCanvas.width   = configCanvas.width  = 1920;
+    heroCanvas.height  = configCanvas.height = 1080;
+
+    const s1 = []; // frame bank — scene 1
+    const s2 = []; // frame bank — scene 2
+
+    function preload(bank, srcFn, total, onFirstLoaded) {
+        for (let i = 1; i <= total; i++) {
             const img = new Image();
-            img.src = currentFrame(i);
-            images[i] = img;
+            img.src = srcFn(i);
+            bank[i] = img;
+            if (i === 1 && onFirstLoaded) img.onload = onFirstLoaded;
         }
     }
 
-    function initAnimation() {
-        // 1. Define your chapters based on your frame counts
-        const chapters = [
-            { endFrame: 300,  trigger: "#hero-section" },       // Hero
-            { endFrame: 600,  trigger: "#plate-generator" },   // Plate Preview
-        ];
-    
-        // 2. Create a master timeline
-        const tl = gsap.timeline({
+    // Cover-style draw: fills canvas without distortion
+    function paint(ctx, bank, rawFrame) {
+        const f   = Math.max(1, Math.min(Math.round(rawFrame), bank.length - 1));
+        const img = bank[f];
+        if (!img || !img.complete || !img.naturalWidth) return;
+        const cW = ctx.canvas.width,  cH = ctx.canvas.height;
+        const iW = img.naturalWidth,  iH = img.naturalHeight;
+        const scale = Math.max(cW / iW, cH / iH);
+        const x = (cW - iW * scale) / 2;
+        const y = (cH - iH * scale) / 2;
+        ctx.drawImage(img, x, y, iW * scale, iH * scale);
+    }
+
+    function initTriggers() {
+        const heroEl   = document.getElementById("hero-section");
+        const configEl = document.getElementById("configurator");
+
+        // ── Scene 1: plays while hero section is in viewport ─────────────────
+        const p1 = { f: 1 };
+        gsap.to(p1, {
+            f: S1_TOTAL,
+            ease: "none",
             scrollTrigger: {
-                trigger: "body", // High-level trigger
+                trigger: heroEl,
                 start: "top top",
-                end: "bottom bottom",
-                scrub: 1, 
-                pin: "#canvas-container",
-                pinSpacing: false
-            }
-        });
-    
-        // 3. Professional Sequencing
-        // Instead of one big jump, we move the 'frame' variable in stages
-        chapters.forEach((chapter, index) => {
-            const startFrame = index === 0 ? 1 : chapters[index - 1].endFrame;
-            
-            tl.to(airbnb, {
-                frame: chapter.endFrame,
-                snap: "frame",
-                ease: "none",
-                // This ensures this chunk of frames plays while the specific section is on screen
-                scrollTrigger: {
-                    trigger: chapter.trigger,
-                    start: "top bottom", // Starts when section enters view
-                    end: "bottom top",   // Ends when section leaves view
-                    scrub: true
+                end:   "bottom top",
+                scrub: 0.6,
+                onEnter() {
+                    heroCanvas.style.opacity = "1";
+                    if (staticImg) staticImg.style.opacity = "0";
+                    if (loader)    loader.style.opacity    = "0";
                 },
-                onUpdate: render
-            });
+                onLeaveBack() {
+                    heroCanvas.style.opacity = "0";
+                    if (staticImg) staticImg.style.opacity = "1";
+                }
+            },
+            onUpdate() { paint(hCtx, s1, p1.f); }
+        });
+
+        // ── Scene 2: plays as configurator scrolls into view ──────────────────
+        // start="top 90%" → begin when configurator top is 90% down the viewport
+        // end="top 15%"   → finish when it's nearly at the top = last frame aligns
+        //                    with the plate preview box position
+        const p2 = { f: 1 };
+        gsap.to(p2, {
+            f: S2_TOTAL,
+            ease: "none",
+            scrollTrigger: {
+                trigger: configEl,
+                start: "top 90%",
+                end:   "top 15%",
+                scrub: 0.6,
+                onEnter()     {
+                    configCanvas.style.opacity = "1";
+                    configEl.classList.add("scene2-active");
+                },
+                onLeave()     {
+                    configCanvas.style.opacity = "0";
+                    configEl.classList.remove("scene2-active");
+                },
+                onEnterBack() {
+                    configCanvas.style.opacity = "1";
+                    configEl.classList.add("scene2-active");
+                },
+                onLeaveBack() {
+                    configCanvas.style.opacity = "0";
+                    configEl.classList.remove("scene2-active");
+                }
+            },
+            onUpdate() { paint(cCtx, s2, p2.f); }
         });
     }
 
-    function render() {
-        // Only draw if the image exists and has finished downloading
-        if(images[airbnb.frame] && images[airbnb.frame].complete) {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(images[airbnb.frame], 0, 0, canvas.width, canvas.height);
-        }
+    // Load scene 1 frame 1 first — then kick everything off
+    preload(s1, s1src, S1_TOTAL, () => {
+        paint(hCtx, s1, 1);               // pre-draw frame 1 (canvas still hidden)
+        preload(s2, s2src, S2_TOTAL, null); // background-load scene 2
+        initTriggers();
+        if (loader) loader.style.opacity = "0";
+    });
+
+    // Path sanity check
+    if (s1[1]) {
+        s1[1].onerror = () =>
+            console.error(`Frame not found: ${s1src(1)}\nVerify folder: public/images/section1/`);
     }
 });
