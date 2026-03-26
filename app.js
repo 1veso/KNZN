@@ -660,19 +660,15 @@ document.addEventListener("DOMContentLoaded", () => {
             snap: "frame",
             ease: "none",
             scrollTrigger: {
-                // 1. Trigger on the main container that holds ALL your sections
-                trigger: "main", // or "#main-content" if you have a wrapper div
+                // Use 'body' because every website has one!
+                trigger: "body", 
                 start: "top top",
-                
-                // 2. 'bottom bottom' means it won't finish until you hit the footer
+                // 'bottom bottom' means the animation ends at the very last pixel of the footer
                 end: "bottom bottom", 
-                
                 scrub: 0.5,
-                
-                // 3. Pin the CANVAS container, not the whole section
-                // This keeps the hydraulic press visible while other text scrolls over it
+                // Keep the canvas container stuck to the screen
                 pin: "#canvas-container", 
-                pinSpacing: false // Important: lets other sections overlap/scroll
+                pinSpacing: false 
             },
             onUpdate: render
         });
