@@ -41,7 +41,6 @@ input, button { font-family: inherit; }
 .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
 
 /* HERO */
-.hero { padding: 110px 24px 80px; background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 55%, var(--navy-light) 100%); position: relative; overflow: hidden; }
 .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 75% 40%, rgba(245,196,0,0.09) 0%, transparent 60%); pointer-events: none; }
 .hero-container { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; position: relative; z-index: 1; }
 .hero-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--gold); background: rgba(245,196,0,0.1); border: 1px solid rgba(245,196,0,0.25); padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
@@ -66,7 +65,6 @@ input, button { font-family: inherit; }
 .hf-item { font-size: 13px; color: rgba(255,255,255,0.65); display: flex; align-items: center; gap: 5px; }
 .hf-icon { color: var(--gold); font-weight: 700; }
 
-/* SOCIAL PROOF STRIP — removed */ to{transform:translateX(-50%)} }
 
 /* ANCHOR BANNER */
 .anchor-banner { background: var(--gold); color: var(--navy); padding: 12px 24px; text-align: center; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font-weight: 500; }
@@ -97,7 +95,6 @@ input, button { font-family: inherit; }
 .section-title.light { color: var(--white); }
 
 /* CONFIGURATOR */
-.configurator { padding: 80px 24px; background: var(--off-white); }
 .plate-preview-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 40px; }
 .plate-preview-wrap canvas { max-width: 100%; border-radius: 8px; box-shadow: 0 8px 32px rgba(26,39,68,0.18), 0 2px 8px rgba(26,39,68,0.10); background: #fff; }
 .plate-validation { font-size: 13px; font-weight: 500; min-height: 20px; }
@@ -274,19 +271,6 @@ a.bento-card:hover .bento-link { gap: 8px; }
 .mobile-sticky-price { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1; }
 .mobile-sticky-btn { background: var(--gold); color: var(--navy); font-size: 15px; font-weight: 700; padding: 13px 24px; border-radius: var(--radius); border: none; cursor: pointer; transition: all var(--t); flex-shrink: 0; }
 .mobile-sticky-btn:hover { background: var(--gold-light); }
-
-/* ─── HERO PHOTO BACKGROUND ─── */
-.hero { position: relative; }
-.hero-bg { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
-.hero-bg-img { width: 100%; height: 100%; object-fit: cover; object-position: 60% 52%; filter: brightness(0.32) saturate(0.65); }
-.hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,20,40,0.75) 0%, rgba(26,39,68,0.55) 60%, rgba(36,53,96,0.45) 100%); }
-.hero-container { position: relative; z-index: 1; }
-
-/* ─── CONFIGURATOR WATERMARK ─── */
-.configurator { position: relative; overflow: hidden; }
-.configurator-watermark { position: absolute; right: -60px; top: 50%; transform: translateY(-50%) rotate(-8deg); width: 420px; opacity: 0.04; pointer-events: none; z-index: 0; }
-.configurator-watermark img { width: 100%; height: auto; }
-.configurator .container { position: relative; z-index: 1; }
 
 /* ─── PLATE TYPE STRIP ─── */
 .plate-type-strip { display: flex; align-items: center; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
@@ -898,12 +882,269 @@ a.bento-card:hover .bento-link { gap: 8px; }
     .plate-type-btn:hover { transform: none; box-shadow: var(--shadow); }
 }
 
+/* ══════════════════════════════════════════════
+   CINEMATIC SCROLL ANIMATION
+   ══════════════════════════════════════════════ */
+
+/* Fixed canvas — lives behind everything */
 #scroll-canvas {
-    z-index: 99 !important;
-    display: block !important;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    display: block;
+    object-fit: cover;
 }
 
-.hero-bg-img {
-    z-index: -1 !important;
+/* Static Audi image — fades out as canvas takes over */
+#hero-static-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.32) saturate(0.65);
+    z-index: 2;
+    transition: none;
 }
 
+#canvas-loader {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    color: rgba(255,255,255,0.4);
+    font-size: 11px;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+/* ── Hero section: tall enough to play all 600 frames ── */
+.hero {
+    min-height: 300vh;
+    position: relative;
+    background: transparent;
+    padding: 0;
+}
+
+.hero-inner {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 2;
+    background: transparent;
+}
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: #050810;
+}
+
+.hero-container {
+    position: relative;
+    z-index: 3;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    padding-top: 80px;
+}
+
+.hero-scroll-spacer {
+    height: 200vh;
+}
+
+/* ── Hero mini-bar ── */
+#hero-mini-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(10, 18, 40, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid rgba(245,196,0,0.2);
+    opacity: 0;
+    transform: translateY(40px);
+    pointer-events: none;
+    transition: pointer-events 0s;
+}
+
+#hero-mini-bar.visible { pointer-events: auto; }
+
+.hero-mini-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.hero-mini-badge {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold);
+}
+
+.hero-mini-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+}
+
+.hero-mini-cta {
+    background: var(--gold);
+    color: var(--navy);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: var(--radius);
+    transition: background var(--t), transform var(--t);
+    white-space: nowrap;
+}
+
+.hero-mini-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+}
+
+/* ── Configurator ── */
+.configurator {
+    position: relative;
+    z-index: 3;
+    background: transparent;
+    padding: 0;
+}
+
+.config-bridge {
+    height: 55vh;
+    position: relative;
+    background: transparent;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding-right: 7%;
+    padding-bottom: 48px;
+}
+
+.config-plate-float {
+    background: rgba(255, 255, 255, 0.11);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 18px;
+    padding: 22px 28px 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+    opacity: 0;
+    max-width: 580px;
+    width: 100%;
+}
+
+.config-plate-float canvas {
+    display: block;
+    width: 100%;
+    border-radius: 6px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+}
+
+.config-plate-hint {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    margin-top: 8px;
+    text-align: right;
+    letter-spacing: 0.04em;
+}
+
+.plate-validation {
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 18px;
+    margin-top: 6px;
+    color: rgba(255,255,255,0.7);
+}
+
+.plate-validation.valid  { color: #4ade80; }
+.plate-validation.invalid { color: #f87171; }
+
+.config-body {
+    position: relative;
+    z-index: 2;
+    background: var(--off-white);
+    padding: 72px 24px 80px;
+    overflow: hidden;
+}
+
+.configurator-watermark {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-8deg);
+    width: 420px;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.config-body .container,
+.config-body .options-grid { position: relative; z-index: 1; }
+
+.config-body .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Sections below configurator sit above canvas */
+.addons, .service, .why-us, .kennt-edu,
+.downloads, .faq, .contact, .footer {
+    position: relative;
+    z-index: 3;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+    .config-bridge {
+        height: 40vh;
+        justify-content: center;
+        padding-right: 0;
+        padding-left: 0;
+        padding-bottom: 24px;
+    }
+
+    .config-plate-float {
+        width: calc(100% - 32px);
+        padding: 16px 16px 12px;
+    }
+
+    #hero-mini-bar {
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+
+    .hero-mini-cta {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        display: flex;
+    }
+
+    .hero-container {
+        grid-template-columns: 1fr;
+        padding-top: 100px;
+        align-items: flex-start;
+    }
+}
