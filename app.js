@@ -615,13 +615,13 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.width = 1920;
     canvas.height = 1080;
 
-    const frameCount = 1191;
+    const frameCount = 600;
     const images = [];
     const airbnb = { frame: 1 };
     
     // ⚠️ CRITICAL: The Path. Depending on the server, it's either /public/images/ or just /images/
     // Try '/public/images/' first. If you still get a black screen, change it to '/images/'
-    const currentFrame = index => `public/images/${index}..jpg`; 
+    const currentFrame = index => `public/images/${index}.jpg`; 
 
     // Load Frame 1 immediately so the hero section looks good instantly
     const firstFrame = new Image();
@@ -659,8 +659,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const chapters = [
             { endFrame: 300,  trigger: "#hero-section" },       // Hero
             { endFrame: 600,  trigger: "#plate-generator" },   // Plate Preview
-            { endFrame: 900,  trigger: "#checkout-section" },   // Checkout
-            { endFrame: 1191, trigger: "#user-services" }      // Services
         ];
     
         // 2. Create a master timeline
