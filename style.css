@@ -1027,14 +1027,14 @@ a.bento-card:hover .bento-link { gap: 8px; }
 }
 
 .config-bridge {
-    height: 55vh;
+    height: 70vh;
     position: relative;
     background: transparent;
     display: flex;
     align-items: flex-end;
-    justify-content: flex-end;
-    padding-right: 7%;
-    padding-bottom: 48px;
+    justify-content: center;
+    padding-right: 0;
+    padding-bottom: 0;
 }
 
 .config-plate-float {

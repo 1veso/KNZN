@@ -644,10 +644,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const heroSection  = document.getElementById("hero-section");
         const configBridge = document.querySelector(".config-bridge");
         const configBody   = document.querySelector(".config-body");
-        const anchorBanner  = document.querySelector(".anchor-banner");
-        const checkoutBlock = document.querySelector(".checkout-block");
-        if (anchorBanner && checkoutBlock) { ScrollTrigger.create({ trigger: checkoutBlock, start: "top bottom", onEnter() { anchorBanner.classList.add("hidden"); }, onLeaveBack() { anchorBanner.classList.remove("hidden"); } }); }
-
+    /* ── Anchor banner: fixed to bottom, hides at checkout ── */
+        const anchorBanner = document.querySelector('.anchor-banner');
+        const checkoutBlock = document.querySelector('.checkout-block');
+        if (anchorBanner && checkoutBlock) {
+            ScrollTrigger.create({
+                trigger: checkoutBlock,
+                start: "top bottom",
+                end: "bottom bottom",
+                onEnter()     { anchorBanner.classList.add('hidden'); },
+                onLeaveBack() { anchorBanner.classList.remove('hidden'); }
+            });
+        }
         /* ── 1. Static image crossfades to canvas as soon as scroll starts ── */
         gsap.to({ v: 0 }, {
             v: 1,
@@ -793,6 +801,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* Boot: load scene 1 frame 1, then start everything */
+    // Fade scroll indicator when user starts scrolling
+    const scrollInd = document.getElementById("scrollIndicator");
+    if (scrollInd) {
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 50) scrollInd.style.opacity = "0";
+            else scrollInd.style.opacity = "1";
+        }, { passive: true });
+    }
+
     preloadS1(() => {
         paint(s1, 1, S1_TOTAL);
         preloadS2();
