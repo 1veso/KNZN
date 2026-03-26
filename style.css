@@ -897,3 +897,13 @@ a.bento-card:hover .bento-link { gap: 8px; }
     .download-card:hover { transform: none; }
     .plate-type-btn:hover { transform: none; box-shadow: var(--shadow); }
 }
+
+#scroll-canvas {
+    z-index: 99 !important;
+    display: block !important;
+}
+
+.hero-bg-img {
+    z-index: -1 !important;
+}
+
