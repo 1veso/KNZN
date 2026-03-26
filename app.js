@@ -621,7 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // ⚠️ CRITICAL: The Path. Depending on the server, it's either /public/images/ or just /images/
     // Try '/public/images/' first. If you still get a black screen, change it to '/images/'
-    const currentFrame = index => `images/${index}.jpg`; 
+    const currentFrame = index => `./images/${index}.jpg`; 
 
     // Load Frame 1 immediately so the hero section looks good instantly
     const firstFrame = new Image();
