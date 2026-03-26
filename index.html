@@ -27,12 +27,13 @@
 <section class="hero" id="hero-section">
     <div class="hero-inner">
 
-        <!-- Static Audi bg — fades out when animation begins -->
         <div class="hero-bg">
             <img src="/assets/images/hero-audi.jpg" alt="" class="hero-bg-img" id="hero-static-img" />
         </div>
 
-        <!-- Full hero content — fades to mini-bar during scroll -->
+        <canvas id="scroll-canvas"></canvas>
+        <div id="canvas-loader">Animation wird geladen...</div>
+
         <div class="container hero-container" id="hero-content-wrap">
             <div class="hero-content">
                 <div class="hero-badge"><span class="badge-dot"></span>Ihr Zulassungspartner in Düren &amp; Umgebung</div>
@@ -65,7 +66,6 @@
             </div>
         </div>
 
-        <!-- Mini-bar: hidden initially, slides up during animation scroll -->
         <div id="hero-mini-bar">
             <div class="hero-mini-left">
                 <span class="hero-mini-badge">🏆 Komplettpaket nur €30</span>
@@ -74,10 +74,8 @@
             <a href="#configurator" class="hero-mini-cta">Jetzt bestellen →</a>
         </div>
 
-        <div id="canvas-loader">Animation wird geladen...</div>
     </div>
 
-    <!-- Invisible spacer: gives scroll room while hero-inner is pinned -->
     <div class="hero-scroll-spacer"></div>
 </section>
 
