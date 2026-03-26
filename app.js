@@ -660,11 +660,19 @@ document.addEventListener("DOMContentLoaded", () => {
             snap: "frame",
             ease: "none",
             scrollTrigger: {
-                trigger: "#hero-section",
+                // 1. Trigger on the main container that holds ALL your sections
+                trigger: "main", // or "#main-content" if you have a wrapper div
                 start: "top top",
-                end: "+=400%", // Scroll distance
+                
+                // 2. 'bottom bottom' means it won't finish until you hit the footer
+                end: "bottom bottom", 
+                
                 scrub: 0.5,
-                pin: true
+                
+                // 3. Pin the CANVAS container, not the whole section
+                // This keeps the hydraulic press visible while other text scrolls over it
+                pin: "#canvas-container", 
+                pinSpacing: false // Important: lets other sections overlap/scroll
             },
             onUpdate: render
         });
