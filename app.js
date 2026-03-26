@@ -589,8 +589,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!canvas) { console.warn("scroll-canvas not found"); return; }
 
     const ctx = canvas.getContext("2d");
-    canvas.width  = 1920;
-    canvas.height = 1080;
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    });
 
     const s1 = [];
     const s2 = [];
@@ -666,8 +671,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 ease: "none",
                 scrollTrigger: {
                     trigger: heroSection,
-                    start: "top top+=200",
-                    end:   "top top+=600",
+                    start: "top top+=600",
+                    end:   "top top+=1200",
                     scrub: true,
                 }
             });
@@ -683,8 +688,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     ease: "none",
                     scrollTrigger: {
                         trigger: heroSection,
-                        start: "top top+=450",
-                        end:   "top top+=750",
+                        start: "top top+=900",
+                        end:   "top top+=1200",
                         scrub: true,
                         onUpdate(self) {
                             if (miniBar) miniBar.style.pointerEvents = self.progress > 0.5 ? 'auto' : 'none';
@@ -722,7 +727,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 trigger: heroSection,
                 start: "50% bottom",
                 end:   "bottom bottom",
-                scrub: 0.3,
+                scrub: 1.8,
                 onEnter()     { usingScene2 = true; },
                 onEnterBack() { usingScene2 = true; },
                 onLeaveBack() { usingScene2 = false; },
