@@ -655,22 +655,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function initAnimation() {
-        gsap.to(airbnb, {
-            frame: frameCount - 1,
-            snap: "frame",
-            ease: "none",
+        // 1. Define your chapters based on your frame counts
+        const chapters = [
+            { endFrame: 300,  trigger: "#hero-section" },       // Hero
+            { endFrame: 600,  trigger: "#plate-generator" },   // Plate Preview
+            { endFrame: 900,  trigger: "#checkout-section" },   // Checkout
+            { endFrame: 1191, trigger: "#user-services" }      // Services
+        ];
+    
+        // 2. Create a master timeline
+        const tl = gsap.timeline({
             scrollTrigger: {
-                // Use 'body' because every website has one!
-                trigger: "body", 
+                trigger: "body", // High-level trigger
                 start: "top top",
-                // 'bottom bottom' means the animation ends at the very last pixel of the footer
-                end: "bottom bottom", 
-                scrub: 0.5,
-                // Keep the canvas container stuck to the screen
-                pin: "#canvas-container", 
-                pinSpacing: false 
-            },
-            onUpdate: render
+                end: "bottom bottom",
+                scrub: 1, 
+                pin: "#canvas-container",
+                pinSpacing: false
+            }
+        });
+    
+        // 3. Professional Sequencing
+        // Instead of one big jump, we move the 'frame' variable in stages
+        chapters.forEach((chapter, index) => {
+            const startFrame = index === 0 ? 1 : chapters[index - 1].endFrame;
+            
+            tl.to(airbnb, {
+                frame: chapter.endFrame,
+                snap: "frame",
+                ease: "none",
+                // This ensures this chunk of frames plays while the specific section is on screen
+                scrollTrigger: {
+                    trigger: chapter.trigger,
+                    start: "top bottom", // Starts when section enters view
+                    end: "bottom top",   // Ends when section leaves view
+                    scrub: true
+                },
+                onUpdate: render
+            });
         });
     }
 
