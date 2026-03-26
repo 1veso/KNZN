@@ -5,14 +5,11 @@ const state = {
     addons: { zulassung: false, plakette: false, versand: false }
 };
 
-// Hero has its own independent state — typewriter only, never pollutes configurator
 const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
 
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
 /* ─── PLATE RENDERING ─── */
-// plateType: 'standard' | 'e' | 'h' | 'saisonal' — when provided, renders type suffix visually.
-// Omit plateType (hero/typewriter) to fall back to text-based suffix.
 function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -23,11 +20,9 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
 
     const pt = plateType || 'standard';
     const isCarbon = material === 'carbon';
-    // Suffix box: E, H, or saisonal occupies the rightmost 20% of the plate
     const hasSuffix = (pt === 'e' || pt === 'h' || pt === 'saisonal');
     const suffixW = hasSuffix ? W * 0.20 : 0;
 
-    // Background
     if (isCarbon) {
         const pc = document.createElement('canvas');
         pc.width = 8; pc.height = 8;
@@ -43,7 +38,6 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     else ctx.rect(0, 0, W, H);
     ctx.fill();
 
-    // Border
     ctx.strokeStyle = isCarbon ? '#444' : '#aaaaaa';
     ctx.lineWidth = 2*s;
     ctx.beginPath();
@@ -51,7 +45,6 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
     ctx.stroke();
 
-    // EU band with rounded left corners — always blue
     const bw = 42*s;
     ctx.fillStyle = '#003399';
     ctx.beginPath();
@@ -59,7 +52,6 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     else ctx.rect(2*s, 2*s, bw, H-4*s);
     ctx.fill();
 
-    // Stars — circle in upper portion of EU band
     const cx = 2*s + bw/2;
     const starsTop = 5*s;
     const starsH = H * 0.60;
@@ -72,16 +64,13 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
             2.1*s, '#FFD700');
     }
 
-    // D letter — sits below star circle
     ctx.fillStyle = '#FFD700';
     ctx.font = `bold ${10*s}px Arial`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('D', cx, starsTop + starsH + 6*s);
 
-    // Plate text — split into city code, seal circles, and letter/number
     const textAreaEnd = W - suffixW;
-
     const isEmpty = !ort && !buchstaben && !ziffern;
     const displayOrt = isEmpty ? 'DN' : (ort||'').toUpperCase().trim();
     const displayBu  = isEmpty ? 'AB' : (buchstaben||'').toUpperCase().trim();
@@ -99,7 +88,6 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     const ortWidth  = ctx.measureText(displayOrt).width;
     const buziWidth = buziText ? ctx.measureText(buziText).width : 0;
 
-    // Seal circles sizing — two circles stacked vertically
     const sealR   = H * 0.145;
     const sealGap = H * 0.05;
     const sealBlockW = sealR * 2 + 10*s;
@@ -112,11 +100,8 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
 
     ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
     ctx.textAlign = 'left';
-
-    // 1. City code
     ctx.fillText(displayOrt, startX, textY);
 
-    // 2. Two stacked seal circles (Plakette/Umwelt seals)
     const sealCX   = startX + ortWidth + sealBlockW / 2;
     const sealTopY = H / 2 - sealR - sealGap / 2;
     const sealBotY = H / 2 + sealR + sealGap / 2;
@@ -125,26 +110,20 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     ctx.beginPath(); ctx.arc(sealCX, sealTopY, sealR, 0, Math.PI*2); ctx.stroke();
     ctx.beginPath(); ctx.arc(sealCX, sealBotY, sealR, 0, Math.PI*2); ctx.stroke();
 
-    // 3. Letter/number combination (+ optional suffix for standard type)
     if (buziText) {
         ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
         ctx.fillText(buziText, startX + ortWidth + sealBlockW, textY);
     }
 
-    // ── Type-specific suffix rendering ──────────────────────────────────
     if (pt === 'e' || pt === 'h') {
         const divX = textAreaEnd;
         const letter = pt === 'e' ? 'E' : 'H';
-
-        // Vertical separator
         ctx.strokeStyle = '#aaaaaa';
         ctx.lineWidth = 1.5*s;
         ctx.beginPath();
         ctx.moveTo(divX, 5*s);
         ctx.lineTo(divX, H - 5*s);
         ctx.stroke();
-
-        // Suffix letter
         ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
         ctx.font = `bold ${50*s}px 'Arial Black', Arial, sans-serif`;
         ctx.textAlign = 'center';
@@ -154,30 +133,23 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     } else if (pt === 'saisonal') {
         const boxX = textAreaEnd + 2*s;
         const boxW = suffixW - 4*s;
-
-        // Blue seasonal box with rounded right corners
         ctx.fillStyle = '#003399';
         ctx.beginPath();
         if (ctx.roundRect) ctx.roundRect(boxX, 2*s, boxW, H-4*s, [0, 4*s, 4*s, 0]);
         else ctx.rect(boxX, 2*s, boxW, H-4*s);
         ctx.fill();
-
-        // Month numbers
         ctx.fillStyle = '#ffffff';
         ctx.font = `bold ${14*s}px Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         const boxCenterX = boxX + boxW / 2;
         ctx.fillText('04', boxCenterX, H * 0.30);
-
-        // Horizontal separator inside box
         ctx.strokeStyle = 'rgba(255,255,255,0.6)';
         ctx.lineWidth = 1*s;
         ctx.beginPath();
         ctx.moveTo(boxX + 4*s, H / 2);
         ctx.lineTo(boxX + boxW - 4*s, H / 2);
         ctx.stroke();
-
         ctx.fillText('10', boxCenterX, H * 0.73);
     }
 }
@@ -209,14 +181,12 @@ function buildPlateText(ort, b, z, suffix) {
     return t;
 }
 
-// Configurator + summary only — hero is independent
 function renderAllPlates() {
     const { ort, buchstaben, ziffern, suffix, material, plateType } = state;
     drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material, plateType);
     drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material, plateType);
 }
 
-// Hero only
 function renderHeroPlate() {
     drawPlate('heroPlate', heroState.ort, heroState.buchstaben, heroState.ziffern, heroState.suffix, state.material);
 }
@@ -349,7 +319,6 @@ function toggleAddon(key) {
 function calcTotal() {
     const isKomplett = state.addons.zulassung && state.addons.plakette && state.material === 'standard';
     if (isKomplett) {
-        // Komplettpaket: Zulassung + Standard Kennzeichen + Plakette = €30 flat
         let t = 30;
         if (state.addons.versand) t += PRICES.versand;
         return t;
@@ -375,15 +344,13 @@ function updateSummary() {
     if (mob) mob.textContent = `€${total}`;
 }
 
-/* ─── PROGRESS — viewport-relative scroll tracking ─── */
+/* ─── PROGRESS ─── */
 function initScrollProgress() {
-    const addonsEl  = document.getElementById('addons');
+    const addonsEl   = document.getElementById('addons');
     const checkoutEl = document.querySelector('.checkout-block');
 
     function update() {
         if (!addonsEl || !checkoutEl) return;
-        // getBoundingClientRect().top gives distance from viewport top — works
-        // correctly regardless of element nesting or sticky offsets
         const triggerY   = window.innerHeight * 0.55;
         const atAddons   = addonsEl.getBoundingClientRect().top   < triggerY;
         const atCheckout = checkoutEl.getBoundingClientRect().top < triggerY;
@@ -413,7 +380,6 @@ function initScrollProgress() {
     update();
 }
 
-// Stub — scroll drives progress now, kept for toggleAddon compatibility
 function updateProgress() {}
 
 /* ─── CHECKOUT ─── */
@@ -501,17 +467,17 @@ async function submitEmailAndCheckout() {
 
 (function initEmailModal() {
     document.addEventListener('DOMContentLoaded', function() {
-        const closeBtn = document.getElementById('emailModalClose');
-        const overlay = document.getElementById('emailModal');
+        const closeBtn  = document.getElementById('emailModalClose');
+        const overlay   = document.getElementById('emailModal');
         const submitBtn = document.getElementById('emailSubmitBtn');
-        const input = document.getElementById('emailInput');
-        const errEl = document.getElementById('emailError');
+        const input     = document.getElementById('emailInput');
+        const errEl     = document.getElementById('emailError');
 
-        if (closeBtn) closeBtn.addEventListener('click', closeEmailModal);
-        if (overlay) overlay.addEventListener('click', function(e) {
+        if (closeBtn)   closeBtn.addEventListener('click', closeEmailModal);
+        if (overlay)    overlay.addEventListener('click', function(e) {
             if (e.target === overlay) closeEmailModal();
         });
-        if (submitBtn) submitBtn.addEventListener('click', submitEmailAndCheckout);
+        if (submitBtn)  submitBtn.addEventListener('click', submitEmailAndCheckout);
         if (input) {
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') submitEmailAndCheckout();
@@ -527,9 +493,7 @@ async function submitEmailAndCheckout() {
     });
 })();
 
-/* social proof strip removed */
-
-/* ─── ANCHOR BANNER — scrolling ticker ─── */
+/* ─── ANCHOR BANNER ─── */
 function initAnchorBanner() {
     const banner = document.querySelector('.anchor-banner');
     if (!banner) return;
@@ -542,7 +506,6 @@ function initAnchorBanner() {
         '✅ Niedrigster Preis im Umkreis — kein versteckter Aufpreis',
     ];
 
-    // Replace static content with scrolling ticker
     banner.innerHTML = `<div class="anchor-ticker-wrap"><div class="anchor-ticker" id="anchorTicker"></div></div>`;
     const ticker = document.getElementById('anchorTicker');
     const items = [...messages, ...messages].map(m =>
@@ -566,7 +529,9 @@ function initFAQ() {
 function initReveal() {
     const els = document.querySelectorAll('section, .proof-strip');
     const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('reveal','visible'); obs.unobserve(e.target); } });
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('reveal','visible'); obs.unobserve(e.target); }
+        });
     }, { threshold: 0.07 });
     els.forEach(el => { el.classList.add('reveal'); obs.observe(el); });
 }
@@ -592,7 +557,17 @@ document.addEventListener('DOMContentLoaded', () => {
     typewriterPlate();
 });
 
-/* ─── SCROLL ANIMATION — Scene 1 (Hero) + Scene 2 (Configurator entry) ─── */
+/* ══════════════════════════════════════════════════════════════════════════
+   CINEMATIC SCROLL ANIMATION
+   Architecture:
+   - canvas is position:fixed — always behind content
+   - Hero section is 300vh tall; hero-inner pins at top (sticky)
+   - Scene 1 frames 1-300 play during first half of hero scroll
+   - Scene 2 frames 301-600 play during second half of hero scroll
+   - Frame 600 freezes and stays visible into the config-bridge zone
+   - Plate preview floats in over the frozen frame
+   - config-body slides up and canvas fades out beneath it
+   ══════════════════════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
     if (typeof gsap === "undefined") {
         console.error("GSAP not loaded — check script tags in index.html");
@@ -600,129 +575,220 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     gsap.registerPlugin(ScrollTrigger);
 
-    // ── VERIFY THESE match your actual folder frame counts ──────────────────
-    // Count the files in public/images/section1/ and section2/ and set here.
-   const S1_TOTAL = 300;  // Section 1: files 1.jpg → 300.jpg
-   const S2_TOTAL = 300;  // Section 2: files 301.jpg → 600.jpg (offset by +300)
-    // ────────────────────────────────────────────────────────────────────────
-
+    const S1_TOTAL = 300;
+    const S2_TOTAL = 300;
     const s1src = i => `public/images/section1/${i}.jpg`;
     const s2src = i => `public/images/section2/${i + 300}.jpg`;
 
-    const heroCanvas   = document.getElementById("scroll-canvas");
-    const configCanvas = document.getElementById("config-canvas");
-    const staticImg    = document.getElementById("hero-static-img");
-    const loader       = document.getElementById("canvas-loader");
+    const canvas    = document.getElementById("scroll-canvas");
+    const staticImg = document.getElementById("hero-static-img");
+    const loader    = document.getElementById("canvas-loader");
+    const heroWrap  = document.getElementById("hero-content-wrap");
+    const miniBar   = document.getElementById("hero-mini-bar");
 
-    if (!heroCanvas || !configCanvas) {
-        console.warn("Animation canvases not found in DOM");
-        return;
+    if (!canvas) { console.warn("scroll-canvas not found"); return; }
+
+    const ctx = canvas.getContext("2d");
+    canvas.width  = 1920;
+    canvas.height = 1080;
+
+    const s1 = [];
+    const s2 = [];
+
+    /* Cover-fill draw */
+    function paint(bank, rawFrame, total) {
+        const f   = Math.max(1, Math.min(Math.round(rawFrame), total));
+        const img = bank[f];
+        if (!img || !img.complete || !img.naturalWidth) return;
+        const cW = canvas.width,  cH = canvas.height;
+        const iW = img.naturalWidth, iH = img.naturalHeight;
+        const scale = Math.max(cW / iW, cH / iH);
+        ctx.clearRect(0, 0, cW, cH);
+        ctx.drawImage(img,
+            (cW - iW * scale) / 2,
+            (cH - iH * scale) / 2,
+            iW * scale, iH * scale);
     }
 
-    const hCtx = heroCanvas.getContext("2d");
-    const cCtx = configCanvas.getContext("2d");
-
-    // Native resolution — must match your exported frame dimensions
-    heroCanvas.width   = configCanvas.width  = 1920;
-    heroCanvas.height  = configCanvas.height = 1080;
-
-    const s1 = []; // frame bank — scene 1
-    const s2 = []; // frame bank — scene 2
-
-    function preload(bank, srcFn, total, onFirstLoaded) {
-        for (let i = 1; i <= total; i++) {
+    /* Preload scene 1 — callback fires on first frame loaded */
+    function preloadS1(cb) {
+        for (let i = 1; i <= S1_TOTAL; i++) {
             const img = new Image();
-            img.src = srcFn(i);
-            bank[i] = img;
-            if (i === 1 && onFirstLoaded) img.onload = onFirstLoaded;
+            img.src = s1src(i);
+            s1[i] = img;
+            if (i === 1) {
+                img.onload  = cb;
+                img.onerror = () => console.error(`🚨 Scene 1 frame not found: ${s1src(1)}\nCheck: public/images/section1/`);
+            }
         }
     }
 
-    // Cover-style draw: fills canvas without distortion
-    function paint(ctx, bank, rawFrame) {
-        const f   = Math.max(1, Math.min(Math.round(rawFrame), bank.length - 1));
-        const img = bank[f];
-        if (!img || !img.complete || !img.naturalWidth) return;
-        const cW = ctx.canvas.width,  cH = ctx.canvas.height;
-        const iW = img.naturalWidth,  iH = img.naturalHeight;
-        const scale = Math.max(cW / iW, cH / iH);
-        const x = (cW - iW * scale) / 2;
-        const y = (cH - iH * scale) / 2;
-        ctx.drawImage(img, x, y, iW * scale, iH * scale);
+    /* Preload scene 2 in background */
+    function preloadS2() {
+        for (let i = 1; i <= S2_TOTAL; i++) {
+            const img = new Image();
+            img.src = s2src(i);
+            s2[i] = img;
+            if (i === 1) {
+                img.onerror = () => console.error(`🚨 Scene 2 frame not found: ${s2src(1)}\nCheck: public/images/section2/`);
+            }
+        }
     }
 
     function initTriggers() {
-        const heroEl   = document.getElementById("hero-section");
-        const configEl = document.getElementById("configurator");
+        const heroSection  = document.getElementById("hero-section");
+        const configBridge = document.querySelector(".config-bridge");
+        const configBody   = document.querySelector(".config-body");
 
-        // ── Scene 1: plays while hero section is in viewport ─────────────────
+        /* ── 1. Static image crossfades to canvas as soon as scroll starts ── */
+        gsap.to({ v: 0 }, {
+            v: 1,
+            ease: "none",
+            scrollTrigger: {
+                trigger: heroSection,
+                start: "top top",
+                end: "+=300",
+                scrub: true,
+                onUpdate(self) {
+                    const p = self.progress;
+                    if (staticImg) staticImg.style.opacity = String(1 - p);
+                    canvas.style.opacity = String(p);
+                    if (p > 0.05 && loader) loader.style.opacity = "0";
+                }
+            }
+        });
+
+        /* ── 2. Hero text fades out as scroll progresses ── */
+        if (heroWrap) {
+            gsap.to(heroWrap, {
+                opacity: 0,
+                y: -30,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: heroSection,
+                    start: "top top+=200",
+                    end:   "top top+=600",
+                    scrub: true,
+                }
+            });
+        }
+
+        /* ── 3. Mini-bar fades in from bottom during scroll ── */
+        if (miniBar) {
+            gsap.fromTo(miniBar,
+                { opacity: 0, y: 40 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: heroSection,
+                        start: "top top+=450",
+                        end:   "top top+=750",
+                        scrub: true,
+                        onUpdate(self) {
+                            if (miniBar) miniBar.style.pointerEvents = self.progress > 0.5 ? 'auto' : 'none';
+                        }
+                    }
+                }
+            );
+        }
+
+        /* ── 4. Scene 1: frames 1-300 across first 50% of hero scroll ── */
         const p1 = { f: 1 };
+        let usingScene2 = false;
+
         gsap.to(p1, {
             f: S1_TOTAL,
             ease: "none",
             scrollTrigger: {
-                trigger: heroEl,
+                trigger: heroSection,
                 start: "top top",
-                end:   "bottom top",
-                scrub: 0.6,
-                onEnter() {
-                    heroCanvas.style.opacity = "1";
-                    if (staticImg) staticImg.style.opacity = "0";
-                    if (loader)    loader.style.opacity    = "0";
-                },
-                onLeaveBack() {
-                    heroCanvas.style.opacity = "0";
-                    if (staticImg) staticImg.style.opacity = "1";
-                }
+                end:   "50% bottom",
+                scrub: 0.3,
             },
-            onUpdate() { paint(hCtx, s1, p1.f); }
+            onUpdate() {
+                if (!usingScene2) paint(s1, p1.f, S1_TOTAL);
+            }
         });
 
-        // ── Scene 2: plays as configurator scrolls into view ──────────────────
-        // start="top 90%" → begin when configurator top is 90% down the viewport
-        // end="top 15%"   → finish when it's nearly at the top = last frame aligns
-        //                    with the plate preview box position
+        /* ── 5. Scene 2: frames 301-600 across second 50% of hero scroll ── */
         const p2 = { f: 1 };
+
         gsap.to(p2, {
             f: S2_TOTAL,
             ease: "none",
             scrollTrigger: {
-                trigger: configEl,
-                start: "top 90%",
-                end:   "top 15%",
-                scrub: 0.6,
-                onEnter()     {
-                    configCanvas.style.opacity = "1";
-                    configEl.classList.add("scene2-active");
-                },
+                trigger: heroSection,
+                start: "50% bottom",
+                end:   "bottom bottom",
+                scrub: 0.3,
+                onEnter()     { usingScene2 = true; },
+                onEnterBack() { usingScene2 = true; },
+                onLeaveBack() { usingScene2 = false; },
+                // On leave (scroll past hero end): freeze frame 600
                 onLeave()     {
-                    configCanvas.style.opacity = "0";
-                    configEl.classList.remove("scene2-active");
-                },
-                onEnterBack() {
-                    configCanvas.style.opacity = "1";
-                    configEl.classList.add("scene2-active");
-                },
-                onLeaveBack() {
-                    configCanvas.style.opacity = "0";
-                    configEl.classList.remove("scene2-active");
+                    usingScene2 = true;
+                    paint(s2, S2_TOTAL, S2_TOTAL);
                 }
             },
-            onUpdate() { paint(cCtx, s2, p2.f); }
+            onUpdate() {
+                if (usingScene2) paint(s2, p2.f, S2_TOTAL);
+            }
         });
+
+        /* ── 6. Plate preview float: fades in over frozen frame 600 ── */
+        const plateFloat = document.getElementById("configPlateFloat");
+        if (plateFloat && configBridge) {
+            gsap.fromTo(plateFloat,
+                { opacity: 0, scale: 0.93, y: 24 },
+                {
+                    opacity: 1, scale: 1, y: 0,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: configBridge,
+                        start: "top 80%",
+                        end:   "top 25%",
+                        scrub: true,
+                    }
+                }
+            );
+        }
+
+        /* ── 7. Canvas fades out as config-body slides up over it ── */
+        if (configBody) {
+            gsap.to(canvas, {
+                opacity: 0,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: configBody,
+                    start: "top 65%",
+                    end:   "top 5%",
+                    scrub: true,
+                }
+            });
+
+            /* Mini-bar disappears once we reach configurator */
+            if (miniBar) {
+                gsap.to(miniBar, {
+                    opacity: 0,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: configBody,
+                        start: "top 90%",
+                        end:   "top 60%",
+                        scrub: true,
+                    }
+                });
+            }
+        }
     }
 
-    // Load scene 1 frame 1 first — then kick everything off
-    preload(s1, s1src, S1_TOTAL, () => {
-        paint(hCtx, s1, 1);               // pre-draw frame 1 (canvas still hidden)
-        preload(s2, s2src, S2_TOTAL, null); // background-load scene 2
+    /* Boot: load scene 1 frame 1, then start everything */
+    preloadS1(() => {
+        paint(s1, 1, S1_TOTAL);
+        preloadS2();
         initTriggers();
         if (loader) loader.style.opacity = "0";
     });
-
-    // Path sanity check
-    if (s1[1]) {
-        s1[1].onerror = () =>
-            console.error(`Frame not found: ${s1src(1)}\nVerify folder: public/images/section1/`);
-    }
 });
