@@ -67,8 +67,26 @@ input, button { font-family: inherit; }
 
 
 /* ANCHOR BANNER */
-.anchor-banner { background: var(--gold); overflow: hidden; padding: 0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 80; transition: transform 0.3s ease, opacity 0.3s ease; }
-.anchor-banner.hidden { transform: translateY(100%); opacity: 0; pointer-events: none; }
+.anchor-banner {
+    background: var(--gold);
+    overflow: hidden;
+    padding: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 80;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.anchor-banner.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+/* Space so content isn't hidden behind fixed anchor banner */
+.hero-inner { padding-bottom: 52px; }
+.proof-strip { padding-bottom: 52px; }
 .anchor-banner strong { font-weight: 700; }
 .anchor-sep { opacity: 0.4; }
 
@@ -925,7 +943,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 /* ── Hero section: tall enough to play all 600 frames ── */
 .hero {
-    min-height: 500vh;
+    min-height: 600vh;
     position: relative;
     background: transparent;
     padding: 0;
@@ -959,7 +977,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 }
 
 .hero-scroll-spacer {
-    height: 400vh;
+    height: 200vh;
 }
 
 /* ── Hero mini-bar ── */
@@ -1027,14 +1045,14 @@ a.bento-card:hover .bento-link { gap: 8px; }
 }
 
 .config-bridge {
-    height: 70vh;
+    height: 55vh;
     position: relative;
     background: transparent;
     display: flex;
     align-items: flex-end;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 0;
+    justify-content: flex-end;
+    padding-right: 7%;
+    padding-bottom: 48px;
 }
 
 .config-plate-float {
@@ -1149,3 +1167,50 @@ a.bento-card:hover .bento-link { gap: 8px; }
         align-items: flex-start;
     }
 }
+/* ── Scroll indicator ── */
+.hero-scroll-indicator {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    z-index: 10;
+    animation: bounceDown 2s ease-in-out infinite;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.hero-scroll-indicator svg {
+    color: rgba(255,255,255,0.4);
+}
+
+@keyframes bounceDown {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50%       { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ── Config bridge centered ── */
+.config-bridge {
+    align-items: center;
+    justify-content: center;
+    padding-right: 0;
+    padding-bottom: 0;
+}
+
+/* ── Configurator body content order ── */
+.config-body .container {
+    display: flex;
+    flex-direction: column;
+}
+
+.config-body .section-header { order: 1; }
+.config-body .plate-inputs   { order: 2; margin-top: 24px; }
+.config-body .options-grid   { order: 3; margin-top: 24px; }
+.config-body .plate-type-strip { order: 4; margin-top: 32px; }
