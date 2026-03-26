@@ -6,7 +6,6 @@ const state = {
 };
 
 const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
-
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
 /* ─── PLATE RENDERING ─── */
@@ -58,10 +57,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     const starR = starsH/2 * 0.44;
     for (let i = 0; i < 12; i++) {
         const a = (i/12)*Math.PI*2 - Math.PI/2;
-        drawStar(ctx,
-            cx + Math.cos(a) * starR,
-            starsTop + starsH/2 + Math.sin(a) * starR,
-            2.1*s, '#FFD700');
+        drawStar(ctx, cx + Math.cos(a)*starR, starsTop + starsH/2 + Math.sin(a)*starR, 2.1*s, '#FFD700');
     }
 
     ctx.fillStyle = '#FFD700';
@@ -76,8 +72,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     const displayBu  = isEmpty ? 'AB' : (buchstaben||'').toUpperCase().trim();
     const displayZi  = isEmpty ? '1234' : (ziffern||'').trim();
     const displaySuffix = hasSuffix ? '' : (suffix||'').toUpperCase().trim();
-    const buziText = displayBu + (displayBu && displayZi ? ' ' : '') + displayZi
-                   + (displaySuffix ? ' ' + displaySuffix : '');
+    const buziText = displayBu + (displayBu && displayZi ? ' ' : '') + displayZi + (displaySuffix ? ' ' + displaySuffix : '');
 
     const totalChars = displayOrt.length + displayBu.length + displayZi.length + displaySuffix.length;
     const fs = totalChars <= 5 ? 56*s : totalChars <= 7 ? 50*s : 44*s;
@@ -87,11 +82,9 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
 
     const ortWidth  = ctx.measureText(displayOrt).width;
     const buziWidth = buziText ? ctx.measureText(buziText).width : 0;
-
     const sealR   = H * 0.145;
     const sealGap = H * 0.05;
     const sealBlockW = sealR * 2 + 10*s;
-
     const textAreaStart = bw + 6*s;
     const textAreaWidth = textAreaEnd - textAreaStart - 6*s;
     const totalContentW = ortWidth + sealBlockW + buziWidth;
@@ -120,16 +113,12 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
         const letter = pt === 'e' ? 'E' : 'H';
         ctx.strokeStyle = '#aaaaaa';
         ctx.lineWidth = 1.5*s;
-        ctx.beginPath();
-        ctx.moveTo(divX, 5*s);
-        ctx.lineTo(divX, H - 5*s);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(divX, 5*s); ctx.lineTo(divX, H - 5*s); ctx.stroke();
         ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
         ctx.font = `bold ${50*s}px 'Arial Black', Arial, sans-serif`;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(letter, divX + suffixW / 2, H * 0.55);
-
     } else if (pt === 'saisonal') {
         const boxX = textAreaEnd + 2*s;
         const boxW = suffixW - 4*s;
@@ -146,10 +135,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
         ctx.fillText('04', boxCenterX, H * 0.30);
         ctx.strokeStyle = 'rgba(255,255,255,0.6)';
         ctx.lineWidth = 1*s;
-        ctx.beginPath();
-        ctx.moveTo(boxX + 4*s, H / 2);
-        ctx.lineTo(boxX + boxW - 4*s, H / 2);
-        ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(boxX + 4*s, H / 2); ctx.lineTo(boxX + boxW - 4*s, H / 2); ctx.stroke();
         ctx.fillText('10', boxCenterX, H * 0.73);
     }
 }
@@ -191,13 +177,13 @@ function renderHeroPlate() {
     drawPlate('heroPlate', heroState.ort, heroState.buchstaben, heroState.ziffern, heroState.suffix, state.material);
 }
 
-/* ─── TYPEWRITER HERO ANIMATION ─── */
+/* ─── TYPEWRITER ─── */
 function typewriterPlate() {
     const sequence = [
         {ort:'DN', b:'AB', z:'1234', s:''},
-        {ort:'DN', b:'JH', z:'42', s:''},
-        {ort:'DN', b:'MX', z:'500', s:'E'},
-        {ort:'DN', b:'LB', z:'88', s:'H'},
+        {ort:'DN', b:'JH', z:'42',   s:''},
+        {ort:'DN', b:'MX', z:'500',  s:'E'},
+        {ort:'DN', b:'LB', z:'88',   s:'H'},
     ];
     let si = 0, ci = 0, phase = 'type', field = 'ort';
     const fields = ['ort','b','z'];
@@ -207,18 +193,15 @@ function typewriterPlate() {
         const cur = sequence[si];
         const vals = [cur.ort, cur.b, cur.z];
         const fieldIdx = fields.indexOf(field);
-
         if (phase === 'type') {
             const target = vals[fieldIdx];
             if (ci < target.length) {
                 ci++;
-                const partial = target.slice(0, ci);
-                heroState[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = partial;
+                heroState[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = target.slice(0, ci);
                 renderHeroPlate();
                 setTimeout(next, delays.type);
             } else if (fieldIdx < fields.length - 1) {
-                field = fields[fieldIdx + 1];
-                ci = 0;
+                field = fields[fieldIdx + 1]; ci = 0;
                 setTimeout(next, delays.type);
             } else {
                 heroState.suffix = cur.s;
@@ -227,15 +210,13 @@ function typewriterPlate() {
                 setTimeout(next, delays.pause);
             }
         } else if (phase === 'pause') {
-            phase = 'erase';
-            field = 'z'; ci = vals[2].length;
+            phase = 'erase'; field = 'z'; ci = vals[2].length;
             setTimeout(next, delays.erase);
         } else if (phase === 'erase') {
             const target = vals[fields.indexOf(field)];
             if (ci > 0) {
                 ci--;
-                const partial = target.slice(0, ci);
-                heroState[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = partial;
+                heroState[field === 'b' ? 'buchstaben' : field === 'z' ? 'ziffern' : 'ort'] = target.slice(0, ci);
                 renderHeroPlate();
                 setTimeout(next, delays.erase);
             } else {
@@ -250,7 +231,6 @@ function typewriterPlate() {
             }
         }
     }
-
     setTimeout(next, 600);
 }
 
@@ -259,10 +239,7 @@ function updatePlate() {
     state.ort = document.getElementById('ort').value;
     state.buchstaben = document.getElementById('buchstaben').value;
     state.ziffern = document.getElementById('ziffern').value;
-    validatePlate();
-    renderAllPlates();
-    updateSummary();
-    updateProgress();
+    validatePlate(); renderAllPlates(); updateSummary(); updateProgress();
 }
 
 function validatePlate() {
@@ -299,9 +276,7 @@ function setMaterial(btn, val) {
     state.material = val;
     document.getElementById('matStd').classList.toggle('active', val==='standard');
     document.getElementById('matCarbon').classList.toggle('active', val==='carbon');
-    renderAllPlates();
-    renderHeroPlate();
-    updateSummary();
+    renderAllPlates(); renderHeroPlate(); updateSummary();
 }
 
 /* ─── ADDONS ─── */
@@ -309,10 +284,8 @@ function toggleAddon(key) {
     state.addons[key] = !state.addons[key];
     const cardId = { zulassung:'addonZulassung', plakette:'addonPlakette', versand:'addonVersand' }[key];
     document.getElementById(cardId).classList.toggle('selected', state.addons[key]);
-    const isKomplett = state.addons.zulassung && state.addons.plakette;
-    document.getElementById('paketBanner').classList.toggle('visible', isKomplett);
-    updateSummary();
-    updateProgress();
+    document.getElementById('paketBanner').classList.toggle('visible', state.addons.zulassung && state.addons.plakette);
+    updateSummary(); updateProgress();
 }
 
 /* ─── PRICING ─── */
@@ -326,15 +299,15 @@ function calcTotal() {
     let t = PRICES[state.material];
     if (state.addons.zulassung) t += PRICES.zulassung;
     if (state.addons.plakette) t += PRICES.plakette;
-    if (state.addons.versand) t += PRICES.versand;
+    if (state.addons.versand)  t += PRICES.versand;
     return t;
 }
 
 function updateSummary() {
     const lines = [{ name: `2 Kennzeichen (${state.material==='carbon'?'Carbon':'Standard'})`, price: PRICES[state.material] }];
-    if (state.addons.zulassung) lines.push({ name:'KFZ Zulassung', price:PRICES.zulassung });
-    if (state.addons.plakette) lines.push({ name:'Umweltplakette', price:PRICES.plakette });
-    if (state.addons.versand) lines.push({ name:'DHL Versand', price:PRICES.versand });
+    if (state.addons.zulassung) lines.push({ name:'KFZ Zulassung',   price: PRICES.zulassung });
+    if (state.addons.plakette)  lines.push({ name:'Umweltplakette',  price: PRICES.plakette  });
+    if (state.addons.versand)   lines.push({ name:'DHL Versand',     price: PRICES.versand   });
     const total = calcTotal();
     document.getElementById('checkoutLines').innerHTML = lines.map(l =>
         `<div class="checkout-line"><span class="cl-name">${l.name}</span><span class="cl-price">€${l.price}</span></div>`
@@ -348,34 +321,28 @@ function updateSummary() {
 function initScrollProgress() {
     const addonsEl   = document.getElementById('addons');
     const checkoutEl = document.querySelector('.checkout-block');
-
     function update() {
         if (!addonsEl || !checkoutEl) return;
         const triggerY   = window.innerHeight * 0.55;
         const atAddons   = addonsEl.getBoundingClientRect().top   < triggerY;
         const atCheckout = checkoutEl.getBoundingClientRect().top < triggerY;
-
         const s1 = document.getElementById('step1');
         const s2 = document.getElementById('step2');
         const s3 = document.getElementById('step3');
         const l1 = document.getElementById('line1');
         const l2 = document.getElementById('line2');
-        if (!s1 || !s2 || !s3) return;
-
+        if (!s1||!s2||!s3) return;
         [s1,s2,s3].forEach(s => s.className = 'progress-step');
         [l1,l2].forEach(l => l.className = 'progress-line');
-
         if (atCheckout) {
             s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('active');
             l1.classList.add('done'); l2.classList.add('done');
         } else if (atAddons) {
-            s1.classList.add('done'); s2.classList.add('active');
-            l1.classList.add('done');
+            s1.classList.add('done'); s2.classList.add('active'); l1.classList.add('done');
         } else {
             s1.classList.add('active');
         }
     }
-
     window.addEventListener('scroll', update, { passive: true });
     update();
 }
@@ -386,7 +353,7 @@ function updateProgress() {}
 async function handleCheckout() {
     const ort = state.ort.trim(), b = state.buchstaben.trim(), z = state.ziffern.trim();
     if (!ort || !b || !z) {
-        alert('Bitte konfigurieren Sie zuerst Ihr Kennzeichen (Ortskenzeichen, Buchstaben und Ziffern).');
+        alert('Bitte konfigurieren Sie zuerst Ihr Kennzeichen.');
         document.getElementById('configurator').scrollIntoView({ behavior:'smooth' });
         return;
     }
@@ -396,12 +363,12 @@ async function handleCheckout() {
 /* ─── EMAIL MODAL ─── */
 function openEmailModal() {
     const overlay = document.getElementById('emailModal');
-    const input = document.getElementById('emailInput');
-    const errEl = document.getElementById('emailError');
+    const input   = document.getElementById('emailInput');
+    const errEl   = document.getElementById('emailError');
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
-    if (errEl) errEl.textContent = '';
-    if (input) { input.classList.remove('error'); input.value = ''; input.focus(); }
+    if (errEl)  errEl.textContent = '';
+    if (input)  { input.classList.remove('error'); input.value = ''; input.focus(); }
 }
 
 function closeEmailModal() {
@@ -414,44 +381,29 @@ function validateEmail(email) {
 }
 
 async function submitEmailAndCheckout() {
-    const input = document.getElementById('emailInput');
-    const errEl = document.getElementById('emailError');
-    const btn = document.getElementById('emailSubmitBtn');
+    const input   = document.getElementById('emailInput');
+    const errEl   = document.getElementById('emailError');
+    const btn     = document.getElementById('emailSubmitBtn');
     const btnText = document.getElementById('emailSubmitText');
-    const email = (input.value || '').trim();
+    const email   = (input.value || '').trim();
 
-    if (!email) {
-        input.classList.add('error');
-        errEl.textContent = 'Bitte geben Sie Ihre E-Mail-Adresse ein.';
-        input.focus();
-        return;
-    }
-    if (!validateEmail(email)) {
-        input.classList.add('error');
-        errEl.textContent = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
-        input.focus();
-        return;
-    }
+    if (!email) { input.classList.add('error'); errEl.textContent = 'Bitte E-Mail eingeben.'; input.focus(); return; }
+    if (!validateEmail(email)) { input.classList.add('error'); errEl.textContent = 'Ungültige E-Mail-Adresse.'; input.focus(); return; }
 
-    input.classList.remove('error');
-    errEl.textContent = '';
-    btn.disabled = true;
-    btnText.textContent = 'Wird weitergeleitet...';
+    input.classList.remove('error'); errEl.textContent = '';
+    btn.disabled = true; btnText.textContent = 'Wird weitergeleitet...';
 
     try {
         const ort = state.ort.trim(), b = state.buchstaben.trim(), z = state.ziffern.trim();
-        const typeSuffix = state.plateType === 'e' ? 'E' : state.plateType === 'h' ? 'H' : state.plateType === 'saisonal' ? '04-10' : state.suffix;
+        const typeSuffix = state.plateType==='e'?'E':state.plateType==='h'?'H':state.plateType==='saisonal'?'04-10':state.suffix;
         const res = await fetch('/create-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                plateText: buildPlateText(ort, b, z, typeSuffix),
+                plateText: buildPlateText(ort,b,z,typeSuffix),
                 plateFormat: `${state.size}_${state.material}`,
-                material: state.material,
-                size: state.size,
-                addons: state.addons,
-                totalAmount: calcTotal(),
-                email: email
+                material: state.material, size: state.size,
+                addons: state.addons, totalAmount: calcTotal(), email
             })
         });
         if (!res.ok) throw new Error('Checkout failed');
@@ -459,9 +411,8 @@ async function submitEmailAndCheckout() {
         window.location.href = url;
     } catch (err) {
         console.error(err);
-        errEl.textContent = 'Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.';
-        btn.disabled = false;
-        btnText.textContent = 'Weiter zur Zahlung';
+        errEl.textContent = 'Fehler. Bitte erneut versuchen.';
+        btn.disabled = false; btnText.textContent = 'Weiter zur Zahlung';
     }
 }
 
@@ -472,23 +423,15 @@ async function submitEmailAndCheckout() {
         const submitBtn = document.getElementById('emailSubmitBtn');
         const input     = document.getElementById('emailInput');
         const errEl     = document.getElementById('emailError');
-
-        if (closeBtn)   closeBtn.addEventListener('click', closeEmailModal);
-        if (overlay)    overlay.addEventListener('click', function(e) {
-            if (e.target === overlay) closeEmailModal();
-        });
-        if (submitBtn)  submitBtn.addEventListener('click', submitEmailAndCheckout);
+        if (closeBtn)  closeBtn.addEventListener('click', closeEmailModal);
+        if (overlay)   overlay.addEventListener('click', e => { if (e.target===overlay) closeEmailModal(); });
+        if (submitBtn) submitBtn.addEventListener('click', submitEmailAndCheckout);
         if (input) {
-            input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') submitEmailAndCheckout();
-            });
-            input.addEventListener('input', function() {
-                input.classList.remove('error');
-                if (errEl) errEl.textContent = '';
-            });
+            input.addEventListener('keydown', e => { if (e.key==='Enter') submitEmailAndCheckout(); });
+            input.addEventListener('input', () => { input.classList.remove('error'); if (errEl) errEl.textContent=''; });
         }
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) closeEmailModal();
+        document.addEventListener('keydown', e => {
+            if (e.key==='Escape' && overlay && overlay.classList.contains('active')) closeEmailModal();
         });
     });
 })();
@@ -497,7 +440,6 @@ async function submitEmailAndCheckout() {
 function initAnchorBanner() {
     const banner = document.querySelector('.anchor-banner');
     if (!banner) return;
-
     const messages = [
         '🏆 Komplettpaket nur €30 — Zulassung + 2 Kennzeichen + Umweltplakette',
         '⚡ Blitzschnelle Bearbeitung unter 24 Stunden',
@@ -505,13 +447,9 @@ function initAnchorBanner() {
         '📦 DHL-Versand deutschlandweit — nur €5',
         '✅ Niedrigster Preis im Umkreis — kein versteckter Aufpreis',
     ];
-
     banner.innerHTML = `<div class="anchor-ticker-wrap"><div class="anchor-ticker" id="anchorTicker"></div></div>`;
-    const ticker = document.getElementById('anchorTicker');
-    const items = [...messages, ...messages].map(m =>
-        `<span class="anchor-ticker-item">${m}</span>`
-    ).join('');
-    ticker.innerHTML = items;
+    document.getElementById('anchorTicker').innerHTML = [...messages,...messages].map(m =>
+        `<span class="anchor-ticker-item">${m}</span>`).join('');
 }
 
 /* ─── FAQ ─── */
@@ -525,9 +463,9 @@ function initFAQ() {
     });
 }
 
-/* ─── SCROLL REVEAL ─── */
+/* ─── SCROLL REVEAL — excludes hero and configurator ─── */
 function initReveal() {
-    const els = document.querySelectorAll('section, .proof-strip');
+    const els = document.querySelectorAll('section:not(.hero):not(.configurator), .proof-strip');
     const obs = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if (e.isIntersecting) { e.target.classList.add('reveal','visible'); obs.unobserve(e.target); }
@@ -559,20 +497,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ══════════════════════════════════════════════════════════════════════════
    CINEMATIC SCROLL ANIMATION
-   Architecture:
-   - canvas is position:fixed — always behind content
-   - Hero section is 300vh tall; hero-inner pins at top (sticky)
-   - Scene 1 frames 1-300 play during first half of hero scroll
-   - Scene 2 frames 301-600 play during second half of hero scroll
-   - Frame 600 freezes and stays visible into the config-bridge zone
-   - Plate preview floats in over the frozen frame
-   - config-body slides up and canvas fades out beneath it
+   - Hero is 500vh tall giving frames full room to breathe
+   - Hero content stays FULLY VISIBLE until 600px of scroll
+   - Crossfade starts at 600px, completes at 1200px
+   - Hero text fades at 1000-1800px
+   - Scene 1 plays frames 1-300 across first half of hero
+   - Scene 2 plays frames 301-600 across second half
+   - Frame 600 freezes as background behind configurator
+   - Plate preview floats in centered at 68% viewport height
    ══════════════════════════════════════════════════════════════════════════ */
 document.addEventListener("DOMContentLoaded", () => {
-    if (typeof gsap === "undefined") {
-        console.error("GSAP not loaded — check script tags in index.html");
-        return;
-    }
+    if (typeof gsap === "undefined") { console.error("GSAP not loaded"); return; }
     gsap.registerPlugin(ScrollTrigger);
 
     const S1_TOTAL = 300;
@@ -585,37 +520,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader    = document.getElementById("canvas-loader");
     const heroWrap  = document.getElementById("hero-content-wrap");
     const miniBar   = document.getElementById("hero-mini-bar");
+    const scrollInd = document.getElementById("scrollIndicator");
 
     if (!canvas) { console.warn("scroll-canvas not found"); return; }
 
     const ctx = canvas.getContext("2d");
     canvas.width  = window.innerWidth;
     canvas.height = window.innerHeight;
-
     window.addEventListener('resize', () => {
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
     });
 
     const s1 = [];
     const s2 = [];
 
-    /* Cover-fill draw */
     function paint(bank, rawFrame, total) {
         const f   = Math.max(1, Math.min(Math.round(rawFrame), total));
         const img = bank[f];
         if (!img || !img.complete || !img.naturalWidth) return;
-        const cW = canvas.width,  cH = canvas.height;
+        const cW = canvas.width, cH = canvas.height;
         const iW = img.naturalWidth, iH = img.naturalHeight;
         const scale = Math.max(cW / iW, cH / iH);
         ctx.clearRect(0, 0, cW, cH);
-        ctx.drawImage(img,
-            (cW - iW * scale) / 2,
-            (cH - iH * scale) / 2,
-            iW * scale, iH * scale);
+        ctx.drawImage(img, (cW - iW*scale)/2, (cH - iH*scale)/2, iW*scale, iH*scale);
     }
 
-    /* Preload scene 1 — callback fires on first frame loaded */
     function preloadS1(cb) {
         for (let i = 1; i <= S1_TOTAL; i++) {
             const img = new Image();
@@ -623,47 +553,53 @@ document.addEventListener("DOMContentLoaded", () => {
             s1[i] = img;
             if (i === 1) {
                 img.onload  = cb;
-                img.onerror = () => console.error(`🚨 Scene 1 frame not found: ${s1src(1)}\nCheck: public/images/section1/`);
+                img.onerror = () => console.error(`Scene 1 not found: ${s1src(1)}`);
             }
         }
     }
 
-    /* Preload scene 2 in background */
     function preloadS2() {
         for (let i = 1; i <= S2_TOTAL; i++) {
             const img = new Image();
             img.src = s2src(i);
             s2[i] = img;
-            if (i === 1) {
-                img.onerror = () => console.error(`🚨 Scene 2 frame not found: ${s2src(1)}\nCheck: public/images/section2/`);
-            }
+            if (i === 1) img.onerror = () => console.error(`Scene 2 not found: ${s2src(1)}`);
         }
+    }
+
+    /* Scroll indicator fades when user starts scrolling */
+    if (scrollInd) {
+        window.addEventListener('scroll', () => {
+            scrollInd.style.opacity = window.scrollY > 80 ? '0' : '1';
+        }, { passive: true });
     }
 
     function initTriggers() {
         const heroSection  = document.getElementById("hero-section");
         const configBridge = document.querySelector(".config-bridge");
         const configBody   = document.querySelector(".config-body");
-    /* ── Anchor banner: fixed to bottom, hides at checkout ── */
+
+        /* Anchor banner hides at FAQ */
         const anchorBanner = document.querySelector('.anchor-banner');
-        const checkoutBlock = document.querySelector('.checkout-block');
-        if (anchorBanner && checkoutBlock) {
+        const faqSection   = document.querySelector('.faq');
+        if (anchorBanner && faqSection) {
             ScrollTrigger.create({
-                trigger: checkoutBlock,
+                trigger: faqSection,
                 start: "top bottom",
-                end: "bottom bottom",
                 onEnter()     { anchorBanner.classList.add('hidden'); },
                 onLeaveBack() { anchorBanner.classList.remove('hidden'); }
             });
         }
-        /* ── 1. Static image crossfades to canvas as soon as scroll starts ── */
+
+        /* 1. Hero crossfade — STARTS at 600px, FINISHES at 1200px
+              Hero is fully opaque until user has scrolled 600px     */
         gsap.to({ v: 0 }, {
             v: 1,
             ease: "none",
             scrollTrigger: {
                 trigger: heroSection,
-                start: "top top",
-                end: "+=300",
+                start: "top top+=600",
+                end:   "top top+=1200",
                 scrub: true,
                 onUpdate(self) {
                     const p = self.progress;
@@ -674,33 +610,29 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        /* ── 2. Hero text fades out as scroll progresses ── */
+        /* 2. Hero text fades very late */
         if (heroWrap) {
             gsap.to(heroWrap, {
-                opacity: 0,
-                y: -30,
-                ease: "none",
+                opacity: 0, y: -40, ease: "none",
                 scrollTrigger: {
                     trigger: heroSection,
-                    start: "top top+=600",
-                    end:   "top top+=1200",
+                    start: "top top+=1000",
+                    end:   "top top+=1800",
                     scrub: true,
                 }
             });
         }
 
-        /* ── 3. Mini-bar fades in from bottom during scroll ── */
+        /* 3. Mini-bar slides in */
         if (miniBar) {
             gsap.fromTo(miniBar,
                 { opacity: 0, y: 40 },
                 {
-                    opacity: 1,
-                    y: 0,
-                    ease: "none",
+                    opacity: 1, y: 0, ease: "none",
                     scrollTrigger: {
                         trigger: heroSection,
-                        start: "top top+=900",
-                        end:   "top top+=1200",
+                        start: "top top+=1600",
+                        end:   "top top+=2200",
                         scrub: true,
                         onUpdate(self) {
                             if (miniBar) miniBar.style.pointerEvents = self.progress > 0.5 ? 'auto' : 'none';
@@ -710,57 +642,49 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
 
-        /* ── 4. Scene 1: frames 1-300 across first 50% of hero scroll ── */
+        /* 4. Scene 1: frames 1-300 */
         const p1 = { f: 1 };
         let usingScene2 = false;
 
         gsap.to(p1, {
-            f: S1_TOTAL,
-            ease: "none",
+            f: S1_TOTAL, ease: "none",
             scrollTrigger: {
                 trigger: heroSection,
                 start: "top top",
                 end:   "50% bottom",
-                scrub: 1.8,
+                scrub: 3.5,
             },
-            onUpdate() {
-                if (!usingScene2) paint(s1, p1.f, S1_TOTAL);
-            }
+            onUpdate() { if (!usingScene2) paint(s1, p1.f, S1_TOTAL); }
         });
 
-        /* ── 5. Scene 2: frames 301-600 across second 50% of hero scroll ── */
+        /* 5. Scene 2: frames 301-600 */
         const p2 = { f: 1 };
 
         gsap.to(p2, {
-            f: S2_TOTAL,
-            ease: "none",
+            f: S2_TOTAL, ease: "none",
             scrollTrigger: {
                 trigger: heroSection,
                 start: "50% bottom",
                 end:   "bottom bottom",
-                scrub: 1.8,
+                scrub: 3.5,
                 onEnter()     { usingScene2 = true; },
                 onEnterBack() { usingScene2 = true; },
                 onLeaveBack() { usingScene2 = false; },
-                // On leave (scroll past hero end): freeze frame 600
                 onLeave()     {
                     usingScene2 = true;
                     paint(s2, S2_TOTAL, S2_TOTAL);
                 }
             },
-            onUpdate() {
-                if (usingScene2) paint(s2, p2.f, S2_TOTAL);
-            }
+            onUpdate() { if (usingScene2) paint(s2, p2.f, S2_TOTAL); }
         });
 
-        /* ── 6. Plate preview float: fades in over frozen frame 600 ── */
+        /* 6. Plate preview float fades in — centered at car plate position */
         const plateFloat = document.getElementById("configPlateFloat");
         if (plateFloat && configBridge) {
             gsap.fromTo(plateFloat,
                 { opacity: 0, scale: 0.93, y: 24 },
                 {
-                    opacity: 1, scale: 1, y: 0,
-                    ease: "power2.out",
+                    opacity: 1, scale: 1, y: 0, ease: "power2.out",
                     scrollTrigger: {
                         trigger: configBridge,
                         start: "top 80%",
@@ -771,11 +695,10 @@ document.addEventListener("DOMContentLoaded", () => {
             );
         }
 
-        /* ── 7. Canvas fades out as config-body slides up over it ── */
+        /* 7. Canvas fades out as config-body covers it */
         if (configBody) {
             gsap.to(canvas, {
-                opacity: 0,
-                ease: "none",
+                opacity: 0, ease: "none",
                 scrollTrigger: {
                     trigger: configBody,
                     start: "top 65%",
@@ -783,12 +706,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     scrub: true,
                 }
             });
-
-            /* Mini-bar disappears once we reach configurator */
             if (miniBar) {
                 gsap.to(miniBar, {
-                    opacity: 0,
-                    ease: "none",
+                    opacity: 0, ease: "none",
                     scrollTrigger: {
                         trigger: configBody,
                         start: "top 90%",
@@ -798,16 +718,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         }
-    }
-
-    /* Boot: load scene 1 frame 1, then start everything */
-    // Fade scroll indicator when user starts scrolling
-    const scrollInd = document.getElementById("scrollIndicator");
-    if (scrollInd) {
-        window.addEventListener("scroll", () => {
-            if (window.scrollY > 50) scrollInd.style.opacity = "0";
-            else scrollInd.style.opacity = "1";
-        }, { passive: true });
     }
 
     preloadS1(() => {
