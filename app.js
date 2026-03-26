@@ -705,7 +705,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 trigger: heroSection,
                 start: "top top",
                 end:   "50% bottom",
-                scrub: 0.3,
+                scrub: 1.8,
             },
             onUpdate() {
                 if (!usingScene2) paint(s1, p1.f, S1_TOTAL);
