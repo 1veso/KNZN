@@ -644,6 +644,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const heroSection  = document.getElementById("hero-section");
         const configBridge = document.querySelector(".config-bridge");
         const configBody   = document.querySelector(".config-body");
+        const anchorBanner  = document.querySelector(".anchor-banner");
+        const checkoutBlock = document.querySelector(".checkout-block");
+        if (anchorBanner && checkoutBlock) { ScrollTrigger.create({ trigger: checkoutBlock, start: "top bottom", onEnter() { anchorBanner.classList.add("hidden"); }, onLeaveBack() { anchorBanner.classList.remove("hidden"); } }); }
 
         /* ── 1. Static image crossfades to canvas as soon as scroll starts ── */
         gsap.to({ v: 0 }, {

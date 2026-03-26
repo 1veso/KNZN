@@ -67,7 +67,8 @@ input, button { font-family: inherit; }
 
 
 /* ANCHOR BANNER */
-.anchor-banner { background: var(--gold); color: var(--navy); padding: 12px 24px; text-align: center; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; font-weight: 500; }
+.anchor-banner { background: var(--gold); overflow: hidden; padding: 0; position: fixed; bottom: 0; left: 0; right: 0; z-index: 80; transition: transform 0.3s ease, opacity 0.3s ease; }
+.anchor-banner.hidden { transform: translateY(100%); opacity: 0; pointer-events: none; }
 .anchor-banner strong { font-weight: 700; }
 .anchor-sep { opacity: 0.4; }
 
