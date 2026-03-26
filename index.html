@@ -105,9 +105,9 @@
 <section class="configurator" id="configurator">
 
     <!-- BRIDGE ZONE: transparent — last animation frame shows through here.
-         Plate preview floats here, positioned over the stamped plate in frame 300.
-         Adjust `bottom` and `right` in CSS once you see where the car plate lands. -->
+         Plate preview floats here, positioned over the stamped plate in frame 600. -->
     <div class="config-bridge">
+        <div id="config-frozen-bg" style="position:absolute;inset:0;background:url('assets/images/last frame 600.jpg') center/cover no-repeat;opacity:0.85;z-index:0;pointer-events:none;"></div>
         <div class="config-plate-float" id="configPlateFloat">
             <canvas id="plateCanvas" width="520" height="110"></canvas>
             <div class="plate-validation" id="plateValidation"></div>

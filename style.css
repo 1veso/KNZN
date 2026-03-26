@@ -925,7 +925,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 
 /* ── Hero section: tall enough to play all 600 frames ── */
 .hero {
-    min-height: 300vh;
+    min-height: 500vh;
     position: relative;
     background: transparent;
     padding: 0;
@@ -959,7 +959,7 @@ a.bento-card:hover .bento-link { gap: 8px; }
 }
 
 .hero-scroll-spacer {
-    height: 200vh;
+    height: 400vh;
 }
 
 /* ── Hero mini-bar ── */
