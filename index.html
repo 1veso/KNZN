@@ -10,8 +10,9 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<canvas id="scroll-canvas"></canvas>
-<div id="canvas-loader">Animation wird geladen...</div>
+
+    <canvas id="scroll-canvas"></canvas>
+    <div id="canvas-loader">Animation wird geladen...</div>
 
 <nav class="nav">
     <div class="nav-inner">
@@ -32,9 +33,6 @@
         <div class="hero-bg">
             <img src="/assets/images/hero-audi.jpg" alt="" class="hero-bg-img" id="hero-static-img" />
         </div>
-
-        <canvas id="scroll-canvas"></canvas>
-        <div id="canvas-loader">Animation wird geladen...</div>
 
         <div class="container hero-container" id="hero-content-wrap">
             <div class="hero-content">
@@ -76,12 +74,12 @@
             <a href="#configurator" class="hero-mini-cta">Jetzt bestellen →</a>
         </div>
 
+    <div class="hero-scroll-indicator" id="scrollIndicator">
+            <span>Scrollen</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
     </div>
-
-    <div class="hero-scroll-spacer"></div>
-</section>
-
-<div class="proof-strip">
     <div class="proof-track" id="proofTrack"></div>
 </div>
 
