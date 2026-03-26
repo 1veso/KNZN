@@ -591,3 +591,90 @@ document.addEventListener('DOMContentLoaded', () => {
     checkSuccess();
     typewriterPlate();
 });
+
+/**
+ * ----------------------------------------------------
+ * HERO SCROLL ANIMATION (GSAP Canvas)
+ * ----------------------------------------------------
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Check if GSAP loaded
+    if (typeof gsap === 'undefined') {
+        console.error("GSAP not found! Check your HTML script tags.");
+        return;
+    }
+    
+    gsap.registerPlugin(ScrollTrigger);
+
+    const canvas = document.getElementById("scroll-canvas");
+    if (!canvas) return;
+    
+    const context = canvas.getContext("2d");
+    const loader = document.getElementById("canvas-loader");
+
+    canvas.width = 1920;
+    canvas.height = 1080;
+
+    const frameCount = 1191;
+    const images = [];
+    const airbnb = { frame: 1 };
+    
+    // ⚠️ CRITICAL: The Path. Depending on the server, it's either /public/images/ or just /images/
+    // Try '/public/images/' first. If you still get a black screen, change it to '/images/'
+    const currentFrame = index => `/public/images/${index}.jpg`; 
+
+    // Load Frame 1 immediately so the hero section looks good instantly
+    const firstFrame = new Image();
+    firstFrame.src = currentFrame(1);
+    firstFrame.onload = () => {
+        // As soon as frame 1 loads, hide loader, show canvas, draw frame
+        if (loader) loader.style.opacity = '0'; 
+        canvas.style.opacity = '1';
+        context.drawImage(firstFrame, 0, 0, canvas.width, canvas.height);
+        images[1] = firstFrame;
+        
+        // Start loading the rest in the background
+        loadRestOfImages();
+        
+        // Initialize the scroll trigger
+        initAnimation();
+    };
+
+    // If frame 1 fails to load, it will log an error so we know the path is wrong
+    firstFrame.onerror = () => {
+        console.error(`🚨 Image Path Error: Could not find ${firstFrame.src}. Check your folder structure!`);
+        if (loader) loader.innerText = "Error loading animation (Check Console F12)";
+    };
+
+    function loadRestOfImages() {
+        for (let i = 2; i <= frameCount; i++) {
+            const img = new Image();
+            img.src = currentFrame(i);
+            images[i] = img;
+        }
+    }
+
+    function initAnimation() {
+        gsap.to(airbnb, {
+            frame: frameCount - 1,
+            snap: "frame",
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#hero-section",
+                start: "top top",
+                end: "+=400%", // Scroll distance
+                scrub: 0.5,
+                pin: true
+            },
+            onUpdate: render
+        });
+    }
+
+    function render() {
+        // Only draw if the image exists and has finished downloading
+        if(images[airbnb.frame] && images[airbnb.frame].complete) {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(images[airbnb.frame], 0, 0, canvas.width, canvas.height);
+        }
+    }
+});
