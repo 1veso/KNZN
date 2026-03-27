@@ -535,11 +535,11 @@ function initAnchorBanner() {
     if (!banner) return;
 
     const messages = [
-        '🏆 Komplettpaket nur €30 — Zulassung + 2 Kennzeichen + Umweltplakette',
+        '🏆 Komplettpaket nur €30 | Zulassung + 2 Kennzeichen + Umweltplakette',
         '⚡ Blitzschnelle Bearbeitung unter 24 Stunden',
-        '🚗 DIN-zertifizierte Kennzeichen — gültig in ganz Deutschland',
-        '📦 DHL-Versand deutschlandweit — nur €5',
-        '✅ Niedrigster Preis im Umkreis — kein versteckter Aufpreis',
+        '🚗 DIN-zertifizierte Kennzeichen | gültig in ganz Deutschland',
+        '📦 DHL-Versand deutschlandweit | nur €5',
+        '✅ Niedrigster Preis im Umkreis | kein versteckter Aufpreis',
     ];
 
     // Replace static content with scrolling ticker
@@ -549,6 +549,16 @@ function initAnchorBanner() {
         `<span class="anchor-ticker-item">${m}</span>`
     ).join('');
     ticker.innerHTML = items;
+
+    // Calculate exact pixel width of one set for seamless loop
+    requestAnimationFrame(() => {
+        const halfWidth = ticker.scrollWidth / 2;
+        ticker.style.animation = 'none';
+        ticker.style.setProperty('--ticker-half', `-${halfWidth}px`);
+        requestAnimationFrame(() => {
+            ticker.style.animation = `tickerScroll 32s linear infinite`;
+        });
+    });
 }
 
 /* ─── FAQ ─── */
