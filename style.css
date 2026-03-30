@@ -1749,6 +1749,11 @@ a.bento-card:hover .bento-link {
   }
 }
 
+.lottie-icon {
+  width: 52px;
+  height: 52px;
+}
+
 /* WATERMARK LOGO */
 .watermark-logo {
   position: fixed;

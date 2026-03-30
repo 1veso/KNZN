@@ -641,21 +641,37 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileSticky();
     initCounters();
     initChecklistAnimation();
-    initClockLottie();
+    initServiceLotties();
     initCertLottie();
     initKlausChat();
 });
 
-function initClockLottie() {
-  const el = document.getElementById('clock-lottie');
-  if (!el || typeof lottie === 'undefined') return;
+function initServiceLotties() {
+  const icons = document.querySelectorAll('.lottie-icon');
+  if (!icons.length || typeof lottie === 'undefined') return;
 
-  lottie.loadAnimation({
-    container: el,
-    renderer: 'svg',
-    loop: true,
-    autoplay: true,
-    path: 'https://assets5.lottiefiles.com/packages/lf20_uu0x8lqv.json'
+  icons.forEach(el => {
+    const src = el.dataset.src;
+    if (!src) return;
+
+    const anim = lottie.loadAnimation({
+      container: el,
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: src
+    });
+
+    const card = el.closest('.service-card');
+    if (!card) return;
+
+    card.addEventListener('mouseenter', () => {
+      anim.goToAndPlay(0, true);
+    });
+
+    card.addEventListener('mouseleave', () => {
+      anim.stop();
+    });
   });
 }
 
