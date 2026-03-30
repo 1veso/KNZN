@@ -643,6 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initChecklistAnimation();
     initClockLottie();
     initCertLottie();
+    initKlausChat();
 });
 
 function initClockLottie() {
@@ -787,4 +788,152 @@ function initMobileSticky() {
 
   heroObserver.observe(heroEl);
   console.log('[sticky] initialized, watching:', heroEl, footerEl);
+}
+
+/* ─── KLAUS CHAT AGENT ─── */
+function initKlausChat() {
+  const OPENROUTER_KEY = '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';
+  const SYSTEM_PROMPT = `Du bist Klaus, der freundliche digitale Assistent des Zulassungsdienst Düren. Du hilfst Kunden bei Fragen rund um KFZ-Kennzeichen, Zulassungen und Bestellungen.
+
+Antworte immer auf Deutsch. Sei freundlich, kompetent und kurz. Maximal 3 Sätze pro Antwort.
+
+Was du weißt:
+- Kennzeichen ab €10, Komplettpaket €30
+- Bearbeitung innerhalb von 24 Stunden werktags
+- DHL-Versand €5, deutschlandweit
+- Zulassung, Ummeldung, Abmeldung möglich
+- Abholservice: Stadtgebiet €20, Kreisgebiet €40
+- DIN-zertifiziert, gültig bei jeder Zulassungsstelle
+- Kontakt: info@dueren-zulassungsdienst.de, 02421 5912 286
+- Adresse: Weierstraße 10, 52349 Düren
+
+Wenn der Kunde bestellen möchte, sage ihm er soll den Konfigurator oben auf der Seite nutzen.
+Wenn der Kunde seinen Namen und seine E-Mail nennt, bedanke dich und sage dass sich das Team bald meldet.
+Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
+
+  const chatHistory = [];
+  const trigger = document.getElementById('chat-trigger');
+  const chatWin = document.getElementById('chat-window');
+  const chatClose = document.getElementById('chatClose');
+  const chatInput = document.getElementById('chatInput');
+  const chatSend = document.getElementById('chatSend');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatSuggestions = document.getElementById('chatSuggestions');
+
+  if (!trigger || !chatWin) return;
+
+  trigger.addEventListener('click', () => {
+    chatWin.classList.toggle('open');
+    if (chatWin.classList.contains('open') && chatInput) {
+      chatInput.focus();
+    }
+  });
+
+  if (chatClose) {
+    chatClose.addEventListener('click', () => {
+      chatWin.classList.remove('open');
+    });
+  }
+
+  function addMessage(text, role) {
+    const msg = document.createElement('div');
+    msg.className = 'chat-msg ' + role;
+    if (role === 'bot') {
+      msg.innerHTML = text.split('\n')
+        .filter(l => l.trim())
+        .map(l => '<p>' + l + '</p>')
+        .join('');
+    } else {
+      msg.textContent = text;
+    }
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return msg;
+  }
+
+  function showTyping() {
+    const t = document.createElement('div');
+    t.className = 'chat-typing';
+    t.id = 'typingIndicator';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    chatMessages.appendChild(t);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function hideTyping() {
+    const t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+
+  async function sendMessage(text) {
+    if (!text.trim()) return;
+
+    // Hide suggestions after first message
+    if (chatSuggestions) {
+      chatSuggestions.style.display = 'none';
+    }
+
+    addMessage(text, 'user');
+    chatHistory.push({ role: 'user', content: text });
+
+    if (chatInput) chatInput.value = '';
+    showTyping();
+
+    try {
+      const response = await fetch(
+        'https://openrouter.ai/api/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + OPENROUTER_KEY,
+            'HTTP-Referer': window.location.origin,
+            'X-Title': 'KNZN Klaus Agent'
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-3.1-8b-instruct:free',
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              ...chatHistory
+            ],
+            max_tokens: 200,
+            temperature: 0.7
+          })
+        }
+      );
+
+      const data = await response.json();
+      hideTyping();
+
+      const reply = data.choices?.[0]?.message?.content
+        || 'Entschuldigung, ich konnte Ihre Anfrage nicht verarbeiten. Bitte kontaktieren Sie uns direkt unter 02421 5912 286.';
+
+      chatHistory.push({ role: 'assistant', content: reply });
+      addMessage(reply, 'bot');
+
+    } catch (err) {
+      hideTyping();
+      addMessage(
+        'Entschuldigung, es gab einen technischen Fehler. Bitte rufen Sie uns an: 02421 5912 286.',
+        'bot'
+      );
+      console.error('[Klaus]', err);
+    }
+  }
+
+  window.sendSuggestion = function(btn) {
+    sendMessage(btn.textContent);
+  };
+
+  if (chatSend) {
+    chatSend.addEventListener('click', () => {
+      sendMessage(chatInput.value);
+    });
+  }
+
+  if (chatInput) {
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendMessage(chatInput.value);
+    });
+  }
 }
