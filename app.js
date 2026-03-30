@@ -325,40 +325,41 @@ function initScrollProgress() {
     const checkoutBlockEl = document.querySelector('.checkout-block');
     const footerEl2 = document.querySelector('.footer');
 
-    if (!stepsVertical || !configuratorEl2 || !footerEl2) return;
-
-    // Show steps when configurator is reached
-    const stepsObserver = new IntersectionObserver((entries) => {
+    if (stepsVertical && configuratorEl2 && checkoutBlockEl) {
+      
+      const showObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.target === configuratorEl2) {
-                if (entry.isIntersecting) {
-                    stepsVertical.classList.add('visible');
-                } else {
-                    // Only hide if we scrolled back UP to the hero section
-                    if (entry.boundingClientRect.top > 0) {
-                        stepsVertical.classList.remove('visible');
-                    }
-                }
+          if (entry.isIntersecting) {
+            // Configurator entered viewport — show steps
+            stepsVertical.classList.add('visible');
+          } else {
+            // Configurator left viewport
+            if (entry.boundingClientRect.top > 0) {
+              // Scrolled back UP above configurator — hide steps
+              stepsVertical.classList.remove('visible');
             }
+            // If scrolled DOWN past it, keep visible 
+            // (checkout observer handles hide)
+          }
         });
-    }, { threshold: 0.05 });
-
-    stepsObserver.observe(configuratorEl2);
-
-    const hideStepsObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting && 
-            entry.boundingClientRect.top < 0) {
-          // checkout-block scrolled above viewport — hide steps
-          stepsVertical.classList.remove('visible');
-        } else if (entry.isIntersecting) {
-          // checkout-block back in view — show steps
-          stepsVertical.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.05 });
-
-    if (checkoutBlockEl) hideStepsObserver.observe(checkoutBlockEl);
+      }, { threshold: 0.05 });
+    
+      const hideObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting && 
+              entry.boundingClientRect.top < 0) {
+            // Checkout block scrolled above viewport — hide
+            stepsVertical.classList.remove('visible');
+          } else if (entry.isIntersecting) {
+            // Checkout block back in view scrolling UP — show
+            stepsVertical.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.05 });
+    
+      showObserver.observe(configuratorEl2);
+      hideObserver.observe(checkoutBlockEl);
+    }
 
     // Step activation based on scroll position
     const stepSections = [

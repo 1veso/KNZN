@@ -1523,19 +1523,21 @@ a.bento-card:hover .bento-link {
 .watermark-logo {
   position: fixed;
   bottom: 24px;
-  left: 24px;
-  width: 180px;
-  height: 180px;
-  opacity: 0.18;
+  right: 24px;
+  left: auto;
+  width: 200px;
+  height: 200px;
+  opacity: 0.20;
   pointer-events: none;
-  z-index: 2;
+  z-index: 999;
   display: block;
 }
 
 .watermark-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 
