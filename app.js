@@ -319,32 +319,52 @@ function updateSummary() {
 
 /* ─── PROGRESS ─── */
 function initScrollProgress() {
-    const addonsEl   = document.getElementById('addons');
-    const checkoutEl = document.querySelector('.checkout-block');
-    function update() {
-        if (!addonsEl || !checkoutEl) return;
-        const triggerY   = window.innerHeight * 0.55;
-        const atAddons   = addonsEl.getBoundingClientRect().top   < triggerY;
-        const atCheckout = checkoutEl.getBoundingClientRect().top < triggerY;
-        const s1 = document.getElementById('step1');
-        const s2 = document.getElementById('step2');
-        const s3 = document.getElementById('step3');
-        const l1 = document.getElementById('line1');
-        const l2 = document.getElementById('line2');
-        if (!s1||!s2||!s3) return;
-        [s1,s2,s3].forEach(s => s.className = 'progress-step');
-        [l1,l2].forEach(l => l.className = 'progress-line');
-        if (atCheckout) {
-            s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('active');
-            l1.classList.add('done'); l2.classList.add('done');
-        } else if (atAddons) {
-            s1.classList.add('done'); s2.classList.add('active'); l1.classList.add('done');
-        } else {
-            s1.classList.add('active');
-        }
-    }
-    window.addEventListener('scroll', update, { passive: true });
-    update();
+    const stepsVertical = document.getElementById('checkoutStepsVertical');
+    const configuratorEl2 = document.querySelector('#configurator, .config-body');
+    const addonsEl = document.querySelector('.addons');
+    const checkoutBlockEl = document.querySelector('.checkout-block');
+    const footerEl2 = document.querySelector('.footer');
+
+    if (!stepsVertical || !configuratorEl2 || !footerEl2) return;
+
+    // Show steps when configurator is reached
+    // Hide when footer is reached
+    const stepsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.target === footerEl2 && entry.isIntersecting) {
+                stepsVertical.classList.remove('visible');
+            } else if (entry.target === configuratorEl2 && entry.isIntersecting) {
+                stepsVertical.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    stepsObserver.observe(configuratorEl2);
+    stepsObserver.observe(footerEl2);
+
+    // Step activation based on scroll position
+    const stepSections = [
+        { el: configuratorEl2, step: 1 },
+        { el: addonsEl, step: 2 },
+        { el: checkoutBlockEl, step: 3 },
+    ];
+
+    const stepActivator = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const matched = stepSections.find(s => s.el === entry.target);
+            if (!matched) return;
+            const activeStep = matched.step;
+            document.querySelectorAll('.csv-step').forEach((el, i) => {
+                const stepNum = i + 1;
+                el.classList.remove('active', 'done');
+                if (stepNum < activeStep) el.classList.add('done');
+                if (stepNum === activeStep) el.classList.add('active');
+            });
+        });
+    }, { threshold: 0.3 });
+
+    stepSections.forEach(s => { if (s.el) stepActivator.observe(s.el); });
 }
 
 function updateProgress() {}

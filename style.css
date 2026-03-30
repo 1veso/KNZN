@@ -374,83 +374,101 @@ button {
     opacity: 0.4;
 }
 
-/* PROGRESS BAR */
-.progress-bar {
-    background: var(--white);
-    border-bottom: 1px solid var(--gray-200);
-    padding: 16px 24px;
-    position: sticky;
-    top: 64px;
-    z-index: 90;
-    box-shadow: 0 2px 8px rgba(26, 39, 68, 0.05);
+/* ── Vertical Checkout Steps ── */
+.checkout-steps-vertical {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 95;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
-.progress-inner {
-    max-width: 480px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
+.checkout-steps-vertical.visible {
+  opacity: 1;
 }
 
-.progress-step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+.csv-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
 }
 
-.step-num {
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: var(--gray-200);
-    color: var(--gray-600);
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all var(--t);
+.csv-node {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
-.step-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--gray-400);
-    transition: color var(--t);
+.csv-num {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-400);
+  transition: color 0.3s ease;
+  font-family: 'Rajdhani', sans-serif;
 }
 
-.progress-step.active .step-num {
-    background: var(--navy);
-    color: var(--white);
+.csv-step.active .csv-node {
+  background: var(--navy);
+  border-color: var(--navy);
+  box-shadow: 0 0 0 4px rgba(26,39,68,0.12);
 }
 
-.progress-step.active .step-label {
-    color: var(--navy);
-    font-weight: 600;
+.csv-step.active .csv-num { color: var(--white); }
+
+.csv-step.done .csv-node {
+  background: var(--gold);
+  border-color: var(--gold);
 }
 
-.progress-step.done .step-num {
-    background: var(--gray-400);
-    color: var(--white);
+.csv-step.done .csv-num { color: var(--navy); }
+
+.csv-line {
+  width: 2px;
+  height: 40px;
+  background: var(--gray-200);
+  transition: background 0.3s ease;
 }
 
-.progress-step.done .step-label {
-    color: var(--gray-400);
+.csv-step.done .csv-line { background: var(--gold); }
+
+.csv-label {
+  position: absolute;
+  right: 44px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.progress-line {
-    flex: 1;
-    height: 2px;
-    background: var(--gray-200);
-    margin: 0 12px;
-    min-width: 40px;
-    transition: background var(--t);
+.csv-step.active .csv-label {
+  color: var(--navy);
+  opacity: 1;
+  transform: translateX(0);
 }
 
-.progress-line.done {
-    background: var(--gray-400);
+@media (max-width: 768px) {
+  .checkout-steps-vertical { display: none; }
 }
 
 /* SECTION HEADERS */
@@ -1513,10 +1531,7 @@ a.bento-card:hover .bento-link {
     object-fit: contain;
 }
 
-/* SCROLL OFFSET for sticky nav + progress bar */
-#configurator {
-    scroll-margin-top: 140px;
-}
+
 
 /* MOBILE STICKY BAR */
 .mobile-sticky {
@@ -1987,9 +2002,7 @@ a.bento-card:hover .bento-link {
         bottom: 80px;
     }
 
-    .progress-bar {
-        top: 64px;
-    }
+
 }
 
 /* ─── ANCHOR TICKER ─── */
@@ -2625,10 +2638,7 @@ a.bento-card:hover .bento-link {
         padding: 10px 20px;
     }
 
-    /* ── Progress bar ── */
-    .progress-bar {
-        padding: 12px 16px;
-    }
+
 
     /* ── Configurator ── */
     .configurator {
@@ -2779,13 +2789,7 @@ a.bento-card:hover .bento-link {
         display: none;
     }
 
-    .progress-bar {
-        padding: 10px 16px;
-    }
 
-    .progress-inner {
-        gap: 0;
-    }
 
     /* ── iOS: prevent auto-zoom on input focus (min 16px) ── */
     .input-group input,

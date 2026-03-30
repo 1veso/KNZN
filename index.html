@@ -84,15 +84,7 @@
     <span>Niedrigster Preis im Umkreis</span>
 </div>
 
-<div class="progress-bar" id="progressBar">
-    <div class="progress-inner">
-        <div class="progress-step active" id="step1"><span class="step-num">1</span><span class="step-label">Konfigurieren</span></div>
-        <div class="progress-line" id="line1"></div>
-        <div class="progress-step" id="step2"><span class="step-num">2</span><span class="step-label">Extras wählen</span></div>
-        <div class="progress-line" id="line2"></div>
-        <div class="progress-step" id="step3"><span class="step-num">3</span><span class="step-label">Bezahlen</span></div>
-    </div>
-</div>
+
 
 <section class="configurator" id="configurator">
 
@@ -745,5 +737,27 @@
     });
 })();
 </script>
+<div class="checkout-steps-vertical" id="checkoutStepsVertical">
+  <div class="csv-step active" data-step="1">
+    <div class="csv-node">
+      <span class="csv-num">1</span>
+    </div>
+    <div class="csv-line"></div>
+    <span class="csv-label">Konfigurieren</span>
+  </div>
+  <div class="csv-step" data-step="2">
+    <div class="csv-node">
+      <span class="csv-num">2</span>
+    </div>
+    <div class="csv-line"></div>
+    <span class="csv-label">Extras</span>
+  </div>
+  <div class="csv-step" data-step="3">
+    <div class="csv-node">
+      <span class="csv-num">3</span>
+    </div>
+    <span class="csv-label">Bezahlen</span>
+  </div>
+</div>
 </body>
 </html>as
