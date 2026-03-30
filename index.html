@@ -655,7 +655,9 @@
                 <img src="/assets/images/logo-watermark.svg" alt="Logo" class="logo-mark-img" />
                 <div class="logo-text"><span class="logo-primary">Zulassungsdienst</span><span class="logo-secondary">Düren</span></div>
             </div>
-            <div class="footer-links"><a href="#">Impressum</a><a href="#">Datenschutz</a><a href="#">AGB</a></div>
+            <div class="footer-links">
+                <a href="#" id="link-impressum" onclick="openLegal('impressum');return false;">Impressum</a><span class="footer-sep">·</span><a href="#" id="link-datenschutz" onclick="openLegal('datenschutz');return false;">Datenschutz</a><span class="footer-sep">·</span><a href="#" id="link-agb" onclick="openLegal('agb');return false;">AGB</a><span class="footer-sep">·</span><a href="#" id="link-versand" onclick="openLegal('versand');return false;">Versand &amp; Zahlung</a><span class="footer-sep">·</span><a href="#" id="link-faq" onclick="openLegal('faq');return false;">FAQ</a><span class="footer-sep">·</span><a href="#" id="link-kontakt" onclick="openLegal('kontakt');return false;">Kontakt</a>
+            </div>
             <div class="footer-copy">© 2025 Zulassungsdienst Düren</div>
         </div>
     </div>
@@ -695,11 +697,74 @@
     </div>
 </div>
 
-```html
+<!-- ── Legal Modal System ── -->
+<div class="legal-modal-backdrop" id="legalModalBackdrop" aria-modal="true" role="dialog" aria-labelledby="legalModalTitle">
+    <div class="legal-modal-panel" id="legalModalPanel">
+        <div class="legal-modal-header">
+            <span class="legal-modal-title" id="legalModalTitle"></span>
+            <button class="legal-modal-close" id="legalModalClose" aria-label="Schließen">&#x00D7;</button>
+        </div>
+        <div class="legal-modal-content" id="legalModalContent"></div>
+    </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
+<script src="legal-content.js"></script>
+<script>
+(function() {
+    var titles = {
+        impressum:  'Impressum',
+        datenschutz: 'Datenschutzerklärung',
+        agb:        'AGB',
+        versand:    'Versand & Zahlung',
+        faq:        'FAQ',
+        kontakt:    'Kontakt'
+    };
+    var contents = {};
+    // populated after legal-content.js loads
+    function getContent(key) {
+        var map = {
+            impressum:   typeof IMPRESSUM   !== 'undefined' ? IMPRESSUM   : '',
+            datenschutz: typeof DATENSCHUTZ !== 'undefined' ? DATENSCHUTZ : '',
+            agb:         typeof AGB         !== 'undefined' ? AGB         : '',
+            versand:     typeof VERSAND     !== 'undefined' ? VERSAND     : '',
+            faq:         typeof FAQ         !== 'undefined' ? FAQ         : '',
+            kontakt:     typeof KONTAKT     !== 'undefined' ? KONTAKT     : ''
+        };
+        return map[key] || '';
+    }
+
+    var backdrop = document.getElementById('legalModalBackdrop');
+    var panel    = document.getElementById('legalModalPanel');
+    var titleEl  = document.getElementById('legalModalTitle');
+    var contentEl= document.getElementById('legalModalContent');
+    var closeBtn = document.getElementById('legalModalClose');
+
+    window.openLegal = function(key) {
+        titleEl.textContent  = titles[key] || '';
+        contentEl.innerHTML  = getContent(key);
+        contentEl.scrollTop  = 0;
+        document.body.style.overflow = 'hidden';
+        backdrop.classList.add('active');
+    };
+
+    function closeLegal() {
+        backdrop.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeLegal);
+    backdrop.addEventListener('click', function(e) {
+        if (e.target === backdrop) closeLegal();
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && backdrop.classList.contains('active')) closeLegal();
+    });
+})();
+</script>
 </body>
 </html>as
