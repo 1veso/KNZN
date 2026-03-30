@@ -328,7 +328,6 @@ function initScrollProgress() {
     if (!stepsVertical || !configuratorEl2 || !footerEl2) return;
 
     // Show steps when configurator is reached
-    // Hide when footer is reached
     const stepsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.target === configuratorEl2) {
@@ -341,18 +340,25 @@ function initScrollProgress() {
                     }
                 }
             }
-            if (entry.target === footerEl2) {
-                if (entry.isIntersecting) {
-                    stepsVertical.classList.remove('visible');
-                } else if (entry.boundingClientRect.top > window.innerHeight) {
-                    stepsVertical.classList.add('visible');
-                }
-            }
         });
     }, { threshold: 0.05 });
 
     stepsObserver.observe(configuratorEl2);
-    stepsObserver.observe(footerEl2);
+
+    const hideStepsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting && 
+            entry.boundingClientRect.top < 0) {
+          // checkout-block scrolled above viewport — hide steps
+          stepsVertical.classList.remove('visible');
+        } else if (entry.isIntersecting) {
+          // checkout-block back in view — show steps
+          stepsVertical.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.05 });
+
+    if (checkoutBlockEl) hideStepsObserver.observe(checkoutBlockEl);
 
     // Step activation based on scroll position
     const stepSections = [

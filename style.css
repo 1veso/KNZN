@@ -377,8 +377,9 @@ button {
 /* ── Vertical Checkout Steps ── */
 .checkout-steps-vertical {
   position: fixed;
-  right: 24px;
+  right: 16px;
   top: 50%;
+  overflow: visible;
   transform: translateY(-50%);
   z-index: 95;
   display: flex;
@@ -454,7 +455,8 @@ button {
   position: absolute;
   right: 44px;
   top: 16px;
-  font-size: 11px;
+  font-size: 10px;
+  max-width: 100px;
   font-weight: 600;
   color: var(--gray-400);
   text-transform: uppercase;
@@ -1519,14 +1521,14 @@ a.bento-card:hover .bento-link {
 
 /* WATERMARK LOGO */
 .watermark-logo {
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
-    width: 90px;
-    height: 90px;
-    opacity: 0.08;
-    pointer-events: none;
-    z-index: 0;
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  width: 160px;
+  height: 160px;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .watermark-logo img {
