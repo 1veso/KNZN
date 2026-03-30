@@ -1522,9 +1522,9 @@ a.bento-card:hover .bento-link {
 /* WATERMARK LOGO */
 .watermark-logo {
   position: fixed;
-  bottom: 24px;
-  right: 24px;
-  left: auto;
+  bottom: 100px;
+  left: 24px;
+  right: auto;
   width: 200px;
   height: 200px;
   opacity: 0.20;
