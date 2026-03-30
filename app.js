@@ -365,10 +365,14 @@ function openEmailModal() {
     const overlay = document.getElementById('emailModal');
     const input   = document.getElementById('emailInput');
     const errEl   = document.getElementById('emailError');
+    const btn     = document.getElementById('emailSubmitBtn');
+    const btnText = document.getElementById('emailSubmitText');
     overlay.classList.add('active');
     document.body.style.overflow = 'hidden';
-    if (errEl)  errEl.textContent = '';
-    if (input)  { input.classList.remove('error'); input.value = ''; input.focus(); }
+    if (errEl)   errEl.textContent = '';
+    if (btn)     { btn.disabled = false; }
+    if (btnText) btnText.textContent = 'Weiter zur Zahlung';
+    if (input)   { input.classList.remove('error'); input.value = ''; input.focus(); }
 }
 
 function closeEmailModal() {
@@ -380,18 +384,16 @@ function validateEmail(email) {
     return /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/.test(email);
 }
 
-async function submitEmailAndCheckout() {
-    const input   = document.getElementById('emailInput');
+/* ─── CORE CHECKOUT FUNCTION ─── */
+async function proceedToCheckout(email = null) {
+    const overlay = document.getElementById('emailModal');
     const errEl   = document.getElementById('emailError');
     const btn     = document.getElementById('emailSubmitBtn');
     const btnText = document.getElementById('emailSubmitText');
-    const email   = (input.value || '').trim();
 
-    if (!email) { input.classList.add('error'); errEl.textContent = 'Bitte E-Mail eingeben.'; input.focus(); return; }
-    if (!validateEmail(email)) { input.classList.add('error'); errEl.textContent = 'Ungültige E-Mail-Adresse.'; input.focus(); return; }
-
-    input.classList.remove('error'); errEl.textContent = '';
-    btn.disabled = true; btnText.textContent = 'Wird weitergeleitet...';
+    // Show loading state
+    if (btn)     btn.disabled = true;
+    if (btnText) btnText.textContent = 'Wird weitergeleitet...';
 
     try {
         const ort = state.ort.trim(), b = state.buchstaben.trim(), z = state.ziffern.trim();
@@ -407,18 +409,21 @@ async function submitEmailAndCheckout() {
             : state.suffix;
 
         const requestBody = {
-            plateText:     buildPlateText(ort, b, z, typeSuffix),
-            plateFormat:   `${state.size}_${state.material}`,
-            material:      state.material,
-            size:          state.size,
-            type:          plateType,
-            addons:        state.addons,
-            totalAmount:   calcTotal(),
-            customerEmail: email,
-            emailDiscount: true
+            plateText:   buildPlateText(ort, b, z, typeSuffix),
+            plateFormat: `${state.size}_${state.material}`,
+            material:    state.material,
+            size:        state.size,
+            type:        plateType,
+            addons:      state.addons,
+            totalAmount: calcTotal(),
         };
 
-        // Diagnostic: log the exact body being sent so any future mismatch is visible
+        // Only include email fields when an email was actually provided
+        if (email) {
+            requestBody.customerEmail = email;
+            requestBody.emailDiscount = true;
+        }
+
         console.log('[checkout] POST /create-checkout body:', JSON.stringify(requestBody, null, 2));
 
         const res = await fetch('/create-checkout', {
@@ -436,10 +441,41 @@ async function submitEmailAndCheckout() {
         const { url } = await res.json();
         if (!url) throw new Error('No checkout URL returned');
         window.location.href = url;
+
     } catch (err) {
         console.error('[checkout] Error:', err);
-        errEl.textContent = 'Fehler. Bitte erneut versuchen.';
-        btn.disabled = false; btnText.textContent = 'Weiter zur Zahlung';
+        if (btn)     { btn.disabled = false; }
+        if (btnText) btnText.textContent = 'Weiter zur Zahlung';
+
+        // Show error inside modal if still open, otherwise alert
+        if (overlay && overlay.classList.contains('active')) {
+            if (errEl) errEl.textContent = 'Fehler. Bitte erneut versuchen.';
+        } else {
+            alert('Checkout-Fehler. Bitte Seite neu laden und erneut versuchen.');
+        }
+    }
+}
+
+/* ─── SUBMIT HANDLER (called by button click / Enter key) ─── */
+function submitEmailAndCheckout() {
+    const input = document.getElementById('emailInput');
+    const errEl = document.getElementById('emailError');
+    const email = (input ? input.value : '').trim();
+
+    // If an email was typed, validate its format first
+    if (email) {
+        if (!validateEmail(email)) {
+            input.classList.add('error');
+            if (errEl) errEl.textContent = 'Ungültige E-Mail-Adresse.';
+            input.focus();
+            return;
+        }
+        input.classList.remove('error');
+        if (errEl) errEl.textContent = '';
+        proceedToCheckout(email);
+    } else {
+        // Empty email — skip straight to Stripe without storing email
+        proceedToCheckout(null);
     }
 }
 
@@ -450,15 +486,41 @@ async function submitEmailAndCheckout() {
         const submitBtn = document.getElementById('emailSubmitBtn');
         const input     = document.getElementById('emailInput');
         const errEl     = document.getElementById('emailError');
-        if (closeBtn)  closeBtn.addEventListener('click', closeEmailModal);
-        if (overlay)   overlay.addEventListener('click', e => { if (e.target===overlay) closeEmailModal(); });
+
+        // × button → skip email, go directly to checkout
+        if (closeBtn) closeBtn.addEventListener('click', function() {
+            closeEmailModal();
+            proceedToCheckout(null);
+        });
+
+        // Backdrop click → skip email, go directly to checkout
+        if (overlay) overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeEmailModal();
+                proceedToCheckout(null);
+            }
+        });
+
+        // Submit button → validate if email typed, else skip
         if (submitBtn) submitBtn.addEventListener('click', submitEmailAndCheckout);
+
+        // Enter key in input → same as submit
         if (input) {
-            input.addEventListener('keydown', e => { if (e.key==='Enter') submitEmailAndCheckout(); });
-            input.addEventListener('input', () => { input.classList.remove('error'); if (errEl) errEl.textContent=''; });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') submitEmailAndCheckout();
+            });
+            input.addEventListener('input', function() {
+                input.classList.remove('error');
+                if (errEl) errEl.textContent = '';
+            });
         }
-        document.addEventListener('keydown', e => {
-            if (e.key==='Escape' && overlay && overlay.classList.contains('active')) closeEmailModal();
+
+        // Escape key → skip email, go directly to checkout
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay && overlay.classList.contains('active')) {
+                closeEmailModal();
+                proceedToCheckout(null);
+            }
         });
     });
 })();

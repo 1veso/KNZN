@@ -1072,6 +1072,13 @@ button {
     transform: none;
 }
 
+.email-modal-hint {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 6px;
+    text-align: center;
+}
+
 .email-modal-privacy {
     font-size: 11px;
     color: var(--gray-400);
