@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
 
@@ -15,7 +16,7 @@
 <nav class="nav">
     <div class="nav-inner">
         <div class="nav-logo" style="align-items:center;gap:10px;">
-            <img src="/assets/images/logo-watermark.svg" alt="Logo" class="logo-mark-img" width="180" height="180" style="width:180px;height:180px;object-fit:contain;" />
+            <img src="/assets/images/logo-main.png" alt="Logo" class="logo-mark-img" width="48" height="48" style="width:48px;height:48px;object-fit:contain;" />
             <div class="logo-text">
                 <span class="logo-primary">Zulassungsdienst</span>
                 <span class="logo-secondary">Düren</span>
@@ -267,11 +268,11 @@
                 </div>
                 <h3 class="service-card-title">Benötigte Unterlagen</h3>
                 <p class="service-card-desc">Diese Dokumente benötigen wir von Ihnen:</p>
-                <ul class="service-checklist">
-                    <li>Personalausweis</li>
-                    <li>ZB I + ZB II (Fahrzeugschein &amp; -brief)</li>
-                    <li>eVB-Nummer (Versicherung)</li>
-                    <li>SEPA-Mandat</li>
+                <ul class="service-checklist animated-checklist">
+                  <li class="check-item">Personalausweis</li>
+                  <li class="check-item">ZB I + ZB II (Fahrzeugschein &amp; -brief)</li>
+                  <li class="check-item">eVB-Nummer (Versicherung)</li>
+                  <li class="check-item">SEPA-Mandat</li>
                 </ul>
             </div>
 
@@ -300,7 +301,7 @@
             <!-- Card 4: Öffnungszeiten -->
             <div class="service-card">
                 <div class="service-icon-wrap">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                    <div id="clock-lottie" style="width:52px;height:52px;"></div>
                 </div>
                 <h3 class="service-card-title">Öffnungszeiten</h3>
                 <p class="service-card-desc">Erreichbar zu den Zeiten, die für Sie passen.</p>
@@ -337,7 +338,7 @@
         <div class="bento-grid">
             <a href="https://www.dincertco.tuv.com/companies/90954?locale=de" target="_blank" rel="noopener" class="bento-card bento-din">
                 <div class="bento-tag">Zertifizierung</div>
-                <div class="bento-icon">🏅</div>
+                <div id="cert-lottie" style="width:64px;height:64px;"></div>
                 <div class="bento-title">DIN zertifiziert</div>
                 <div class="bento-desc">Alle Kennzeichen entsprechen der deutschen DIN-Norm. Gültig bei jeder Zulassungsstelle.</div>
                 <div class="bento-link">Zertifikat ansehen →</div>
@@ -590,7 +591,7 @@
     <div class="container">
         <div class="footer-inner">
             <div class="footer-logo">
-                <img src="/assets/images/logo-watermark.svg" alt="Logo" class="logo-mark-img" width="180" height="180" style="width:180px;height:180px;object-fit:contain;" />
+                <img src="/assets/images/logo-main.png" alt="Logo" class="logo-mark-img" width="64" height="64" style="width:64px;height:64px;object-fit:contain;" />
                 <div class="logo-text"><span class="logo-primary">Zulassungsdienst</span><span class="logo-secondary">Düren</span></div>
             </div>
             <div class="footer-links">
@@ -615,7 +616,7 @@
 
 <!-- Watermark logo -->
 <div class="watermark-logo" aria-hidden="true">
-    <img src="/assets/images/logo-watermark.svg" alt="" />
+    <img src="/assets/images/logo-main.png" alt="" />
 </div>
 
 <!-- ── Email Modal ── -->
@@ -728,4 +729,4 @@
   </div>
 </div>
 </body>
-</html>as
+</html>

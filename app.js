@@ -639,7 +639,100 @@ document.addEventListener('DOMContentLoaded', () => {
     checkSuccess();
     typewriterPlate();
     initMobileSticky();
+    initCounters();
+    initChecklistAnimation();
+    initClockLottie();
+    initCertLottie();
 });
+
+function initClockLottie() {
+  const el = document.getElementById('clock-lottie');
+  if (!el || typeof lottie === 'undefined') return;
+
+  lottie.loadAnimation({
+    container: el,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: 'https://assets5.lottiefiles.com/packages/lf20_uu0x8lqv.json'
+  });
+}
+
+function initCertLottie() {
+  const el = document.getElementById('cert-lottie');
+  if (!el || typeof lottie === 'undefined') return;
+
+  lottie.loadAnimation({
+    container: el,
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: 'https://assets9.lottiefiles.com/packages/lf20_touohxev.json'
+  });
+}
+
+function initChecklistAnimation() {
+  const items = document.querySelectorAll(
+    '.animated-checklist .check-item'
+  );
+  if (!items.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      items.forEach((item, i) => {
+        setTimeout(() => {
+          item.classList.add('visible');
+        }, i * 150);
+      });
+      observer.disconnect();
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(items[0].closest('section') || items[0]);
+}
+
+function initCounters() {
+  // Fixed selectors: .bs-num:nth-child() returns null for 2, 3, 4 because they are all the 1st child of .bento-stat. 
+  // Adjusted to .bento-stat:nth-child(x) .bs-num to accurately map to the grid.
+  const counters = [
+    { selector: '.bento-stat:nth-child(1) .bs-num', target: 450, suffix: '+', duration: 2000 },
+    { selector: '.bento-stat:nth-child(2) .bs-num', target: 150, suffix: '+', duration: 1800 },
+    { selector: '.bento-stat:nth-child(3) .bs-num', target: 2, suffix: '+', duration: 1000 },
+    { selector: '.bento-stat:nth-child(4) .bs-num', target: 100, suffix: '%', duration: 1500 },
+    { el: document.querySelector('.bento-speed .bento-big'), target: 24, suffix: 'h', duration: 1200 },
+    { el: document.querySelector('.bento-price .bento-big'), target: 30, prefix: '€', duration: 1000 },
+  ];
+
+  function animateCounter(el, target, duration, prefix = '', suffix = '') {
+    if (!el) return;
+    const start = performance.now();
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = prefix + Math.floor(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  const whyUs = document.querySelector('.why-us');
+  if (!whyUs) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      counters.forEach(c => {
+        const el = c.el || document.querySelector(c.selector);
+        animateCounter(el, c.target, c.duration, c.prefix || '', c.suffix || '');
+      });
+      observer.disconnect();
+    });
+  }, { threshold: 0.3 });
+
+  observer.observe(whyUs);
+}
 
 /* ─── MOBILE STICKY BAR ─── */
 function initMobileSticky() {
