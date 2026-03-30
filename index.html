@@ -31,7 +31,7 @@
     <div class="hero-inner">
 
         <div class="hero-bg">
-            <img src="assets/images/hero-audi.jpg" alt="" class="hero-bg-img" id="hero-static-img" />
+            <img src="assets/images/hero-audi.jpg" alt="" class="hero-bg-img" />
         </div>
 
         <div class="container hero-container" id="hero-content-wrap">
@@ -74,14 +74,7 @@
             <a href="#configurator" class="hero-mini-cta">Jetzt bestellen →</a>
         </div>
 
-    <div class="hero-scroll-indicator" id="scrollIndicator">
-            <span>Scrollen</span>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-
     </div>
-
-    <div class="proof-track" id="proofTrack"></div>
 </section>
 
 <div class="anchor-banner">
@@ -105,23 +98,15 @@
 
 <section class="configurator" id="configurator">
 
-    <!-- BRIDGE ZONE: transparent — last animation frame shows through here.
-         Plate preview floats here, positioned over the stamped plate in frame 600. -->
-    <div class="config-bridge">
-        <div id="config-frozen-bg" style="position:absolute;inset:0;background:url('assets/images/last frame 600.jpg') center/cover no-repeat;opacity:0.85;z-index:0;pointer-events:none;"></div>
-        <div class="config-plate-float" id="configPlateFloat">
-            <canvas id="plateCanvas" width="520" height="110"></canvas>
-            <div class="plate-validation" id="plateValidation"></div>
-            <p class="config-plate-hint">← Ihr Wunschkennzeichen live</p>
-        </div>
-    </div>
-
-    <!-- SOLID BODY: slides up beneath the frozen animation frame -->
     <div class="config-body">
         <div class="configurator-watermark">
             <img src="/assets/images/plate-decorative.jpg" alt="" aria-hidden="true" />
         </div>
         <div class="container">
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:40px;">
+                <canvas id="plateCanvas" width="520" height="110"></canvas>
+                <div class="plate-validation" id="plateValidation"></div>
+            </div>
             <div class="section-header">
                 <div class="section-label">Schritt 1</div>
                 <h2 class="section-title">Ihr Wunschkennzeichen</h2>

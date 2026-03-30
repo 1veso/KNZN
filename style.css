@@ -2849,57 +2849,18 @@ a.bento-card:hover .bento-link {
    CINEMATIC SCROLL ANIMATION
    ══════════════════════════════════════════════ */
 
-/* Fixed canvas — lives behind everything */
-#scroll-canvas {
-    position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    opacity: 0;
-    pointer-events: none;
-    display: block;
-    object-fit: cover;
-}
-
-/* Static Audi image — fades out as canvas takes over */
-#hero-static-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(0.32) saturate(0.65);
-    z-index: 2;
-    transition: none;
-}
-
-#canvas-loader {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 11px;
-    z-index: 10;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-}
-
-/* ── Hero section: tall enough to play all 600 frames ── */
+/* ── Hero section ── */
 .hero {
-    min-height: 600vh;
+    min-height: 100vh;
     position: relative;
     background: transparent;
     padding: 0;
 }
 
 .hero-inner {
-    position: sticky;
-    top: 0;
+    position: relative;
     height: 100vh;
     overflow: hidden;
-    z-index: 2;
-    background: transparent;
 }
 
 .hero-bg {
@@ -2907,6 +2868,16 @@ a.bento-card:hover .bento-link {
     inset: 0;
     z-index: 0;
     background: #050810;
+}
+
+.hero-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.32) saturate(0.65);
+    z-index: 2;
 }
 
 .hero-container {
@@ -2919,10 +2890,6 @@ a.bento-card:hover .bento-link {
     gap: 60px;
     align-items: center;
     padding-top: 80px;
-}
-
-.hero-scroll-spacer {
-    height: 200vh;
 }
 
 /* ── Hero mini-bar ── */
@@ -2991,44 +2958,6 @@ a.bento-card:hover .bento-link {
     padding: 0;
 }
 
-.config-bridge {
-    height: 55vh;
-    position: relative;
-    background: transparent;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;
-    padding-right: 7%;
-    padding-bottom: 48px;
-}
-
-.config-plate-float {
-    background: rgba(255, 255, 255, 0.11);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 18px;
-    padding: 22px 28px 16px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
-    opacity: 0;
-    max-width: 580px;
-    width: 100%;
-}
-
-.config-plate-float canvas {
-    display: block;
-    width: 100%;
-    border-radius: 6px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-}
-
-.config-plate-hint {
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.45);
-    margin-top: 8px;
-    text-align: right;
-    letter-spacing: 0.04em;
-}
 
 .plate-validation {
     font-size: 13px;
@@ -3095,19 +3024,6 @@ a.bento-card:hover .bento-link {
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
-    .config-bridge {
-        height: 40vh;
-        justify-content: center;
-        padding-right: 0;
-        padding-left: 0;
-        padding-bottom: 24px;
-    }
-
-    .config-plate-float {
-        width: calc(100% - 32px);
-        padding: 16px 16px 12px;
-    }
-
     #hero-mini-bar {
         padding: 12px 16px;
         flex-direction: column;
@@ -3129,49 +3045,6 @@ a.bento-card:hover .bento-link {
     }
 }
 
-/* ── Scroll indicator ── */
-.hero-scroll-indicator {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    z-index: 10;
-    animation: bounceDown 2s ease-in-out infinite;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-}
-
-.hero-scroll-indicator svg {
-    color: rgba(255, 255, 255, 0.4);
-}
-
-@keyframes bounceDown {
-
-    0%,
-    100% {
-        transform: translateX(-50%) translateY(0);
-    }
-
-    50% {
-        transform: translateX(-50%) translateY(8px);
-    }
-}
-
-/* ── Config bridge centered ── */
-.config-bridge {
-    align-items: center;
-    justify-content: center;
-    padding-right: 0;
-    padding-bottom: 0;
-}
 
 /* ── Configurator body content order ── */
 .config-body .container {
