@@ -468,11 +468,11 @@ function initAnchorBanner() {
     const banner = document.querySelector('.anchor-banner');
     if (!banner) return;
     const messages = [
-        '🏆 Komplettpaket nur €30 — Zulassung + 2 Kennzeichen + Umweltplakette',
+        '🏆 Komplettpaket nur €30, Zulassung + 2 Kennzeichen + Umweltplakette',
         '⚡ Blitzschnelle Bearbeitung unter 24 Stunden',
-        '🚗 DIN-zertifizierte Kennzeichen — gültig in ganz Deutschland',
-        '📦 DHL-Versand deutschlandweit — nur €5',
-        '✅ Niedrigster Preis im Umkreis — kein versteckter Aufpreis',
+        '🚗 DIN-zertifizierte Kennzeichen, gültig in ganz Deutschland',
+        '📦 DHL-Versand deutschlandweit, nur €5',
+        '✅ Niedrigster Preis im Umkreis, kein versteckter Aufpreis',
     ];
     banner.innerHTML = `<div class="anchor-ticker-wrap"><div class="anchor-ticker" id="anchorTicker"></div></div>`;
     document.getElementById('anchorTicker').innerHTML = [...messages,...messages].map(m =>

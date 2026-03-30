@@ -122,7 +122,7 @@ var DATENSCHUTZ = `
   <h2>10) Dauer der Speicherung personenbezogener Daten</h2>
   <p>Die Speicherdauer richtet sich nach der jeweiligen Rechtsgrundlage, dem Verarbeitungszweck und den gesetzlichen Aufbewahrungsfristen (insbesondere handels- und steuerrechtliche Fristen von 6 bzw. 10 Jahren).</p>
   <hr>
-  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
 `;
 
 var AGB = `
@@ -200,7 +200,7 @@ var AGB = `
   <p>Der Verkäufer ist zur Teilnahme an einem Streitbeilegungsverfahren vor einer alternativen Streitbeilegungsstelle weder verpflichtet noch bereit.</p>
   <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a></p>
   <hr>
-  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
 `;
 
 var VERSAND = `
@@ -255,7 +255,7 @@ var VERSAND = `
   </p>
   <p>Montag – Freitag: 09:00 – 13:00 Uhr</p>
   <hr>
-  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
 `;
 
 var FAQ = `
@@ -281,7 +281,7 @@ var FAQ = `
   <hr>
   <h2>🚗 Zulassungsdienstleistungen</h2>
   <h3>Was macht ein Zulassungsdienst?</h3>
-  <p>Ein Zulassungsdienst übernimmt für Sie alle behördlichen Formalitäten rund um die KFZ-Zulassung — von der Anmeldung über die Ummeldung bis zur Abmeldung beim Straßenverkehrsamt. Sie sparen sich Wartezeiten und Behördengänge.</p>
+  <p>Ein Zulassungsdienst übernimmt für Sie alle behördlichen Formalitäten rund um die KFZ-Zulassung, von der Anmeldung über die Ummeldung bis zur Abmeldung beim Straßenverkehrsamt. Sie sparen sich Wartezeiten und Behördengänge.</p>
   <h3>Welche Unterlagen werden für eine Zulassung benötigt?</h3>
   <ul>
     <li>Personalausweis oder Reisepass</li>
@@ -330,7 +330,7 @@ var FAQ = `
   <h3>Kann ich meine Bestellung stornieren oder ändern?</h3>
   <p>Stornierungen oder Änderungen sind möglich, solange das Kennzeichen noch nicht geprägt wurde. Bitte kontaktieren Sie uns so schnell wie möglich unter <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a>.</p>
   <h3>Gibt es einen Rabatt für das Komplettpaket?</h3>
-  <p>Ja. Unser Komplettpaket (Zulassung + 2 Kennzeichen + Umweltplakette) kostet nur €30 — günstigster Preis im Umkreis, transparent und ohne versteckte Kosten.</p>
+  <p>Ja. Unser Komplettpaket (Zulassung + 2 Kennzeichen + Umweltplakette) kostet nur €30, günstigster Preis im Umkreis, transparent und ohne versteckte Kosten.</p>
   <hr>
   <h2>🔁 Widerruf &amp; Rückgabe</h2>
   <h3>Kann ich meine Bestellung widerrufen?</h3>
@@ -344,8 +344,8 @@ var FAQ = `
   <h3>Welche Formulare benötige ich für eine Zulassung?</h3>
   <p>Auf unserer Website stehen folgende Dokumente zum Download bereit:</p>
   <ul>
-    <li><strong>Vollmacht Zulassung</strong> (PDF, 1 Seite) — für Anmeldung, Ummeldung oder Abmeldung</li>
-    <li><strong>SEPA-Lastschriftmandat</strong> (PDF, 1 Seite) — für die KFZ-Steuer</li>
+    <li><strong>Vollmacht Zulassung</strong> (PDF, 1 Seite): für Anmeldung, Ummeldung oder Abmeldung</li>
+    <li><strong>SEPA-Lastschriftmandat</strong> (PDF, 1 Seite): für die KFZ-Steuer</li>
   </ul>
   <hr>
   <h2>📞 Kontakt &amp; Erreichbarkeit</h2>
@@ -363,8 +363,8 @@ var FAQ = `
     <li>Abendtermine: Auf Anfrage</li>
   </ul>
   <hr>
-  <p><em>Haben Sie weitere Fragen? Schreiben Sie uns jederzeit — wir antworten in der Regel innerhalb weniger Stunden.</em></p>
-  <p><em>Zulassungsdienst Düren — Stand: März 2026</em></p>
+  <p><em>Haben Sie weitere Fragen? Schreiben Sie uns jederzeit, wir antworten in der Regel innerhalb weniger Stunden.</em></p>
+  <p><em>Zulassungsdienst Düren, Stand: März 2026</em></p>
 `;
 
 var KONTAKT = `
@@ -390,6 +390,6 @@ var KONTAKT = `
     <li>Abendtermine: Auf Anfrage</li>
   </ul>
   <hr>
-  <p>Haben Sie Fragen zu Ihrer Bestellung, einem Kennzeichen oder einer Zulassung? Schreiben Sie uns — wir antworten in der Regel innerhalb weniger Stunden, spätestens aber innerhalb von 24 Stunden an Werktagen.</p>
+  <p>Haben Sie Fragen zu Ihrer Bestellung, einem Kennzeichen oder einer Zulassung? Schreiben Sie uns, wir antworten in der Regel innerhalb weniger Stunden, spätestens aber innerhalb von 24 Stunden an Werktagen.</p>
   <p><em>Stand: März 2026</em></p>
 `;
