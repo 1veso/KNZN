@@ -395,22 +395,49 @@ async function submitEmailAndCheckout() {
 
     try {
         const ort = state.ort.trim(), b = state.buchstaben.trim(), z = state.ziffern.trim();
-        const typeSuffix = state.plateType==='e'?'E':state.plateType==='h'?'H':state.plateType==='saisonal'?'04-10':state.suffix;
+
+        // Map internal plate type keys to the values the server validates
+        const typeMap = { e: 'elektro', h: 'oldtimer', saisonal: 'saisonal', standard: 'standard' };
+        const plateType = typeMap[state.plateType] || 'standard';
+
+        // For the plate text suffix we still use the short display label
+        const typeSuffix = state.plateType === 'e' ? 'E'
+            : state.plateType === 'h' ? 'H'
+            : state.plateType === 'saisonal' ? '04-10'
+            : state.suffix;
+
+        const requestBody = {
+            plateText:     buildPlateText(ort, b, z, typeSuffix),
+            plateFormat:   `${state.size}_${state.material}`,
+            material:      state.material,
+            size:          state.size,
+            type:          plateType,
+            addons:        state.addons,
+            totalAmount:   calcTotal(),
+            customerEmail: email,
+            emailDiscount: true
+        };
+
+        // Diagnostic: log the exact body being sent so any future mismatch is visible
+        console.log('[checkout] POST /create-checkout body:', JSON.stringify(requestBody, null, 2));
+
         const res = await fetch('/create-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                plateText: buildPlateText(ort,b,z,typeSuffix),
-                plateFormat: `${state.size}_${state.material}`,
-                material: state.material, size: state.size,
-                addons: state.addons, totalAmount: calcTotal(), email
-            })
+            body: JSON.stringify(requestBody)
         });
-        if (!res.ok) throw new Error('Checkout failed');
+
+        if (!res.ok) {
+            const errBody = await res.text();
+            console.error('[checkout] Server responded', res.status, errBody);
+            throw new Error(`Checkout failed: ${res.status}`);
+        }
+
         const { url } = await res.json();
+        if (!url) throw new Error('No checkout URL returned');
         window.location.href = url;
     } catch (err) {
-        console.error(err);
+        console.error('[checkout] Error:', err);
         errEl.textContent = 'Fehler. Bitte erneut versuchen.';
         btn.disabled = false; btnText.textContent = 'Weiter zur Zahlung';
     }

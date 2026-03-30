@@ -5,15 +5,14 @@ var IMPRESSUM = `
   <span class="legal-badge">Impressum</span>
   <h2>Angaben gemäß § 5 TMG</h2>
   <p>
-    <strong>Primoz Vesenjak</strong><br>
-    Trendiva Lux<br>
+    <strong>Zulassungsdienst Düren</strong><br>
     Weierstraße 10<br>
     52349 Düren<br>
     Deutschland
   </p>
   <h2>Kontakt</h2>
   <p>
-    Tel.: <a href="tel:+492421591228">+49 2421 5912 286</a><br>
+    Tel.: <a href="tel:024215912286">02421 5912 286</a><br>
     E-Mail: <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a>
   </p>
   <h2>Umsatzsteuer</h2>
@@ -50,8 +49,7 @@ var DATENSCHUTZ = `
   <p><strong>1.1</strong> Wir freuen uns, dass Sie unsere Website besuchen, und danken Ihnen für Ihr Interesse. Auf den folgenden Seiten informieren wir Sie über den Umgang mit Ihren personenbezogenen Daten bei der Nutzung unserer Website. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können.</p>
   <p><strong>1.2</strong> Verantwortlicher für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
   <p>
-    <strong>Primoz Vesenjak</strong><br>
-    Trendiva Lux<br>
+    <strong>Zulassungsdienst Düren</strong><br>
     Weierstraße 10<br>
     52349 Düren<br>
     Deutschland<br><br>
@@ -124,7 +122,7 @@ var DATENSCHUTZ = `
   <h2>10) Dauer der Speicherung personenbezogener Daten</h2>
   <p>Die Speicherdauer richtet sich nach der jeweiligen Rechtsgrundlage, dem Verarbeitungszweck und den gesetzlichen Aufbewahrungsfristen (insbesondere handels- und steuerrechtliche Fristen von 6 bzw. 10 Jahren).</p>
   <hr>
-  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Trendiva Lux — Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Weierstraße 10, 52349 Düren</em></p>
 `;
 
 var AGB = `
@@ -145,7 +143,7 @@ var AGB = `
   </ol>
   <hr>
   <h2>1) Geltungsbereich</h2>
-  <p><strong>1.1</strong> Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB" genannt) des Unternehmens Primoz Vesenjak, Trendiva Lux (nachfolgend „Verkäufer" genannt), gelten für alle Verträge, die ein Verbraucher oder Unternehmer (nachfolgend „Kunde" genannt) mit dem Verkäufer hinsichtlich der vom Verkäufer in seinem Online-Shop dargestellten Waren und Dienstleistungen abschließt. Der Einbeziehung von eigenen Bedingungen des Kunden wird hiermit widersprochen, es sei denn, es ist ausdrücklich etwas anderes vereinbart.</p>
+  <p><strong>1.1</strong> Diese Allgemeinen Geschäftsbedingungen (nachfolgend „AGB" genannt) des Unternehmens Zulassungsdienst Düren (nachfolgend „Verkäufer" genannt), gelten für alle Verträge, die ein Verbraucher oder Unternehmer (nachfolgend „Kunde" genannt) mit dem Verkäufer hinsichtlich der vom Verkäufer in seinem Online-Shop dargestellten Waren und Dienstleistungen abschließt. Der Einbeziehung von eigenen Bedingungen des Kunden wird hiermit widersprochen, es sei denn, es ist ausdrücklich etwas anderes vereinbart.</p>
   <p><strong>1.2</strong> Für Verträge über die Erbringung von Zulassungsdienstleistungen (Anmeldung, Ummeldung, Abmeldung) gelten diese AGB entsprechend, sofern nicht ausdrücklich etwas anderes vereinbart wurde.</p>
   <p><strong>1.3</strong> Ein Verbraucher im Sinne dieser AGB ist jede natürliche Person, die ein Rechtsgeschäft zu einem Zweck abschließt, der weder einer überwiegend gewerblichen noch einer selbständigen beruflichen Tätigkeit zugerechnet werden kann.</p>
   <p><strong>1.4</strong> Ein Unternehmer im Sinne dieser AGB ist eine natürliche oder juristische Person oder eine rechtsfähige Personengesellschaft, die bei Abschluss eines Rechtsgeschäfts in Ausübung ihrer gewerblichen oder selbständigen beruflichen Tätigkeit handelt.</p>
@@ -202,7 +200,7 @@ var AGB = `
   <p>Der Verkäufer ist zur Teilnahme an einem Streitbeilegungsverfahren vor einer alternativen Streitbeilegungsstelle weder verpflichtet noch bereit.</p>
   <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a></p>
   <hr>
-  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Trendiva Lux — Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Weierstraße 10, 52349 Düren</em></p>
 `;
 
 var VERSAND = `
@@ -257,7 +255,7 @@ var VERSAND = `
   </p>
   <p>Montag – Freitag: 09:00 – 13:00 Uhr</p>
   <hr>
-  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Trendiva Lux — Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026 — Zulassungsdienst Düren — Weierstraße 10, 52349 Düren</em></p>
 `;
 
 var FAQ = `
@@ -366,7 +364,7 @@ var FAQ = `
   </ul>
   <hr>
   <p><em>Haben Sie weitere Fragen? Schreiben Sie uns jederzeit — wir antworten in der Regel innerhalb weniger Stunden.</em></p>
-  <p><em>Zulassungsdienst Düren — Trendiva Lux — Stand: März 2026</em></p>
+  <p><em>Zulassungsdienst Düren — Stand: März 2026</em></p>
 `;
 
 var KONTAKT = `
