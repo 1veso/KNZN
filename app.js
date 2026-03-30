@@ -539,6 +539,23 @@ function initAnchorBanner() {
     banner.innerHTML = `<div class="anchor-ticker-wrap"><div class="anchor-ticker" id="anchorTicker"></div></div>`;
     document.getElementById('anchorTicker').innerHTML = [...messages,...messages].map(m =>
         `<span class="anchor-ticker-item">${m}</span>`).join('');
+
+    const configuratorEl = document.querySelector('#configurator, .config-body');
+    if (configuratorEl) {
+        const bannerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    banner.classList.add('hidden');
+                } else {
+                    const rect = configuratorEl.getBoundingClientRect();
+                    if (rect.top > 0) {
+                        banner.classList.remove('hidden');
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+        bannerObserver.observe(configuratorEl);
+    }
 }
 
 /* ─── FAQ ─── */
@@ -582,5 +599,42 @@ document.addEventListener('DOMContentLoaded', () => {
     initReveal();
     checkSuccess();
     typewriterPlate();
+    initMobileSticky();
 });
 
+/* ─── MOBILE STICKY BAR ─── */
+function initMobileSticky() {
+    const stickyBar = document.querySelector('.mobile-sticky');
+    const configuratorSection = document.querySelector('#configurator, .config-body');
+    const footerEl = document.querySelector('.footer');
+
+    if (!stickyBar || !configuratorSection || !footerEl) return;
+
+    // Show when configurator enters viewport
+    const stickyShowObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                stickyBar.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Hide only when footer enters viewport
+    const stickyHideObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                stickyBar.classList.remove('visible');
+            } else {
+                // Footer left viewport going back up — restore bar
+                // only if we are still in the checkout zone
+                const confRect = configuratorSection.getBoundingClientRect();
+                if (confRect.top < window.innerHeight) {
+                    stickyBar.classList.add('visible');
+                }
+            }
+        });
+    }, { threshold: 0.1 });
+
+    stickyShowObserver.observe(configuratorSection);
+    stickyHideObserver.observe(footerEl);
+}
