@@ -385,6 +385,7 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 0;
+  row-gap: 0;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -399,6 +400,8 @@ button {
   flex-direction: column;
   align-items: center;
   gap: 0;
+  margin-bottom: 0;
+  position: relative;
 }
 
 .csv-node {
@@ -440,7 +443,7 @@ button {
 
 .csv-line {
   width: 2px;
-  height: 40px;
+  height: 56px;
   background: var(--gray-200);
   transition: background 0.3s ease;
 }
@@ -450,6 +453,7 @@ button {
 .csv-label {
   position: absolute;
   right: 44px;
+  top: 16px;
   font-size: 11px;
   font-weight: 600;
   color: var(--gray-400);
@@ -457,14 +461,14 @@ button {
   letter-spacing: 0.08em;
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(4px);
+  transform: translateY(-50%) translateX(4px);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .csv-step.active .csv-label {
   color: var(--navy);
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(-50%) translateX(0);
 }
 
 @media (max-width: 768px) {
@@ -1535,29 +1539,29 @@ a.bento-card:hover .bento-link {
 
 /* MOBILE STICKY BAR */
 .mobile-sticky {
-    display: none; /* hidden on desktop completely */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 999;
-    background: var(--white);
-    border-top: 1px solid var(--gray-200);
-    padding: 12px 20px;
-    box-shadow: 0 -4px 20px rgba(26, 39, 68, 0.12);
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    
-    /* Animation base state */
-    transform: translateY(100%);
-    opacity: 0;
-    transition: transform 0.35s ease, opacity 0.35s ease;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+  background: var(--white);
+  border-top: 1px solid var(--gray-200);
+  padding: 12px 20px;
+  box-shadow: 0 -4px 20px rgba(26,39,68,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  pointer-events: none;
 }
 
 .mobile-sticky.visible {
-    transform: translateY(0);
-    opacity: 1;
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .mobile-sticky-left {
@@ -1994,9 +1998,7 @@ a.bento-card:hover .bento-link {
         grid-column: 1;
     }
 
-    .mobile-sticky {
-        display: flex;
-    }
+
 
     .whatsapp-float {
         bottom: 80px;

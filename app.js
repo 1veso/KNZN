@@ -331,13 +331,25 @@ function initScrollProgress() {
     // Hide when footer is reached
     const stepsObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.target === footerEl2 && entry.isIntersecting) {
-                stepsVertical.classList.remove('visible');
-            } else if (entry.target === configuratorEl2 && entry.isIntersecting) {
-                stepsVertical.classList.add('visible');
+            if (entry.target === configuratorEl2) {
+                if (entry.isIntersecting) {
+                    stepsVertical.classList.add('visible');
+                } else {
+                    // Only hide if we scrolled back UP to the hero section
+                    if (entry.boundingClientRect.top > 0) {
+                        stepsVertical.classList.remove('visible');
+                    }
+                }
+            }
+            if (entry.target === footerEl2) {
+                if (entry.isIntersecting) {
+                    stepsVertical.classList.remove('visible');
+                } else if (entry.boundingClientRect.top > window.innerHeight) {
+                    stepsVertical.classList.add('visible');
+                }
             }
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
 
     stepsObserver.observe(configuratorEl2);
     stepsObserver.observe(footerEl2);
@@ -624,37 +636,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ─── MOBILE STICKY BAR ─── */
 function initMobileSticky() {
-    const stickyBar = document.querySelector('.mobile-sticky');
-    const configuratorSection = document.querySelector('#configurator, .config-body');
-    const footerEl = document.querySelector('.footer');
+  const bar = document.querySelector('.mobile-sticky');
+  if (!bar) { 
+    console.warn('[sticky] .mobile-sticky not found'); 
+    return; 
+  }
 
-    if (!stickyBar || !configuratorSection || !footerEl) return;
+  // Find the hero section
+  const heroEl = document.querySelector('.hero, .hero-inner');
+  const footerEl = document.querySelector('.footer');
 
-    // Show when configurator enters viewport
-    const stickyShowObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                stickyBar.classList.add('visible');
-            }
-        });
+  if (!heroEl) { 
+    console.warn('[sticky] hero not found'); 
+    return; 
+  }
+
+  // Show bar when hero bottom edge leaves viewport (user scrolled past hero)
+  const heroObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        // Hero is out of view — user scrolled past it
+        bar.classList.add('visible');
+      } else {
+        // Hero is back in view — hide bar
+        bar.classList.remove('visible');
+      }
+    });
+  }, { 
+    threshold: 0,
+    rootMargin: '0px 0px 0px 0px'
+  });
+
+  // Hide bar when footer comes into view
+  if (footerEl) {
+    const footerObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          bar.classList.remove('visible');
+        } else {
+          // Footer left viewport — restore bar if past hero
+          const heroRect = heroEl.getBoundingClientRect();
+          if (heroRect.bottom < 0) {
+            bar.classList.add('visible');
+          }
+        }
+      });
     }, { threshold: 0.1 });
+    footerObserver.observe(footerEl);
+  }
 
-    // Hide only when footer enters viewport
-    const stickyHideObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                stickyBar.classList.remove('visible');
-            } else {
-                // Footer left viewport going back up — restore bar
-                // only if we are still in the checkout zone
-                const confRect = configuratorSection.getBoundingClientRect();
-                if (confRect.top < window.innerHeight) {
-                    stickyBar.classList.add('visible');
-                }
-            }
-        });
-    }, { threshold: 0.1 });
-
-    stickyShowObserver.observe(configuratorSection);
-    stickyHideObserver.observe(footerEl);
+  heroObserver.observe(heroEl);
+  console.log('[sticky] initialized, watching:', heroEl, footerEl);
 }
