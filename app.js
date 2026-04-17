@@ -263,6 +263,7 @@ function setPlateType(btn, type) {
     document.querySelectorAll('.plate-type-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.plateType = type;
+    state.suffix = '';
     renderAllPlates();
 }
 
