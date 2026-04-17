@@ -784,6 +784,10 @@ button {
 .addon-icon-wrap {
     font-size: 26px;
     min-width: 32px;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .addon-info {
