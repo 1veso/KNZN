@@ -2252,12 +2252,6 @@ a.bento-card:hover .bento-link {
 }
 
 /* ─── ANCHOR TICKER ─── */
-.anchor-banner {
-    background: var(--gold);
-    overflow: hidden;
-    padding: 0;
-}
-
 .anchor-ticker-wrap {
     overflow: hidden;
     width: 100%;
