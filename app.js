@@ -681,6 +681,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initCertLottie();
     initKlausChat();
     initDownloadToast();
+
+    // Enable hero mini-bar pointer events after slide-in completes
+    setTimeout(() => {
+        const miniBar = document.getElementById('hero-mini-bar');
+        if (miniBar) miniBar.classList.add('visible');
+    }, 1800);
 });
 
 function initServiceLotties() {

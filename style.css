@@ -3250,7 +3250,8 @@ a.bento-card:hover .bento-link {
     opacity: 0;
     transform: translateY(40px);
     pointer-events: none;
-    transition: pointer-events 0s;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: heroMiniBarSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
 }
 
 #hero-mini-bar.visible {
@@ -3638,3 +3639,10 @@ a.bento-card:hover .bento-link {
     transform: translateX(-50%) translateY(0);
 }
 .download-toast svg { color: var(--gold); }
+
+@keyframes heroMiniBarSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
