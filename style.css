@@ -446,10 +446,19 @@ button {
   width: 2px;
   height: 56px;
   background: var(--gray-200);
-  transition: background 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
-
-.csv-step.done .csv-line { background: var(--gold); }
+.csv-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--fill, 0%);
+  background: var(--gold);
+  transition: height 0.45s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
 
 .csv-label {
   position: absolute;

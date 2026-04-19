@@ -362,29 +362,59 @@ function initScrollProgress() {
       hideObserver.observe(checkoutBlockEl);
     }
 
-    // Step activation based on scroll position
-    const stepSections = [
-        { el: configuratorEl2, step: 1 },
-        { el: addonsEl, step: 2 },
-        { el: checkoutBlockEl, step: 3 },
-    ];
+    // Smooth fill for the vertical sidebar lines
+    function updateSidebarFill() {
+        const configuratorEl = document.querySelector('#configurator, .config-body');
+        const addonsEl2      = document.querySelector('.addons');
+        const checkoutEl     = document.querySelector('.checkout-block');
+        const steps          = document.querySelectorAll('.csv-step');
 
-    const stepActivator = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const matched = stepSections.find(s => s.el === entry.target);
-            if (!matched) return;
-            const activeStep = matched.step;
-            document.querySelectorAll('.csv-step').forEach((el, i) => {
-                const stepNum = i + 1;
-                el.classList.remove('active', 'done');
-                if (stepNum < activeStep) el.classList.add('done');
-                if (stepNum === activeStep) el.classList.add('active');
+        if (!configuratorEl || !addonsEl2 || !checkoutEl || steps.length < 3) return;
+
+        const vpHeight = window.innerHeight;
+        const trigger  = vpHeight * 0.5;
+
+        const configTop   = configuratorEl.getBoundingClientRect().top;
+        const addonsTop   = addonsEl2.getBoundingClientRect().top;
+        const checkoutTop = checkoutEl.getBoundingClientRect().top;
+
+        const fill0 = 1 - Math.min(1, Math.max(0, (addonsTop - trigger) / (addonsTop - configTop + 1)));
+        const fill1 = 1 - Math.min(1, Math.max(0, (checkoutTop - trigger) / (checkoutTop - addonsTop + 1)));
+
+        const lines = document.querySelectorAll('.csv-line');
+        if (lines[0]) lines[0].style.setProperty('--fill', (fill0 * 100).toFixed(1) + '%');
+        if (lines[1]) lines[1].style.setProperty('--fill', (fill1 * 100).toFixed(1) + '%');
+
+        steps.forEach(s => s.classList.remove('active', 'done'));
+
+        if (checkoutTop < trigger) {
+            steps[0].classList.add('done');
+            steps[1].classList.add('done');
+            steps[2].classList.add('active');
+        } else if (addonsTop < trigger) {
+            steps[0].classList.add('done');
+            steps[1].classList.add('active');
+        } else if (configTop < trigger) {
+            steps[0].classList.add('active');
+        } else {
+            steps[0].classList.add('active');
+        }
+    }
+
+    let sidebarTicking = false;
+    window.addEventListener('scroll', () => {
+        if (!sidebarTicking) {
+            requestAnimationFrame(() => {
+                updateSidebarFill();
+                sidebarTicking = false;
             });
-        });
-    }, { threshold: 0.3 });
+            sidebarTicking = true;
+        }
+    }, { passive: true });
 
-    stepSections.forEach(s => { if (s.el) stepActivator.observe(s.el); });
+    window.addEventListener('resize', updateSidebarFill);
+
+    updateSidebarFill();
 }
 
 function updateProgress() {}
