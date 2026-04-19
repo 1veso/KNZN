@@ -9,12 +9,14 @@ const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
 /* ─── PLATE RENDERING ─── */
-function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType) {
+function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType, size) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
     const s = W / 520;
+    // Visual size factor for Klein vs Standard
+    const sizeFactor = (size === 'klein') ? (460 / 520) : 1;
     ctx.clearRect(0, 0, W, H);
 
     const pt = plateType || 'standard';
@@ -32,26 +34,28 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     } else {
         ctx.fillStyle = '#FFFFFF';
     }
+    const plateW = W * sizeFactor;
+    const plateX = (W - plateW) / 2;
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(0, 0, W, H, 5*s);
-    else ctx.rect(0, 0, W, H);
+    if (ctx.roundRect) ctx.roundRect(plateX, 0, plateW, H, 5*s);
+    else ctx.rect(plateX, 0, plateW, H);
     ctx.fill();
 
     ctx.strokeStyle = isCarbon ? '#444' : '#aaaaaa';
     ctx.lineWidth = 2*s;
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(1*s, 1*s, W-2*s, H-2*s, 4*s);
-    else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
+    if (ctx.roundRect) ctx.roundRect(plateX + 1*s, 1*s, plateW - 2*s, H - 2*s, 4*s);
+    else ctx.rect(plateX + 1*s, 1*s, plateW - 2*s, H - 2*s);
     ctx.stroke();
 
     const bw = 42*s;
     ctx.fillStyle = '#003399';
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
-    else ctx.rect(2*s, 2*s, bw, H-4*s);
+    if (ctx.roundRect) ctx.roundRect(plateX + 2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
+    else ctx.rect(plateX + 2*s, 2*s, bw, H-4*s);
     ctx.fill();
 
-    const cx = 2*s + bw/2;
+    const cx = plateX + 2*s + bw/2;
     const starsTop = 5*s;
     const starsH = H * 0.60;
     const starR = starsH/2 * 0.44;
@@ -66,7 +70,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     ctx.textBaseline = 'middle';
     ctx.fillText('D', cx, starsTop + starsH + 6*s);
 
-    const textAreaEnd = W - suffixW;
+    const textAreaEnd = plateX + plateW - suffixW;
     const isEmpty = !ort && !buchstaben && !ziffern;
     const displayOrt = isEmpty ? 'DN' : (ort||'').toUpperCase().trim();
     const displayBu  = isEmpty ? 'AB' : (buchstaben||'').toUpperCase().trim();
@@ -85,7 +89,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     const sealR   = H * 0.145;
     const sealGap = H * 0.05;
     const sealBlockW = sealR * 2 + 10*s;
-    const textAreaStart = bw + 6*s;
+    const textAreaStart = plateX + bw + 6*s;
     const textAreaWidth = textAreaEnd - textAreaStart - 6*s;
     const totalContentW = ortWidth + sealBlockW + buziWidth;
     const startX = textAreaStart + Math.max(0, (textAreaWidth - totalContentW) / 2);
@@ -168,9 +172,9 @@ function buildPlateText(ort, b, z, suffix) {
 }
 
 function renderAllPlates() {
-    const { ort, buchstaben, ziffern, suffix, material, plateType } = state;
-    drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material, plateType);
-    drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material, plateType);
+    const { ort, buchstaben, ziffern, suffix, material, plateType, size } = state;
+    drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material, plateType, size);
+    drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material, plateType, size);
 }
 
 function renderHeroPlate() {
@@ -271,6 +275,7 @@ function setSize(btn, val) {
     state.size = val;
     document.getElementById('sizeStd').classList.toggle('active', val==='standard');
     document.getElementById('sizeKlein').classList.toggle('active', val==='klein');
+    renderAllPlates();
 }
 
 function setMaterial(btn, val) {
