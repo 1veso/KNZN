@@ -1550,6 +1550,22 @@ a.bento-card:hover .bento-link {
     font-weight: 400;
 }
 
+.footer-credit {
+  display: block; margin-top: 4px;
+  font-size: 11px; color: #8a909a;
+  letter-spacing: 0.02em;
+}
+.footer-credit a {
+  color: #8a909a;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--t), border-color var(--t);
+}
+.footer-credit a:hover {
+  color: var(--navy);
+  border-bottom-color: var(--gold);
+}
+
 /* ── CHAT TRIGGER ── */
 .chat-trigger {
   position: fixed;
