@@ -2366,11 +2366,11 @@ a.bento-card:hover .bento-link {
     align-items: center;
     gap: 8px;
     padding: 16px 12px;
-    border: 1.5px solid var(--gray-200);
+    border: 2px solid var(--gray-200);
     border-radius: 12px;
     background: var(--white);
     cursor: pointer;
-    transition: all var(--t);
+    transition: border-color var(--t), transform var(--t), box-shadow var(--t);
     position: relative;
     min-width: 160px;
     overflow: visible;
@@ -2383,7 +2383,7 @@ a.bento-card:hover .bento-link {
 }
 
 .plate-type-btn.active {
-    border: 2px solid var(--navy);
+    border-color: var(--navy);
     box-shadow: 0 0 0 3px rgba(26, 39, 68, 0.12);
 }
 
