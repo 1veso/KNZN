@@ -3404,14 +3404,19 @@ a.bento-card:hover .bento-link {
     margin-top: 24px;
 }
 
-.config-body .options-grid {
+.config-body .plate-stage-wrap {
     order: 3;
-    margin-top: 24px;
+    margin-top: 32px;
 }
 
 .config-body .plate-type-strip {
     order: 4;
     margin-top: 32px;
+}
+
+.config-body .options-grid {
+    order: 5;
+    margin-top: 24px;
 }
 
 /* ── Legal Modal System ── */

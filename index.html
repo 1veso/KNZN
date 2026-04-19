@@ -79,15 +79,6 @@
             <img src="/assets/images/plate-decorative.jpg" alt="" aria-hidden="true" />
         </div>
         <div class="container">
-            <div class="plate-stage-wrap">
-                <div class="plate-stage">
-                    <div class="plate-stage-surface">
-                        <canvas id="plateCanvas" width="520" height="110"></canvas>
-                    </div>
-                    <div class="plate-stage-glow"></div>
-                </div>
-                <div class="plate-validation" id="plateValidation"></div>
-            </div>
             <div class="section-header">
                 <div class="section-label">Schritt 1</div>
                 <h2 class="section-title">Ihr Wunschkennzeichen</h2>
@@ -133,6 +124,15 @@
                     <input type="text" id="ziffern" maxlength="4" placeholder="1234" oninput="updatePlate()" autocomplete="off" />
                     <span class="input-hint">1–4 Ziffern</span>
                 </div>
+            </div>
+            <div class="plate-stage-wrap">
+                <div class="plate-stage">
+                    <div class="plate-stage-surface">
+                        <canvas id="plateCanvas" width="520" height="110"></canvas>
+                    </div>
+                    <div class="plate-stage-glow"></div>
+                </div>
+                <div class="plate-validation" id="plateValidation"></div>
             </div>
         </div>
 
