@@ -2333,6 +2333,7 @@ a.bento-card:hover .bento-link {
     gap: 16px;
     margin-bottom: 36px;
     flex-wrap: wrap;
+    overflow: visible;
 }
 
 .plate-type-label {
@@ -2349,7 +2350,8 @@ a.bento-card:hover .bento-link {
     display: flex;
     gap: 12px;
     overflow-x: auto;
-    padding-bottom: 8px;
+    overflow-y: visible;
+    padding: 8px 4px 12px;
     flex-wrap: nowrap;
     scrollbar-width: none;
 }
