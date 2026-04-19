@@ -655,9 +655,22 @@ function initReveal() {
 
 /* ─── SUCCESS CHECK ─── */
 function checkSuccess() {
-    if (new URLSearchParams(window.location.search).get('success') === '1') {
-        alert('✅ Bestellung erfolgreich! Sie erhalten in Kürze eine Bestätigungs-E-Mail.');
-        window.history.replaceState({}, '', window.location.pathname);
+    if (new URLSearchParams(window.location.search).get('success') !== '1') return;
+    const overlay = document.getElementById('successOverlay');
+    const btn = document.getElementById('successAnother');
+    if (!overlay) return;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => overlay.classList.add('active'));
+    if (btn) {
+        btn.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(() => {
+                const target = document.getElementById('configurator');
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        });
     }
 }
 

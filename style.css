@@ -3928,3 +3928,73 @@ a.bento-card:hover .bento-link {
     .chat-trigger { bottom: 76px; }
     .kennt-structure-plate svg { width: 100%; height: auto; }
 }
+
+/* ── SUCCESS OVERLAY ── */
+.success-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(15, 26, 48, 0.96);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  padding: 24px;
+}
+.success-overlay.active { opacity: 1; visibility: visible; }
+.success-panel {
+  background: linear-gradient(180deg, rgba(36, 53, 96, 0.6) 0%, rgba(15, 26, 48, 0.4) 100%);
+  border: 1px solid rgba(245, 196, 0, 0.25);
+  border-radius: 24px;
+  padding: 56px 48px;
+  max-width: 560px; width: 100%;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(245, 196, 0, 0.08) inset;
+  transform: translateY(30px) scale(0.97);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.success-overlay.active .success-panel { transform: translateY(0) scale(1); }
+.success-check {
+  color: var(--gold);
+  margin-bottom: 24px;
+  animation: successPulse 1.6s ease-out 0.2s both;
+}
+@keyframes successPulse {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.success-title {
+  font-size: 28px; font-weight: 700;
+  color: var(--white); margin-bottom: 16px;
+  letter-spacing: 0.005em;
+}
+.success-desc {
+  font-size: 15px; line-height: 1.7;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 32px;
+}
+.success-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--gold); color: var(--navy);
+  font-size: 16px; font-weight: 700;
+  padding: 16px 32px; border-radius: var(--radius);
+  border: none; cursor: pointer;
+  transition: background var(--t), transform var(--t), box-shadow var(--t);
+  box-shadow: 0 4px 20px rgba(245, 196, 0, 0.35);
+  margin-bottom: 24px;
+}
+.success-cta:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(245, 196, 0, 0.45);
+}
+.success-contact {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.8;
+}
+.success-contact a { color: var(--gold); }
+@media (max-width: 600px) {
+  .success-panel { padding: 40px 24px; border-radius: 18px; }
+  .success-title { font-size: 22px; }
+  .success-desc { font-size: 14px; }
+}
