@@ -1191,11 +1191,14 @@ a.bento-card {
     cursor: pointer;
 }
 
-.bento-din {
+.bento-duo {
     grid-column: 1;
     grid-row: 1 / 3;
     display: flex;
     flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
 }
 
 .bento-speed {
@@ -1213,9 +1216,12 @@ a.bento-card {
     grid-row: 2;
 }
 
-.bento-stats {
+.bento-din-small {
     grid-column: 3;
     grid-row: 2;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
 }
 
 .bento-tag {
@@ -2207,7 +2213,7 @@ a.bento-card:hover .bento-link {
         grid-template-rows: auto;
     }
 
-    .bento-din {
+    .bento-duo {
         grid-column: 1 / 3;
         grid-row: auto;
     }
@@ -2215,7 +2221,7 @@ a.bento-card:hover .bento-link {
     .bento-speed,
     .bento-price,
     .bento-service,
-    .bento-stats {
+    .bento-din-small {
         grid-column: auto;
         grid-row: auto;
     }
@@ -2280,7 +2286,7 @@ a.bento-card:hover .bento-link {
         grid-template-columns: 1fr;
     }
 
-    .bento-din {
+    .bento-duo {
         grid-column: 1;
     }
 
@@ -3019,11 +3025,11 @@ a.bento-card:hover .bento-link {
         grid-template-columns: 1fr;
     }
 
-    .bento-din,
+    .bento-duo,
     .bento-speed,
     .bento-price,
     .bento-service,
-    .bento-stats {
+    .bento-din-small {
         grid-column: 1;
         grid-row: auto;
     }
@@ -3767,4 +3773,132 @@ a.bento-card:hover .bento-link {
         padding: 20px 16px 24px;
         border-radius: 16px;
     }
+}
+
+/* ─── DUO PARTNER CARD ─── */
+.bento-duo {
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        rgba(255, 255, 255, 0.04) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.bento-duo .bento-tag {
+    padding: 24px 24px 0;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+}
+
+.duo-portrait {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.duo-portrait img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    filter: grayscale(0.2) contrast(1.05) brightness(0.95);
+    mix-blend-mode: luminosity;
+}
+
+.duo-portrait-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        transparent 0%,
+        transparent 60%,
+        rgba(26, 39, 68, 0.4) 85%,
+        rgba(26, 39, 68, 0.95) 100%);
+    pointer-events: none;
+}
+
+.duo-info {
+    padding: 0 24px;
+}
+
+.duo-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.01em;
+    font-family: 'Oswald', sans-serif;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+}
+
+.duo-subline {
+    font-size: 12px;
+    color: rgba(245, 196, 0, 0.85);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+}
+
+.duo-tagline {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.65;
+    margin-bottom: 20px;
+}
+
+.duo-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+    padding: 20px 24px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin-top: auto;
+}
+
+.duo-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ds-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+.ds-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.02em;
+}
+
+/* ─── DIN CERT CARD (SMALL) ─── */
+.bento-din-small {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--t);
+}
+
+.bento-din-small:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.bento-din-small .bento-link {
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+@media (max-width: 600px) {
+    .bento-duo .bento-tag { padding: 20px 20px 0; margin-bottom: 12px; }
+    .duo-info { padding: 0 20px; }
+    .duo-stats { padding: 16px 20px 20px; gap: 12px 16px; }
+    .duo-name { font-size: 20px; }
 }
