@@ -706,6 +706,13 @@ function initServiceLotties() {
             autoplay: false,
             path: src
         });
+        anim.addEventListener('data_failed', () => {
+            console.error('[Lottie] Failed to load:', src);
+            el.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
+        });
+        anim.addEventListener('data_ready', () => {
+            console.log('[Lottie] Loaded:', src);
+        });
 
         animMap.set(el, anim);
 
