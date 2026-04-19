@@ -785,13 +785,11 @@ function initChecklistAnimation() {
 }
 
 function initCounters() {
-  // Fixed selectors: .bs-num:nth-child() returns null for 2, 3, 4 because they are all the 1st child of .bento-stat. 
-  // Adjusted to .bento-stat:nth-child(x) .bs-num to accurately map to the grid.
   const counters = [
-    { selector: '.bento-stat:nth-child(1) .bs-num', target: 450, suffix: '+', duration: 2000 },
-    { selector: '.bento-stat:nth-child(2) .bs-num', target: 150, suffix: '+', duration: 1800 },
-    { selector: '.bento-stat:nth-child(3) .bs-num', target: 2, suffix: '+', duration: 1000 },
-    { selector: '.bento-stat:nth-child(4) .bs-num', target: 100, suffix: '%', duration: 1500 },
+    { selector: '.duo-stat:nth-child(1) .ds-num', target: 450, suffix: '+', duration: 2000 },
+    { selector: '.duo-stat:nth-child(2) .ds-num', target: 150, suffix: '+', duration: 1800 },
+    { selector: '.duo-stat:nth-child(3) .ds-num', target: 2, suffix: '+', duration: 1000 },
+    { selector: '.duo-stat:nth-child(4) .ds-num', target: 100, suffix: '%', duration: 1500 },
     { el: document.querySelector('.bento-speed .bento-big'), target: 24, suffix: 'h', duration: 1200 },
     { el: document.querySelector('.bento-price .bento-big'), target: 30, prefix: '€', duration: 1000 },
   ];
