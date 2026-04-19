@@ -690,51 +690,57 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initServiceLotties() {
-  const icons = document.querySelectorAll('.lottie-icon');
-  if (!icons.length || typeof lottie === 'undefined') return;
+    const icons = document.querySelectorAll('.lottie-icon[data-src]');
+    if (!icons.length || typeof lottie === 'undefined') return;
 
-  icons.forEach(el => {
-    const src = el.dataset.src;
-    if (!src) return;
+    const animMap = new Map();
 
-    const anim = lottie.loadAnimation({
-      container: el,
-      renderer: 'svg',
-      loop: false,
-      autoplay: false,
-      path: src
+    icons.forEach(el => {
+        const src = el.dataset.src;
+        if (!src) return;
+
+        const anim = lottie.loadAnimation({
+            container: el,
+            renderer: 'svg',
+            loop: false,
+            autoplay: false,
+            path: src
+        });
+
+        animMap.set(el, anim);
+
+        const card = el.closest('.service-card');
+        if (card) {
+            card.addEventListener('mouseenter', () => {
+                anim.goToAndStop(0, true);
+                anim.play();
+            });
+            card.addEventListener('mouseleave', () => {
+                anim.stop();
+            });
+        }
     });
 
-    const card = el.closest('.service-card');
-    if (!card) return;
+    // Play once on scroll-into-view
+    const playOnceObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const card = entry.target;
+            const icon = card.querySelector('.lottie-icon');
+            const anim = animMap.get(icon);
+            if (anim) {
+                setTimeout(() => {
+                    anim.goToAndStop(0, true);
+                    anim.play();
+                }, 200);
+            }
+            playOnceObserver.unobserve(card);
+        });
+    }, { threshold: 0.35 });
 
-    card.addEventListener('mouseenter', () => {
-      anim.goToAndPlay(0, true);
+    document.querySelectorAll('.service-card').forEach(card => {
+        playOnceObserver.observe(card);
     });
-
-    card.addEventListener('mouseleave', () => {
-      anim.stop();
-    });
-  });
-
-  // Play once on scroll-into-view
-  const playOnceObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const cardEl = entry.target;
-      const iconEl = cardEl.querySelector('.lottie-icon');
-      if (!iconEl) return;
-      setTimeout(() => {
-        iconEl.dispatchEvent(new Event('mouseenter', { bubbles: true }));
-        cardEl.dispatchEvent(new Event('mouseenter'));
-      }, 100);
-      playOnceObserver.unobserve(cardEl);
-    });
-  }, { threshold: 0.4 });
-
-  document.querySelectorAll('.service-card').forEach(card => {
-    playOnceObserver.observe(card);
-  });
 }
 
 function initCertLottie() {
