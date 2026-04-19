@@ -995,12 +995,18 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
         })
       });
 
+      console.log('[Klaus] Response status:', response.status);
       const data = await response.json();
+      console.log('[Klaus] Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
+      const reply = data.choices?.[0]?.message?.content;
+      if (!reply) throw new Error('No reply in response');
+
       hideTyping();
-
-      const reply = data.choices?.[0]?.message?.content
-        || 'Entschuldigung, ich konnte Ihre Anfrage nicht verarbeiten. Bitte kontaktieren Sie uns direkt unter 02421 5912 286.';
-
       chatHistory.push({ role: 'assistant', content: reply });
       addMessage(reply, 'bot');
 
