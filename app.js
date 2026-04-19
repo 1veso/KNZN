@@ -499,8 +499,6 @@ async function proceedToCheckout(email = null) {
             requestBody.emailDiscount = true;
         }
 
-        console.log('[checkout] POST /create-checkout body:', JSON.stringify(requestBody, null, 2));
-
         const res = await fetch('/create-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -876,7 +874,6 @@ function initMobileSticky() {
   }
 
   heroObserver.observe(heroEl);
-  console.log('[sticky] initialized, watching:', heroEl, footerEl);
 }
 
 /* ─── KLAUS CHAT AGENT ─── */
@@ -928,10 +925,13 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
     const msg = document.createElement('div');
     msg.className = 'chat-msg ' + role;
     if (role === 'bot') {
-      msg.innerHTML = text.split('\n')
+      text.split('\n')
         .filter(l => l.trim())
-        .map(l => '<p>' + l + '</p>')
-        .join('');
+        .forEach(l => {
+          const p = document.createElement('p');
+          p.textContent = l;
+          msg.appendChild(p);
+        });
     } else {
       msg.textContent = text;
     }
