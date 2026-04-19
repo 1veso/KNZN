@@ -655,9 +655,22 @@ function initReveal() {
 
 /* ─── SUCCESS CHECK ─── */
 function checkSuccess() {
-    if (new URLSearchParams(window.location.search).get('success') === '1') {
-        alert('✅ Bestellung erfolgreich! Sie erhalten in Kürze eine Bestätigungs-E-Mail.');
-        window.history.replaceState({}, '', window.location.pathname);
+    if (new URLSearchParams(window.location.search).get('success') !== '1') return;
+    const overlay = document.getElementById('successOverlay');
+    const btn = document.getElementById('successAnother');
+    if (!overlay) return;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => overlay.classList.add('active'));
+    if (btn) {
+        btn.addEventListener('click', () => {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(() => {
+                const target = document.getElementById('configurator');
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            }, 300);
+        });
     }
 }
 
@@ -982,12 +995,18 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
         })
       });
 
+      console.log('[Klaus] Response status:', response.status);
       const data = await response.json();
+      console.log('[Klaus] Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
+      const reply = data.choices?.[0]?.message?.content;
+      if (!reply) throw new Error('No reply in response');
+
       hideTyping();
-
-      const reply = data.choices?.[0]?.message?.content
-        || 'Entschuldigung, ich konnte Ihre Anfrage nicht verarbeiten. Bitte kontaktieren Sie uns direkt unter 02421 5912 286.';
-
       chatHistory.push({ role: 'assistant', content: reply });
       addMessage(reply, 'bot');
 
