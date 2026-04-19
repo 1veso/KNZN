@@ -1754,8 +1754,11 @@ a.bento-card:hover .bento-link {
 }
 
 .lottie-icon {
-  width: 52px;
-  height: 52px;
+  width: 84px;
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* WATERMARK LOGO */
@@ -2678,8 +2681,8 @@ a.bento-card:hover .bento-link {
 }
 
 .service-icon-wrap {
-    width: 52px;
-    height: 52px;
+    width: 92px;
+    height: 92px;
     background: rgba(245, 196, 0, 0.1);
     border-radius: var(--radius);
     display: flex;

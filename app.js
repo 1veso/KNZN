@@ -674,6 +674,25 @@ function initServiceLotties() {
       anim.stop();
     });
   });
+
+  // Play once on scroll-into-view
+  const playOnceObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const cardEl = entry.target;
+      const iconEl = cardEl.querySelector('.lottie-icon');
+      if (!iconEl) return;
+      setTimeout(() => {
+        iconEl.dispatchEvent(new Event('mouseenter', { bubbles: true }));
+        cardEl.dispatchEvent(new Event('mouseenter'));
+      }, 100);
+      playOnceObserver.unobserve(cardEl);
+    });
+  }, { threshold: 0.4 });
+
+  document.querySelectorAll('.service-card').forEach(card => {
+    playOnceObserver.observe(card);
+  });
 }
 
 function initCertLottie() {
@@ -685,7 +704,7 @@ function initCertLottie() {
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    path: 'https://assets9.lottiefiles.com/packages/lf20_touohxev.json'
+    path: '/lotties/cert.json'
   });
 }
 
