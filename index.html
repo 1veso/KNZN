@@ -79,8 +79,13 @@
             <img src="/assets/images/plate-decorative.jpg" alt="" aria-hidden="true" />
         </div>
         <div class="container">
-            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:40px;">
-                <canvas id="plateCanvas" width="520" height="110"></canvas>
+            <div class="plate-stage-wrap">
+                <div class="plate-stage">
+                    <div class="plate-stage-surface">
+                        <canvas id="plateCanvas" width="520" height="110"></canvas>
+                    </div>
+                    <div class="plate-stage-glow"></div>
+                </div>
                 <div class="plate-validation" id="plateValidation"></div>
             </div>
             <div class="section-header">

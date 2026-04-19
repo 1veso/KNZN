@@ -3646,3 +3646,102 @@ a.bento-card:hover .bento-link {
         transform: translateY(0);
     }
 }
+
+/* ─── GLASSMORPHIC PLATE STAGE ─── */
+.plate-stage-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    gap: 16px;
+}
+
+.plate-stage {
+    position: relative;
+    padding: 28px 32px 32px;
+    background: linear-gradient(145deg,
+        rgba(26, 39, 68, 0.04) 0%,
+        rgba(26, 39, 68, 0.08) 50%,
+        rgba(26, 39, 68, 0.12) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(26, 39, 68, 0.08);
+    box-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.6) inset,
+        0 20px 40px -20px rgba(26, 39, 68, 0.25),
+        0 0 0 1px rgba(245, 196, 0, 0.08);
+    overflow: hidden;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.plate-stage:hover {
+    box-shadow:
+        0 1px 2px rgba(255, 255, 255, 0.7) inset,
+        0 25px 50px -20px rgba(26, 39, 68, 0.32),
+        0 0 0 1px rgba(245, 196, 0, 0.18);
+    transform: translateY(-2px);
+}
+
+.plate-stage::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(245, 196, 0, 0.5) 50%,
+        transparent 100%);
+}
+
+.plate-stage::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(245, 196, 0, 0.6) 50%,
+        transparent 100%);
+    border-radius: 1px;
+}
+
+.plate-stage-surface {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: drop-shadow(0 8px 16px rgba(26, 39, 68, 0.18));
+}
+
+.plate-stage-surface canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.plate-stage-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse at 50% 120%,
+        rgba(245, 196, 0, 0.12) 0%,
+        transparent 60%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+@media (max-width: 600px) {
+    .plate-stage {
+        padding: 20px 16px 24px;
+        border-radius: 16px;
+    }
+}
