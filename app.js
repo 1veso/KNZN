@@ -878,7 +878,6 @@ function initMobileSticky() {
 
 /* ─── KLAUS CHAT AGENT ─── */
 function initKlausChat() {
-  const OPENROUTER_KEY = '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';
   const SYSTEM_PROMPT = `Du bist Klaus, der freundliche digitale Assistent des Zulassungsdienst Düren. Du hilfst Kunden bei Fragen rund um KFZ-Kennzeichen, Zulassungen und Bestellungen.
 
 Antworte immer auf Deutsch. Sei freundlich, kompetent und kurz. Maximal 3 Sätze pro Antwort.
@@ -969,27 +968,19 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
     showTyping();
 
     try {
-      const response = await fetch(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + OPENROUTER_KEY,
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'KNZN Klaus Agent'
-          },
-          body: JSON.stringify({
-            model: 'meta-llama/llama-3.1-8b-instruct:free',
-            messages: [
-              { role: 'system', content: SYSTEM_PROMPT },
-              ...chatHistory
-            ],
-            max_tokens: 200,
-            temperature: 0.7
-          })
-        }
-      );
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...chatHistory
+          ],
+          max_tokens: 200,
+          temperature: 0.7
+        })
+      });
 
       const data = await response.json();
       hideTyping();
