@@ -680,6 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceLotties();
     initCertLottie();
     initKlausChat();
+    initDownloadToast();
 });
 
 function initServiceLotties() {
@@ -1007,4 +1008,15 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
       if (e.key === 'Enter') sendMessage(chatInput.value);
     });
   }
+}
+
+function initDownloadToast() {
+    const toast = document.getElementById('downloadToast');
+    if (!toast) return;
+    document.querySelectorAll('.btn-download').forEach(link => {
+        link.addEventListener('click', () => {
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 2400);
+        });
+    });
 }
