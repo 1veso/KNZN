@@ -2,9 +2,9 @@ export async function onRequestPost(context) {
   const { env, request } = context;
   const jsonHeaders = { 'Content-Type': 'application/json' };
 
-  if (!env.OPENROUTER_API_KEY) {
+  if (!env.OPENROUTER_KEY) {
     return new Response(
-      JSON.stringify({ error: 'Server misconfiguration: missing OPENROUTER_API_KEY' }),
+      JSON.stringify({ error: 'Server misconfiguration: missing OPENROUTER_KEY' }),
       { status: 500, headers: jsonHeaders }
     );
   }
@@ -70,7 +70,7 @@ export async function onRequestPost(context) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${env.OPENROUTER_API_KEY}`,
+        Authorization: `Bearer ${env.OPENROUTER_KEY}`,
         'HTTP-Referer': origin,
         'X-Title': 'KNZN Klaus Agent',
       },
