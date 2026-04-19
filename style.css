@@ -826,20 +826,30 @@ button {
 }
 
 .paket-banner {
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    background: var(--white);
     color: var(--navy);
     font-size: 14px;
-    font-weight: 700;
-    padding: 14px 24px;
-    border-radius: var(--radius);
-    text-align: center;
+    padding: 18px 24px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    border-left: 4px solid var(--gold);
     display: none;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 32px;
+    box-shadow: var(--shadow);
     animation: fadeUp 0.3s ease;
 }
-
-.paket-banner.visible {
-    display: block;
+.paket-banner.visible { display: flex; }
+.paket-banner-content { display: flex; flex-direction: column; gap: 2px; }
+.paket-banner-title {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold);
+}
+.paket-banner-text { font-size: 14px; font-weight: 500; color: var(--text); }
+.paket-banner-price {
+    font-size: 28px; font-weight: 700; color: var(--navy);
+    font-family: 'Rajdhani', sans-serif;
 }
 
 @keyframes fadeUp {
