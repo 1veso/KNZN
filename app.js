@@ -271,6 +271,7 @@ function setSize(btn, val) {
     state.size = val;
     document.getElementById('sizeStd').classList.toggle('active', val==='standard');
     document.getElementById('sizeKlein').classList.toggle('active', val==='klein');
+    renderAllPlates();
 }
 
 function setMaterial(btn, val) {
