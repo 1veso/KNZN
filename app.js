@@ -377,13 +377,17 @@ function initScrollProgress() {
     const stepEls = Array.from(document.querySelectorAll('.csv-step'));
     const lineEls = stepEls.map(s => s.querySelector('.csv-line'));
 
+    // Step 2 should flip exactly when the Kennzeichentyp strip in the
+    // configurator scrolls into view, not when the Extras section is reached.
+    const plateTypeStripEl = document.querySelector('.plate-type-strip');
+
     let fillRaf = null;
     function updateStepFill() {
         fillRaf = null;
         if (!configuratorEl2 || !addonsEl || !checkoutBlockEl) return;
         const rect = el => el.getBoundingClientRect().top + window.pageYOffset;
         const A = rect(configuratorEl2);
-        const B = rect(addonsEl);
+        const B = plateTypeStripEl ? rect(plateTypeStripEl) : rect(addonsEl);
         const C = rect(checkoutBlockEl);
         const D = C + (checkoutBlockEl.offsetHeight || 0);
         const ref = window.pageYOffset + window.innerHeight * 0.5;
