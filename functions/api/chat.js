@@ -60,7 +60,7 @@ export async function onRequestPost(context) {
   const safeModel =
     typeof model === 'string' && model.length > 0 && model.length < 200
       ? model
-      : 'meta-llama/llama-3.1-8b-instruct:free';
+      : 'meta-llama/llama-3.3-70b-instruct:free';
 
   const origin = request.headers.get('Origin') || request.headers.get('Referer') || '';
 
