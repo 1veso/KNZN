@@ -685,7 +685,7 @@ function initCertLottie() {
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    path: 'https://assets9.lottiefiles.com/packages/lf20_touohxev.json'
+    path: '/lotties/cert.json'
   });
 }
 
@@ -809,7 +809,6 @@ function initMobileSticky() {
 
 /* ─── KLAUS CHAT AGENT ─── */
 function initKlausChat() {
-  const OPENROUTER_KEY = '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';
   const SYSTEM_PROMPT = `Du bist Klaus, der freundliche digitale Assistent des Zulassungsdienst Düren. Du hilfst Kunden bei Fragen rund um KFZ-Kennzeichen, Zulassungen und Bestellungen.
 
 Antworte immer auf Deutsch. Sei freundlich, kompetent und kurz. Maximal 3 Sätze pro Antwort.
@@ -897,34 +896,32 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
     showTyping();
 
     try {
-      const response = await fetch(
-        'https://openrouter.ai/api/v1/chat/completions',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + OPENROUTER_KEY,
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'KNZN Klaus Agent'
-          },
-          body: JSON.stringify({
-            model: 'meta-llama/llama-3.1-8b-instruct:free',
-            messages: [
-              { role: 'system', content: SYSTEM_PROMPT },
-              ...chatHistory
-            ],
-            max_tokens: 200,
-            temperature: 0.7
-          })
-        }
-      );
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...chatHistory
+          ],
+          max_tokens: 200,
+          temperature: 0.7
+        })
+      });
 
+      console.log('[Klaus] Response status:', response.status);
       const data = await response.json();
+      console.log('[Klaus] Response data:', data);
+
+      if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
+      const reply = data.choices?.[0]?.message?.content;
+      if (!reply) throw new Error('No reply in response');
+
       hideTyping();
-
-      const reply = data.choices?.[0]?.message?.content
-        || 'Entschuldigung, ich konnte Ihre Anfrage nicht verarbeiten. Bitte kontaktieren Sie uns direkt unter 02421 5912 286.';
-
       chatHistory.push({ role: 'assistant', content: reply });
       addMessage(reply, 'bot');
 
