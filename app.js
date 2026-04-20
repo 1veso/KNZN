@@ -114,9 +114,6 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     if (pt === 'e' || pt === 'h') {
         const divX = textAreaEnd;
         const letter = pt === 'e' ? 'E' : 'H';
-        ctx.strokeStyle = '#aaaaaa';
-        ctx.lineWidth = 1.5*s;
-        ctx.beginPath(); ctx.moveTo(divX, 5*s); ctx.lineTo(divX, H - 5*s); ctx.stroke();
         ctx.fillStyle = isCarbon ? '#e0e0e0' : '#111111';
         ctx.font = `bold ${50*s}px 'Arial Black', Arial, sans-serif`;
         ctx.textAlign = 'center';
