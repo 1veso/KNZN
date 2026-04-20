@@ -374,7 +374,7 @@ function initScrollProgress() {
             const matched = stepSections.find(s => s.el === entry.target);
             if (!matched) return;
             if (!entry.isIntersecting) {
-                if (matched.step === 1 && entry.boundingClientRect.top > 0) {
+                if (matched.step === 1) {
                     document.querySelectorAll('.csv-step').forEach(el => {
                         el.classList.remove('active', 'done');
                     });
