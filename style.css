@@ -428,12 +428,12 @@ button {
 }
 
 .csv-step.active .csv-node {
-  background: var(--navy);
-  border-color: var(--navy);
-  box-shadow: 0 0 0 4px rgba(26,39,68,0.12);
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.18), 0 0 10px rgba(212, 175, 55, 0.35);
 }
 
-.csv-step.active .csv-num { color: var(--white); }
+.csv-step.active .csv-num { color: var(--navy); }
 
 .csv-step.done .csv-node {
   background: var(--gold);
@@ -447,17 +447,25 @@ button {
   height: 56px;
   background: var(--gray-200);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 .csv-line::after {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: -1px;
+  width: 4px;
   height: var(--fill, 0%);
-  background: var(--gold);
-  transition: height 0.45s cubic-bezier(0.4, 0.0, 0.2, 1);
+  background: linear-gradient(
+    to bottom,
+    var(--gold) 0%,
+    var(--gold) calc(100% - 10px),
+    rgba(212, 175, 55, 0.55) calc(100% - 4px),
+    rgba(212, 175, 55, 0) 100%
+  );
+  border-radius: 2px;
+  filter: drop-shadow(0 0 3px rgba(212, 175, 55, 0.55));
+  will-change: height;
 }
 
 .csv-label {
