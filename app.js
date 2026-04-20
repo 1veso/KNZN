@@ -9,14 +9,12 @@ const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
 /* ─── PLATE RENDERING ─── */
-function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType, size) {
+function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType) {
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const W = canvas.width, H = canvas.height;
     const s = W / 520;
-    // Visual size factor for Klein vs Standard
-    const sizeFactor = (size === 'klein') ? (460 / 520) : 1;
     ctx.clearRect(0, 0, W, H);
 
     const pt = plateType || 'standard';
@@ -34,28 +32,26 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     } else {
         ctx.fillStyle = '#FFFFFF';
     }
-    const plateW = W * sizeFactor;
-    const plateX = (W - plateW) / 2;
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(plateX, 0, plateW, H, 5*s);
-    else ctx.rect(plateX, 0, plateW, H);
+    if (ctx.roundRect) ctx.roundRect(0, 0, W, H, 5*s);
+    else ctx.rect(0, 0, W, H);
     ctx.fill();
 
     ctx.strokeStyle = isCarbon ? '#444' : '#aaaaaa';
     ctx.lineWidth = 2*s;
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(plateX + 1*s, 1*s, plateW - 2*s, H - 2*s, 4*s);
-    else ctx.rect(plateX + 1*s, 1*s, plateW - 2*s, H - 2*s);
+    if (ctx.roundRect) ctx.roundRect(1*s, 1*s, W-2*s, H-2*s, 4*s);
+    else ctx.rect(1*s, 1*s, W-2*s, H-2*s);
     ctx.stroke();
 
     const bw = 42*s;
     ctx.fillStyle = '#003399';
     ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(plateX + 2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
-    else ctx.rect(plateX + 2*s, 2*s, bw, H-4*s);
+    if (ctx.roundRect) ctx.roundRect(2*s, 2*s, bw, H-4*s, [4*s, 0, 0, 4*s]);
+    else ctx.rect(2*s, 2*s, bw, H-4*s);
     ctx.fill();
 
-    const cx = plateX + 2*s + bw/2;
+    const cx = 2*s + bw/2;
     const starsTop = 5*s;
     const starsH = H * 0.60;
     const starR = starsH/2 * 0.44;
@@ -70,7 +66,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     ctx.textBaseline = 'middle';
     ctx.fillText('D', cx, starsTop + starsH + 6*s);
 
-    const textAreaEnd = plateX + plateW - suffixW;
+    const textAreaEnd = W - suffixW;
     const isEmpty = !ort && !buchstaben && !ziffern;
     const displayOrt = isEmpty ? 'DN' : (ort||'').toUpperCase().trim();
     const displayBu  = isEmpty ? 'AB' : (buchstaben||'').toUpperCase().trim();
@@ -89,7 +85,7 @@ function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateTy
     const sealR   = H * 0.145;
     const sealGap = H * 0.05;
     const sealBlockW = sealR * 2 + 10*s;
-    const textAreaStart = plateX + bw + 6*s;
+    const textAreaStart = bw + 6*s;
     const textAreaWidth = textAreaEnd - textAreaStart - 6*s;
     const totalContentW = ortWidth + sealBlockW + buziWidth;
     const startX = textAreaStart + Math.max(0, (textAreaWidth - totalContentW) / 2);
@@ -172,9 +168,9 @@ function buildPlateText(ort, b, z, suffix) {
 }
 
 function renderAllPlates() {
-    const { ort, buchstaben, ziffern, suffix, material, plateType, size } = state;
-    drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material, plateType, size);
-    drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material, plateType, size);
+    const { ort, buchstaben, ziffern, suffix, material, plateType } = state;
+    drawPlate('plateCanvas', ort, buchstaben, ziffern, suffix, material, plateType);
+    drawPlate('summaryPlate', ort, buchstaben, ziffern, suffix, material, plateType);
 }
 
 function renderHeroPlate() {
@@ -275,7 +271,6 @@ function setSize(btn, val) {
     state.size = val;
     document.getElementById('sizeStd').classList.toggle('active', val==='standard');
     document.getElementById('sizeKlein').classList.toggle('active', val==='klein');
-    renderAllPlates();
 }
 
 function setMaterial(btn, val) {
@@ -367,59 +362,29 @@ function initScrollProgress() {
       hideObserver.observe(checkoutBlockEl);
     }
 
-    // Smooth fill for the vertical sidebar lines
-    function updateSidebarFill() {
-        const configuratorEl = document.querySelector('#configurator, .config-body');
-        const addonsEl2      = document.querySelector('.addons');
-        const checkoutEl     = document.querySelector('.checkout-block');
-        const steps          = document.querySelectorAll('.csv-step');
+    // Step activation based on scroll position
+    const stepSections = [
+        { el: configuratorEl2, step: 1 },
+        { el: addonsEl, step: 2 },
+        { el: checkoutBlockEl, step: 3 },
+    ];
 
-        if (!configuratorEl || !addonsEl2 || !checkoutEl || steps.length < 3) return;
-
-        const vpHeight = window.innerHeight;
-        const trigger  = vpHeight * 0.5;
-
-        const configTop   = configuratorEl.getBoundingClientRect().top;
-        const addonsTop   = addonsEl2.getBoundingClientRect().top;
-        const checkoutTop = checkoutEl.getBoundingClientRect().top;
-
-        const fill0 = 1 - Math.min(1, Math.max(0, (addonsTop - trigger) / (addonsTop - configTop + 1)));
-        const fill1 = 1 - Math.min(1, Math.max(0, (checkoutTop - trigger) / (checkoutTop - addonsTop + 1)));
-
-        const lines = document.querySelectorAll('.csv-line');
-        if (lines[0]) lines[0].style.setProperty('--fill', (fill0 * 100).toFixed(1) + '%');
-        if (lines[1]) lines[1].style.setProperty('--fill', (fill1 * 100).toFixed(1) + '%');
-
-        steps.forEach(s => s.classList.remove('active', 'done'));
-
-        if (checkoutTop < trigger) {
-            steps[0].classList.add('done');
-            steps[1].classList.add('done');
-            steps[2].classList.add('active');
-        } else if (addonsTop < trigger) {
-            steps[0].classList.add('done');
-            steps[1].classList.add('active');
-        } else if (configTop < trigger) {
-            steps[0].classList.add('active');
-        } else {
-            steps[0].classList.add('active');
-        }
-    }
-
-    let sidebarTicking = false;
-    window.addEventListener('scroll', () => {
-        if (!sidebarTicking) {
-            requestAnimationFrame(() => {
-                updateSidebarFill();
-                sidebarTicking = false;
+    const stepActivator = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const matched = stepSections.find(s => s.el === entry.target);
+            if (!matched) return;
+            const activeStep = matched.step;
+            document.querySelectorAll('.csv-step').forEach((el, i) => {
+                const stepNum = i + 1;
+                el.classList.remove('active', 'done');
+                if (stepNum < activeStep) el.classList.add('done');
+                if (stepNum === activeStep) el.classList.add('active');
             });
-            sidebarTicking = true;
-        }
-    }, { passive: true });
+        });
+    }, { threshold: 0.3 });
 
-    window.addEventListener('resize', updateSidebarFill);
-
-    updateSidebarFill();
+    stepSections.forEach(s => { if (s.el) stepActivator.observe(s.el); });
 }
 
 function updateProgress() {}
@@ -498,6 +463,8 @@ async function proceedToCheckout(email = null) {
             requestBody.customerEmail = email;
             requestBody.emailDiscount = true;
         }
+
+        console.log('[checkout] POST /create-checkout body:', JSON.stringify(requestBody, null, 2));
 
         const res = await fetch('/create-checkout', {
             method: 'POST',
@@ -655,22 +622,9 @@ function initReveal() {
 
 /* ─── SUCCESS CHECK ─── */
 function checkSuccess() {
-    if (new URLSearchParams(window.location.search).get('success') !== '1') return;
-    const overlay = document.getElementById('successOverlay');
-    const btn = document.getElementById('successAnother');
-    if (!overlay) return;
-    document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => overlay.classList.add('active'));
-    if (btn) {
-        btn.addEventListener('click', () => {
-            overlay.classList.remove('active');
-            document.body.style.overflow = '';
-            window.history.replaceState({}, '', window.location.pathname);
-            setTimeout(() => {
-                const target = document.getElementById('configurator');
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            }, 300);
-        });
+    if (new URLSearchParams(window.location.search).get('success') === '1') {
+        alert('✅ Bestellung erfolgreich! Sie erhalten in Kürze eine Bestätigungs-E-Mail.');
+        window.history.replaceState({}, '', window.location.pathname);
     }
 }
 
@@ -691,74 +645,35 @@ document.addEventListener('DOMContentLoaded', () => {
     initServiceLotties();
     initCertLottie();
     initKlausChat();
-    initDownloadToast();
-
-    // Enable hero mini-bar pointer events after slide-in completes
-    setTimeout(() => {
-        const miniBar = document.getElementById('hero-mini-bar');
-        if (miniBar) miniBar.classList.add('visible');
-    }, 1800);
 });
 
 function initServiceLotties() {
-    const icons = document.querySelectorAll('.lottie-icon[data-src]');
-    if (!icons.length || typeof lottie === 'undefined') return;
+  const icons = document.querySelectorAll('.lottie-icon');
+  if (!icons.length || typeof lottie === 'undefined') return;
 
-    const animMap = new Map();
+  icons.forEach(el => {
+    const src = el.dataset.src;
+    if (!src) return;
 
-    icons.forEach(el => {
-        const src = el.dataset.src;
-        if (!src) return;
-
-        const anim = lottie.loadAnimation({
-            container: el,
-            renderer: 'svg',
-            loop: false,
-            autoplay: false,
-            path: src
-        });
-        anim.addEventListener('data_failed', () => {
-            console.error('[Lottie] Failed to load:', src);
-            el.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
-        });
-        anim.addEventListener('data_ready', () => {
-            console.log('[Lottie] Loaded:', src);
-        });
-
-        animMap.set(el, anim);
-
-        const card = el.closest('.service-card');
-        if (card) {
-            card.addEventListener('mouseenter', () => {
-                anim.goToAndStop(0, true);
-                anim.play();
-            });
-            card.addEventListener('mouseleave', () => {
-                anim.stop();
-            });
-        }
+    const anim = lottie.loadAnimation({
+      container: el,
+      renderer: 'svg',
+      loop: false,
+      autoplay: false,
+      path: src
     });
 
-    // Play once on scroll-into-view
-    const playOnceObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-            const card = entry.target;
-            const icon = card.querySelector('.lottie-icon');
-            const anim = animMap.get(icon);
-            if (anim) {
-                setTimeout(() => {
-                    anim.goToAndStop(0, true);
-                    anim.play();
-                }, 200);
-            }
-            playOnceObserver.unobserve(card);
-        });
-    }, { threshold: 0.35 });
+    const card = el.closest('.service-card');
+    if (!card) return;
 
-    document.querySelectorAll('.service-card').forEach(card => {
-        playOnceObserver.observe(card);
+    card.addEventListener('mouseenter', () => {
+      anim.goToAndPlay(0, true);
     });
+
+    card.addEventListener('mouseleave', () => {
+      anim.stop();
+    });
+  });
 }
 
 function initCertLottie() {
@@ -770,7 +685,7 @@ function initCertLottie() {
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    path: '/lotties/cert.json'
+    path: 'https://assets9.lottiefiles.com/packages/lf20_touohxev.json'
   });
 }
 
@@ -796,11 +711,13 @@ function initChecklistAnimation() {
 }
 
 function initCounters() {
+  // Fixed selectors: .bs-num:nth-child() returns null for 2, 3, 4 because they are all the 1st child of .bento-stat. 
+  // Adjusted to .bento-stat:nth-child(x) .bs-num to accurately map to the grid.
   const counters = [
-    { selector: '.duo-stat:nth-child(1) .ds-num', target: 450, suffix: '+', duration: 2000 },
-    { selector: '.duo-stat:nth-child(2) .ds-num', target: 150, suffix: '+', duration: 1800 },
-    { selector: '.duo-stat:nth-child(3) .ds-num', target: 2, suffix: '+', duration: 1000 },
-    { selector: '.duo-stat:nth-child(4) .ds-num', target: 100, suffix: '%', duration: 1500 },
+    { selector: '.bento-stat:nth-child(1) .bs-num', target: 450, suffix: '+', duration: 2000 },
+    { selector: '.bento-stat:nth-child(2) .bs-num', target: 150, suffix: '+', duration: 1800 },
+    { selector: '.bento-stat:nth-child(3) .bs-num', target: 2, suffix: '+', duration: 1000 },
+    { selector: '.bento-stat:nth-child(4) .bs-num', target: 100, suffix: '%', duration: 1500 },
     { el: document.querySelector('.bento-speed .bento-big'), target: 24, suffix: 'h', duration: 1200 },
     { el: document.querySelector('.bento-price .bento-big'), target: 30, prefix: '€', duration: 1000 },
   ];
@@ -887,10 +804,12 @@ function initMobileSticky() {
   }
 
   heroObserver.observe(heroEl);
+  console.log('[sticky] initialized, watching:', heroEl, footerEl);
 }
 
 /* ─── KLAUS CHAT AGENT ─── */
 function initKlausChat() {
+  const OPENROUTER_KEY = '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';
   const SYSTEM_PROMPT = `Du bist Klaus, der freundliche digitale Assistent des Zulassungsdienst Düren. Du hilfst Kunden bei Fragen rund um KFZ-Kennzeichen, Zulassungen und Bestellungen.
 
 Antworte immer auf Deutsch. Sei freundlich, kompetent und kurz. Maximal 3 Sätze pro Antwort.
@@ -937,13 +856,10 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
     const msg = document.createElement('div');
     msg.className = 'chat-msg ' + role;
     if (role === 'bot') {
-      text.split('\n')
+      msg.innerHTML = text.split('\n')
         .filter(l => l.trim())
-        .forEach(l => {
-          const p = document.createElement('p');
-          p.textContent = l;
-          msg.appendChild(p);
-        });
+        .map(l => '<p>' + l + '</p>')
+        .join('');
     } else {
       msg.textContent = text;
     }
@@ -981,32 +897,34 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
     showTyping();
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'meta-llama/llama-3.3-70b-instruct:free',
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...chatHistory
-          ],
-          max_tokens: 200,
-          temperature: 0.7
-        })
-      });
+      const response = await fetch(
+        'https://openrouter.ai/api/v1/chat/completions',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + OPENROUTER_KEY,
+            'HTTP-Referer': window.location.origin,
+            'X-Title': 'KNZN Klaus Agent'
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-3.1-8b-instruct:free',
+            messages: [
+              { role: 'system', content: SYSTEM_PROMPT },
+              ...chatHistory
+            ],
+            max_tokens: 200,
+            temperature: 0.7
+          })
+        }
+      );
 
-      console.log('[Klaus] Response status:', response.status);
       const data = await response.json();
-      console.log('[Klaus] Response data:', data);
-
-      if (!response.ok) {
-        throw new Error(data.error || `HTTP ${response.status}`);
-      }
-
-      const reply = data.choices?.[0]?.message?.content;
-      if (!reply) throw new Error('No reply in response');
-
       hideTyping();
+
+      const reply = data.choices?.[0]?.message?.content
+        || 'Entschuldigung, ich konnte Ihre Anfrage nicht verarbeiten. Bitte kontaktieren Sie uns direkt unter 02421 5912 286.';
+
       chatHistory.push({ role: 'assistant', content: reply });
       addMessage(reply, 'bot');
 
@@ -1035,15 +953,4 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
       if (e.key === 'Enter') sendMessage(chatInput.value);
     });
   }
-}
-
-function initDownloadToast() {
-    const toast = document.getElementById('downloadToast');
-    if (!toast) return;
-    document.querySelectorAll('.btn-download').forEach(link => {
-        link.addEventListener('click', () => {
-            toast.classList.add('visible');
-            setTimeout(() => toast.classList.remove('visible'), 2400);
-        });
-    });
 }
