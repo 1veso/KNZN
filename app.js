@@ -371,9 +371,16 @@ function initScrollProgress() {
 
     const stepActivator = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
             const matched = stepSections.find(s => s.el === entry.target);
             if (!matched) return;
+            if (!entry.isIntersecting) {
+                if (matched.step === 1 && entry.boundingClientRect.top > 0) {
+                    document.querySelectorAll('.csv-step').forEach(el => {
+                        el.classList.remove('active', 'done');
+                    });
+                }
+                return;
+            }
             const activeStep = matched.step;
             document.querySelectorAll('.csv-step').forEach((el, i) => {
                 const stepNum = i + 1;
@@ -685,7 +692,7 @@ function initCertLottie() {
     renderer: 'svg',
     loop: true,
     autoplay: true,
-    path: '/lotties/cert.json'
+    path: '/lotties/cert.json?v=2'
   });
 }
 
@@ -900,7 +907,7 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'meta-llama/llama-3.3-70b-instruct:free',
+          model: 'meta-llama/llama-3.3-8b-instruct:free',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             ...chatHistory
