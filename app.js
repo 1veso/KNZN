@@ -373,30 +373,6 @@ function initScrollProgress() {
         { el: checkoutBlockEl, step: 3 },
     ];
 
-    const stepActivator = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            const matched = stepSections.find(s => s.el === entry.target);
-            if (!matched) return;
-            if (!entry.isIntersecting) {
-                if (matched.step === 1) {
-                    document.querySelectorAll('.csv-step').forEach(el => {
-                        el.classList.remove('active', 'done');
-                    });
-                }
-                return;
-            }
-            const activeStep = matched.step;
-            document.querySelectorAll('.csv-step').forEach((el, i) => {
-                const stepNum = i + 1;
-                el.classList.remove('active', 'done');
-                if (stepNum < activeStep) el.classList.add('done');
-                if (stepNum === activeStep) el.classList.add('active');
-            });
-        });
-    }, { threshold: 0.3 });
-
-    stepSections.forEach(s => { if (s.el) stepActivator.observe(s.el); });
-
     // Smooth scroll-driven gold fill on the connecting lines
     const stepEls = Array.from(document.querySelectorAll('.csv-step'));
     const lineEls = stepEls.map(s => s.querySelector('.csv-line'));
@@ -409,12 +385,37 @@ function initScrollProgress() {
         const A = rect(configuratorEl2);
         const B = rect(addonsEl);
         const C = rect(checkoutBlockEl);
+        const D = C + (checkoutBlockEl.offsetHeight || 0);
         const ref = window.pageYOffset + window.innerHeight * 0.5;
         const clamp = v => Math.max(0, Math.min(1, v));
         const p1 = (B > A) ? clamp((ref - A) / (B - A)) : 0;
         const p2 = (C > B) ? clamp((ref - B) / (C - B)) : 0;
         if (lineEls[0]) lineEls[0].style.setProperty('--fill', (p1 * 100).toFixed(2) + '%');
         if (lineEls[1]) lineEls[1].style.setProperty('--fill', (p2 * 100).toFixed(2) + '%');
+
+        // Step state: white → pending(blue) → active(gold) → done(blue) → past(white)
+        // Boundaries:
+        //   ref < A               → all white
+        //   A ≤ ref < B           → step1 active,  step2 pending, step3 white
+        //   B ≤ ref < C           → step1 done,    step2 active,  step3 pending
+        //   C ≤ ref < D           → step1 done,    step2 done,    step3 active
+        //   ref ≥ D               → all white (bar fades via hideObserver)
+        const states = ['', '', ''];
+        if (ref < A) {
+            // all white
+        } else if (ref < B) {
+            states[0] = 'active'; states[1] = 'pending'; states[2] = '';
+        } else if (ref < C) {
+            states[0] = 'done';   states[1] = 'active';  states[2] = 'pending';
+        } else if (ref < D) {
+            states[0] = 'done';   states[1] = 'done';    states[2] = 'active';
+        }
+        // else: all empty (past checkout → white)
+
+        stepEls.forEach((el, i) => {
+            el.classList.remove('pending', 'active', 'done');
+            if (states[i]) el.classList.add(states[i]);
+        });
     }
     function scheduleFill() {
         if (fillRaf !== null) return;

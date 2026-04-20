@@ -427,20 +427,28 @@ button {
   font-family: 'Rajdhani', sans-serif;
 }
 
+.csv-step.pending .csv-node {
+  background: var(--white);
+  border-color: var(--navy);
+}
+
+.csv-step.pending .csv-num { color: var(--navy); }
+
 .csv-step.active .csv-node {
   background: var(--gold);
   border-color: var(--gold);
-  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.18), 0 0 10px rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.18), 0 0 12px rgba(212, 175, 55, 0.40);
 }
 
 .csv-step.active .csv-num { color: var(--navy); }
 
 .csv-step.done .csv-node {
-  background: var(--gold);
-  border-color: var(--gold);
+  background: var(--navy);
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(26, 39, 68, 0.10);
 }
 
-.csv-step.done .csv-num { color: var(--navy); }
+.csv-step.done .csv-num { color: var(--white); }
 
 .csv-line {
   width: 2px;
