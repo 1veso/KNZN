@@ -8,6 +8,29 @@ const state = {
 const heroState = { ort: '', buchstaben: '', ziffern: '', suffix: '' };
 const PRICES = { standard: 10, carbon: 20, zulassung: 20, plakette: 5, versand: 5 };
 
+// ─────────────────────────────────────────────────────────────
+// WUNSCHKENNZEICHEN VALIDATION (FZV §8, Anlage 4)
+// ─────────────────────────────────────────────────────────────
+const WKZ_BLOCKLIST = ['HJ', 'KZ', 'NS', 'SA', 'SS', 'SD', 'IS'];
+
+const WKZ_FORMAT_RULES = [
+    { letters: 1, digits: 3 },
+    { letters: 1, digits: 4 },
+    { letters: 2, digits: 2 },
+    { letters: 2, digits: 3 },
+    { letters: 2, digits: 4 },
+];
+
+const WKZ_MESSAGES = {
+    empty:        '',
+    valid:        'Format gültig — bereit zur Reservierung',
+    invalidFormat:'Ungültige Kombination. Erlaubt: 1 Buchstabe + 3-4 Ziffern, oder 2 Buchstaben + 2-4 Ziffern.',
+    leadingZero:  'Der Zifferteil darf nicht mit 0 beginnen.',
+    umlaut:       'Umlaute (Ä, Ö, Ü) sind nicht erlaubt.',
+    blocked:      'Diese Buchstaben-Kombination ist nach §8 FZV bundesweit gesperrt.',
+    tooLong:      'Maximal 8 Zeichen insgesamt erlaubt (Ort + Buchstaben + Ziffern).',
+};
+
 /* ─── PLATE RENDERING ─── */
 function drawPlate(canvasId, ort, buchstaben, ziffern, suffix, material, plateType, size) {
     const canvas = document.getElementById(canvasId);
@@ -239,17 +262,89 @@ function updatePlate() {
     state.ort = document.getElementById('ort').value;
     state.buchstaben = document.getElementById('buchstaben').value;
     state.ziffern = document.getElementById('ziffern').value;
-    validatePlate(); renderAllPlates(); updateSummary(); updateProgress();
+    renderAllPlates(); updateSummary(); updateProgress();
+    renderPlateValidation();
 }
 
-function validatePlate() {
-    const o = state.ort.trim(), b = state.buchstaben.trim(), z = state.ziffern.trim();
-    const el = document.getElementById('plateValidation');
-    if (!o && !b && !z) { el.textContent=''; el.className='plate-validation'; return false; }
-    const valid = /^[A-ZÄÖÜ]{1,3}$/.test(o.toUpperCase()) && /^[A-Z]{1,2}$/.test(b.toUpperCase()) && /^[0-9]{1,4}$/.test(z);
-    if (valid) { el.textContent='✓ Gültiges Kennzeichenformat'; el.className='plate-validation valid'; }
-    else { el.textContent='⚠ Ortskenzeichen · Buchstaben · Ziffern prüfen'; el.className='plate-validation invalid'; }
-    return valid;
+function validateWunschkennzeichen() {
+    const ort = (document.getElementById('ort')?.value || '').trim().toUpperCase();
+    const buchstaben = (document.getElementById('buchstaben')?.value || '').trim().toUpperCase();
+    const ziffern = (document.getElementById('ziffern')?.value || '').trim();
+
+    if (!buchstaben && !ziffern) {
+        return { state: 'empty', message: '' };
+    }
+
+    if (/[ÄÖÜ]/.test(buchstaben)) {
+        return { state: 'invalid', message: WKZ_MESSAGES.umlaut };
+    }
+
+    if (buchstaben && !/^[A-Z]+$/.test(buchstaben)) {
+        return { state: 'invalid', message: WKZ_MESSAGES.invalidFormat };
+    }
+
+    if (ziffern && !/^[0-9]+$/.test(ziffern)) {
+        return { state: 'invalid', message: WKZ_MESSAGES.invalidFormat };
+    }
+
+    if (ziffern.length > 0 && ziffern[0] === '0') {
+        return { state: 'invalid', message: WKZ_MESSAGES.leadingZero };
+    }
+
+    if (!buchstaben || !ziffern) {
+        return { state: 'empty', message: '' };
+    }
+
+    if (WKZ_BLOCKLIST.includes(buchstaben)) {
+        return { state: 'blocked', message: WKZ_MESSAGES.blocked };
+    }
+
+    const matchesAnyRule = WKZ_FORMAT_RULES.some(
+        r => r.letters === buchstaben.length && r.digits === ziffern.length
+    );
+    if (!matchesAnyRule) {
+        return { state: 'invalid', message: WKZ_MESSAGES.invalidFormat };
+    }
+
+    if (ort.length + buchstaben.length + ziffern.length > 8) {
+        return { state: 'invalid', message: WKZ_MESSAGES.tooLong };
+    }
+
+    return { state: 'valid', message: WKZ_MESSAGES.valid };
+}
+
+function renderPlateValidation() {
+    const result = validateWunschkennzeichen();
+    const target = document.getElementById('plateValidation');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+
+    if (!target) return;
+
+    target.classList.remove('wkz-valid', 'wkz-invalid', 'wkz-blocked', 'wkz-empty');
+
+    if (result.state === 'empty') {
+        target.classList.add('wkz-empty');
+        target.innerHTML = '';
+        if (checkoutBtn) checkoutBtn.disabled = false;
+        return;
+    }
+
+    if (result.state === 'valid') {
+        target.classList.add('wkz-valid');
+        target.innerHTML = `
+            <span class="wkz-icon" aria-hidden="true">✓</span>
+            <span class="wkz-text">${result.message}</span>
+        `;
+        if (checkoutBtn) checkoutBtn.disabled = false;
+        return;
+    }
+
+    target.classList.add(result.state === 'blocked' ? 'wkz-blocked' : 'wkz-invalid');
+    target.innerHTML = `
+        <span class="wkz-icon" aria-hidden="true">!</span>
+        <span class="wkz-text">${result.message}</span>
+    `;
+    if (checkoutBtn) checkoutBtn.disabled = true;
 }
 
 function setSuffix(btn, val) {
@@ -673,6 +768,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAllPlates();
     renderHeroPlate();
     updateSummary();
+    renderPlateValidation();
     initScrollProgress();
     initAnchorBanner();
     initFAQ();

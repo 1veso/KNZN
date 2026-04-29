@@ -567,17 +567,40 @@ button {
 }
 
 .plate-validation {
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     font-size: 13px;
     font-weight: 500;
-    min-height: 20px;
+    margin-top: 12px;
+    transition: opacity 0.18s ease;
 }
-
-.plate-validation.valid {
-    color: #16a34a;
+.plate-validation.wkz-empty { opacity: 0; }
+.plate-validation.wkz-valid { color: #15803d; }
+.plate-validation.wkz-invalid,
+.plate-validation.wkz-blocked { color: #b91c1c; }
+.plate-validation .wkz-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
 }
+.plate-validation.wkz-valid .wkz-icon   { background: #15803d; }
+.plate-validation.wkz-invalid .wkz-icon,
+.plate-validation.wkz-blocked .wkz-icon { background: #b91c1c; }
 
-.plate-validation.invalid {
-    color: #dc2626;
+/* Disabled state for checkout button when plate invalid */
+.btn-checkout:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 
 .plate-inputs {
@@ -3366,19 +3389,7 @@ a.bento-card:hover .bento-link {
 
 
 .plate-validation {
-    font-size: 13px;
-    font-weight: 500;
-    min-height: 18px;
-    margin-top: 6px;
     color: rgba(255, 255, 255, 0.7);
-}
-
-.plate-validation.valid {
-    color: #4ade80;
-}
-
-.plate-validation.invalid {
-    color: #f87171;
 }
 
 .config-body {
