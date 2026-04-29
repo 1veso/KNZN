@@ -86,6 +86,11 @@ export async function onRequestPost(context) {
       params.set('customer_email', sanitizedEmail);
     }
 
+    // wkz-buyer-collection: collect name, phone, shipping address via Stripe
+    params.set('billing_address_collection', 'required');
+    params.set('phone_number_collection[enabled]', 'true');
+    params.set('shipping_address_collection[allowed_countries][]', 'DE');
+
     let i = 0;
 
     const kennzeichenPriceId = material === 'carbon'
@@ -100,9 +105,10 @@ export async function onRequestPost(context) {
 
     params.set(`line_items[${i}][price]`, kennzeichenPriceId);
     params.set(`line_items[${i}][quantity]`, '1');
-    params.set(`metadata[kennzeichen_text]`, plateText || '');
-    params.set(`metadata[groesse]`, sizeLabel);
-    params.set(`metadata[typ]`, typeLabel);
+    params.set(`metadata[plate_text]`,   plateText   || '');
+    params.set(`metadata[plate_format]`, plateFormat || '');
+    params.set(`metadata[groesse]`,      sizeLabel);
+    params.set(`metadata[typ]`,          typeLabel);
     params.set(`metadata[email_discount_applied]`, sanitizedEmail ? 'true' : 'false');
     if (sanitizedEmail) {
       params.set(`metadata[lead_email]`, sanitizedEmail);

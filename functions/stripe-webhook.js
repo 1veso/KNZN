@@ -46,6 +46,25 @@ export async function onRequestPost(context) {
             const reservierStatus = validStatuses.includes(meta.reservier_status)  ? meta.reservier_status : 'pending';
             const reservierPin    = sanitize(meta.reservier_pin, 20) || null;
 
+            // Buyer fields come from Stripe-collected billing/shipping data,
+            // not from metadata. Prefer shipping_details (where the plate is
+            // mailed) over customer_details (billing) for name and address.
+            const customerDetails = session.customer_details || {};
+            const shippingDetails = session.shipping_details || {};
+
+            const buyerName  = shippingDetails.name || customerDetails.name || '';
+            const buyerPhone = customerDetails.phone || '';
+
+            const addr = shippingDetails.address || customerDetails.address || {};
+            const buyerAddress = [
+                addr.line1,
+                addr.line2,
+                addr.postal_code,
+                addr.city,
+                addr.state,
+                addr.country,
+            ].filter(Boolean).join(', ');
+
             // Save order to Supabase
             const supabaseRes = await fetch(`${env.SUPABASE_URL}/rest/v1/orders`, {
                 method: 'POST',
@@ -56,12 +75,12 @@ export async function onRequestPost(context) {
                     'Prefer': 'return=minimal'
                 },
                 body: JSON.stringify({
-                    plate_text: sanitize(meta.plateText, 20),
-                    plate_format: sanitize(meta.plateFormat, 30),
-                    buyer_name: sanitize(meta.buyerName, 100),
+                    plate_text: sanitize(meta.plate_text, 20),
+                    plate_format: sanitize(meta.plate_format, 30),
+                    buyer_name: sanitize(buyerName, 100),
                     buyer_email: sanitize(session.customer_email, 254),
-                    buyer_phone: sanitize(meta.buyerPhone, 20),
-                    buyer_address: sanitize(meta.buyerAddress, 255),
+                    buyer_phone: sanitize(buyerPhone, 20),
+                    buyer_address: sanitize(buyerAddress, 255),
                     stripe_session_id: sanitize(session.id, 100),
                     payment_status: 'paid',
                     fulfilled: false,
@@ -78,7 +97,7 @@ export async function onRequestPost(context) {
                 return new Response('DB error', { status: 500 });
             }
 
-            console.log('Order saved:', sanitize(meta.plateText, 20));
+            console.log('Order saved:', sanitize(meta.plate_text, 20));
         }
 
         return new Response('ok', { status: 200 });
