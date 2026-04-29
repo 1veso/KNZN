@@ -1156,8 +1156,12 @@ function renderReservierUI() {
         selfPanel.removeAttribute('hidden');
     }
 
-    if (pinInput && window.knznReservier.pin && pinInput.value !== window.knznReservier.pin) {
-        pinInput.value = window.knznReservier.pin;
+    if (pinInput) {
+        if (window.knznReservier.pin && pinInput.value !== window.knznReservier.pin) {
+            pinInput.value = window.knznReservier.pin;
+        } else if (!window.knznReservier.pin && pinInput.value) {
+            pinInput.value = '';
+        }
     }
 }
 
