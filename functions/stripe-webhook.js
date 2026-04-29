@@ -39,6 +39,13 @@ export async function onRequestPost(context) {
                 return s.replace(/&[#\w]+;/g, '').replace(/[<>"']/g, '').slice(0, maxLen);
             };
 
+            // wkz: normalize reservier fields with allowlist
+            const validModes    = ['service', 'self'];
+            const validStatuses = ['pending', 'provided', 'not_required'];
+            const reservierMode   = validModes.includes(meta.reservier_mode)       ? meta.reservier_mode   : 'service';
+            const reservierStatus = validStatuses.includes(meta.reservier_status)  ? meta.reservier_status : 'pending';
+            const reservierPin    = sanitize(meta.reservier_pin, 20) || null;
+
             // Save order to Supabase
             const supabaseRes = await fetch(`${env.SUPABASE_URL}/rest/v1/orders`, {
                 method: 'POST',
@@ -57,7 +64,11 @@ export async function onRequestPost(context) {
                     buyer_address: sanitize(meta.buyerAddress, 255),
                     stripe_session_id: sanitize(session.id, 100),
                     payment_status: 'paid',
-                    fulfilled: false
+                    fulfilled: false,
+                    // wkz: reservier fields from Stripe metadata
+                    reservier_mode: reservierMode,
+                    reservier_pin: reservierPin,
+                    reservier_status: reservierStatus
                 })
             });
 

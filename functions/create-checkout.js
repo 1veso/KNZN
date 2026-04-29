@@ -21,11 +21,20 @@ export async function onRequestPost(context) {
     }
 
     const body = await request.json();
-    const { plateText, plateFormat, material, size, type, addons, emailDiscount, customerEmail } = body;
+    const {
+      plateText, plateFormat, material, size, type, addons, emailDiscount, customerEmail,
+      reservier_mode, reservier_pin, reservier_status,
+    } = body;
+
+    // wkz: normalize reservier fields with defensive defaults
+    const reservierMode   = (reservier_mode === 'self' || reservier_mode === 'service') ? reservier_mode : 'service';
+    const reservierPin    = (typeof reservier_pin === 'string' && reservier_pin.length > 0) ? reservier_pin.slice(0, 20) : '';
+    const reservierStatus = (reservier_status === 'provided' || reservier_status === 'pending' || reservier_status === 'not_required') ? reservier_status : 'pending';
 
     console.log('[create-checkout] Received body:', JSON.stringify({
       plateText, plateFormat, material, size, type,
-      addons, emailDiscount, customerEmail: customerEmail ? '***' : null
+      addons, emailDiscount, customerEmail: customerEmail ? '***' : null,
+      reservier_mode: reservierMode, reservier_pin: reservierPin ? '***' : '', reservier_status: reservierStatus,
     }));
 
     // --- Input allowlist validation ---
@@ -98,6 +107,10 @@ export async function onRequestPost(context) {
     if (sanitizedEmail) {
       params.set(`metadata[lead_email]`, sanitizedEmail);
     }
+    // wkz: forward reservier fields into Stripe metadata for webhook + dashboard visibility
+    params.set(`metadata[reservier_mode]`,   reservierMode);
+    params.set(`metadata[reservier_pin]`,    reservierPin);
+    params.set(`metadata[reservier_status]`, reservierStatus);
     i++;
 
     if (addons.zulassung) {
@@ -186,6 +199,10 @@ export async function onRequestPost(context) {
         stripe_session_id: session.id,
         created_at: new Date().toISOString(),
         source: 'knzn_checkout_modal',
+        // wkz: reservier fields
+        reservier_mode: reservierMode,
+        reservier_pin: reservierPin || null,
+        reservier_status: reservierStatus,
       };
 
       if (env.SUPABASE_URL && env.SUPABASE_SERVICE_KEY) {

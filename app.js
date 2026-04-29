@@ -532,6 +532,22 @@ async function handleCheckout() {
         document.getElementById('configurator').scrollIntoView({ behavior:'smooth' });
         return;
     }
+
+    // wkz: warn user if they chose self-reservation but didn't enter a PIN
+    const reservier = window.knznReservier || DEFAULT_RESERVIER_STATE;
+    if (reservier.mode === 'self' && !reservier.pin) {
+        const proceed = window.confirm(
+            'Du hast "Ich reserviere selbst" gewählt, aber noch keine ' +
+            'Reservierungs-PIN eingegeben.\n\n' +
+            'Du kannst die Bestellung trotzdem abschließen — sende uns die PIN ' +
+            'einfach später per E-Mail.\n\n' +
+            'Möchtest du jetzt zuerst reservieren oder direkt fortfahren?\n\n' +
+            'OK = Fortfahren ohne PIN\n' +
+            'Abbrechen = Zurück zur Reservierung'
+        );
+        if (!proceed) return;
+    }
+
     openEmailModal();
 }
 
@@ -591,6 +607,8 @@ async function proceedToCheckout(email = null) {
             type:        plateType,
             addons:      state.addons,
             totalAmount: calcTotal(),
+            // wkz-payload: spread reservier fields
+            ...buildReservierPayload(),
         };
 
         // Only include email fields when an email was actually provided
@@ -1133,6 +1151,30 @@ function setReservierPin(value) {
     const cleaned = (value || '').trim().toUpperCase().replace(/\s+/g, '');
     window.knznReservier.pin = cleaned || null;
     saveReservierState();
+}
+
+// ─────────────────────────────────────────────────────────────
+// RESERVIER PAYLOAD BUILDER (consumed by checkout)
+// ─────────────────────────────────────────────────────────────
+function buildReservierPayload() {
+    const state = window.knznReservier || { ...DEFAULT_RESERVIER_STATE };
+    const mode = state.mode === 'self' ? 'self' : 'service';
+    const pin = (mode === 'self' && state.pin) ? state.pin : null;
+
+    let status;
+    if (mode === 'service') {
+        status = 'pending';
+    } else if (mode === 'self' && pin) {
+        status = 'provided';
+    } else {
+        status = 'pending';
+    }
+
+    return {
+        reservier_mode: mode,
+        reservier_pin: pin,
+        reservier_status: status,
+    };
 }
 
 function renderReservierUI() {
