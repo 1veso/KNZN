@@ -95,6 +95,9 @@ var DATENSCHUTZ = `
   <p>Wenn Sie Apple Pay wählen, erfolgt die Zahlungsabwicklung über die „Apple Pay"-Funktion Ihres Apple-Endgeräts. Weitere Informationen: <a href="https://support.apple.com/de-de/HT203027" target="_blank" rel="noopener">apple.com/de/HT203027</a></p>
   <h3>6.6 Google Pay</h3>
   <p>Wenn Sie Google Pay wählen, erfolgt die Zahlungsabwicklung über die „Google Pay"-App. Weitere Informationen: <a href="https://payments.google.com/payments/apis-secure/get_legal_document?ldo=0&ldt=privacynotice&ldl=de" target="_blank" rel="noopener">Google Pay Datenschutz</a></p>
+  <h3>6.7 Wunschkennzeichen-Reservierungs-PIN</h3>
+  <p>Sofern Sie bei der Bestellung die Option „Ich reserviere selbst" wählen und uns Ihre Reservierungs-PIN des Kreises Düren mitteilen, speichern wir diese ausschließlich zum Zweck der ordnungsgemäßen Auftragsabwicklung. Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO (Vertragserfüllung). Die PIN wird nach vollständigem Abschluss des Auftrags und Ablauf gesetzlicher Aufbewahrungsfristen gelöscht.</p>
+  <p>Sofern Sie die Option „Komplett-Service" wählen, erstellen wir die Reservierung in Ihrem Namen direkt beim Kreis Düren. Hierfür übermitteln wir die für die Reservierung erforderlichen Daten (Name, Adresse, Geburtsdatum, gewünschte Kennzeichenkombination) an das Online-Portal der Kfz-Zulassungsstelle des Kreises Düren. Datenverantwortlicher der Reservierungsdaten beim Kreis Düren ist die Kreisverwaltung Düren, Bismarckstraße 16, 52351 Düren.</p>
   <hr>
   <h2>7) E-Mail-Marketing und Rabattaktionen</h2>
   <p>Wenn Sie im Rahmen einer Rabattaktion Ihre E-Mail-Adresse angeben, wird diese zum Zweck der Übersendung des Rabattcodes gespeichert. Die Verarbeitung erfolgt auf Grundlage Ihrer Einwilligung gemäß Art. 6 Abs. 1 lit. a DSGVO. Sie können Ihre Einwilligung jederzeit widerrufen unter <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a>.</p>
@@ -140,6 +143,7 @@ var AGB = `
     <li>Einlösung von Aktionsgutscheinen</li>
     <li>Anwendbares Recht</li>
     <li>Alternative Streitbeilegung</li>
+    <li>Wunschkennzeichen-Reservierung</li>
   </ol>
   <hr>
   <h2>1) Geltungsbereich</h2>
@@ -199,6 +203,13 @@ var AGB = `
   <h2>11) Alternative Streitbeilegung</h2>
   <p>Der Verkäufer ist zur Teilnahme an einem Streitbeilegungsverfahren vor einer alternativen Streitbeilegungsstelle weder verpflichtet noch bereit.</p>
   <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a></p>
+  <hr>
+  <h2>12) Wunschkennzeichen-Reservierung</h2>
+  <p><strong>12.1</strong> Sofern der Kunde bei der Bestellung die Option „Komplett-Service: Reservierung &amp; Schilder aus einer Hand" wählt, beauftragt der Kunde KNZN / Geier &amp; Ayhan OHG, in seinem Namen und in seinem Auftrag eine Wunschkennzeichen-Reservierung bei der Kfz-Zulassungsstelle des Kreises Düren vorzunehmen. Die Reservierung selbst erfolgt ausschließlich durch die zuständige Behörde; KNZN handelt insoweit als Vertreter des Kunden ohne eigene hoheitliche Befugnisse.</p>
+  <p><strong>12.2</strong> Die Reservierungsgebühren des Kreises Düren (derzeit 2,60 € für die Reservierung sowie 10,20 € für das Wunschkennzeichen, Stand der Veröffentlichung) werden direkt durch die Behörde bei der Fahrzeugzulassung erhoben. Sie sind nicht Bestandteil des KNZN-Bestellpreises.</p>
+  <p><strong>12.3</strong> Ein Rechtsanspruch auf die Zuteilung eines bestimmten Wunschkennzeichens besteht nicht. Sollte das vom Kunden gewählte Wunschkennzeichen zum Zeitpunkt der Reservierung nicht mehr verfügbar sein, kontaktiert KNZN den Kunden umgehend mit Alternativvorschlägen.</p>
+  <p><strong>12.4</strong> Wählt der Kunde die Option „Ich reserviere selbst", so erfolgt die Reservierung ausschließlich durch den Kunden über das offizielle Online-Portal des Kreises Düren. Der Kunde teilt KNZN seine Reservierungs-PIN bei der Bestellung mit. KNZN übernimmt in diesem Fall keine Verantwortung für die Verfügbarkeit oder Gültigkeit der Reservierung.</p>
+  <p><strong>12.5</strong> Die Vorab-Plausibilitätsprüfung im Konfigurator stellt keine Verfügbarkeitszusage dar. Die finale verbindliche Verfügbarkeitsprüfung erfolgt ausschließlich durch die Kfz-Zulassungsstelle des Kreises Düren bei Auftragseingang.</p>
   <hr>
   <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
 `;
@@ -278,6 +289,11 @@ var FAQ = `
   </ul>
   <h3>Sind Kennzeichen für ganz Deutschland gültig?</h3>
   <p>Ja. Alle unsere Kennzeichen sind DIN-zertifiziert und bundesweit bei jeder Zulassungsstelle anerkannt.</p>
+  <h3>Wie funktioniert die Wunschkennzeichen-Reservierung bei KNZN?</h3>
+  <p>Du hast zwei Möglichkeiten:</p>
+  <p><strong>Komplett-Service (empfohlen):</strong> Wir reservieren dein Wunschkennzeichen in deinem Namen direkt beim Kreis Düren. Du erhältst die Reservierungs-PIN per E-Mail nach deiner Bestellung. Die Behördengebühr (12,80 €) wird erst bei der Fahrzeugzulassung erhoben, nicht bei uns.</p>
+  <p><strong>Selbst reservieren:</strong> Du reservierst direkt beim Kreis Düren über das offizielle Online-Portal und gibst uns deine Reservierungs-PIN bei der Bestellung an. Spart dir nichts, hilft uns aber Bearbeitungszeit sparen.</p>
+  <p>In beiden Fällen bestätigt das Straßenverkehrsamt Düren die finale Verfügbarkeit erst bei Auftragseingang. Falls dein Wunschkennzeichen nicht mehr verfügbar ist, melden wir uns sofort mit Alternativen.</p>
   <hr>
   <h2>🚗 Zulassungsdienstleistungen</h2>
   <h3>Was macht ein Zulassungsdienst?</h3>

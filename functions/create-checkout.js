@@ -89,7 +89,11 @@ export async function onRequestPost(context) {
     // wkz-buyer-collection: collect name, phone, shipping address via Stripe
     params.set('billing_address_collection', 'required');
     params.set('phone_number_collection[enabled]', 'true');
-    params.set('shipping_address_collection[allowed_countries][]', 'DE');
+    // Only require shipping address if customer chose Versand add-on.
+    // Pickup customers (Selbstabholung at Weierstraße 10) skip this.
+    if (addons && addons.versand) {
+        params.set('shipping_address_collection[allowed_countries][]', 'DE');
+    }
 
     let i = 0;
 
