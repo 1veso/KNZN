@@ -1087,3 +1087,87 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
     });
   }
 }
+
+// ─────────────────────────────────────────────────────────────
+// RESERVIER-BLOCK STATE
+// ─────────────────────────────────────────────────────────────
+const RESERVIER_STORAGE_KEY = 'knzn_reservier_state';
+const DEFAULT_RESERVIER_STATE = { mode: 'service', pin: null };
+
+window.knznReservier = { ...DEFAULT_RESERVIER_STATE };
+
+function loadReservierState() {
+    try {
+        const raw = localStorage.getItem(RESERVIER_STORAGE_KEY);
+        if (!raw) return { ...DEFAULT_RESERVIER_STATE };
+        const parsed = JSON.parse(raw);
+        if (parsed && (parsed.mode === 'service' || parsed.mode === 'self')) {
+            return {
+                mode: parsed.mode,
+                pin: typeof parsed.pin === 'string' ? parsed.pin : null,
+            };
+        }
+    } catch (e) {
+        // Corrupted state, fall through to default
+    }
+    return { ...DEFAULT_RESERVIER_STATE };
+}
+
+function saveReservierState() {
+    try {
+        localStorage.setItem(RESERVIER_STORAGE_KEY, JSON.stringify(window.knznReservier));
+    } catch (e) {
+        // localStorage might be disabled (Safari private mode) — silently fail
+    }
+}
+
+function setReservierMode(mode) {
+    if (mode !== 'service' && mode !== 'self') return;
+    window.knznReservier.mode = mode;
+    if (mode === 'service') window.knznReservier.pin = null;
+    saveReservierState();
+    renderReservierUI();
+}
+
+function setReservierPin(value) {
+    const cleaned = (value || '').trim().toUpperCase().replace(/\s+/g, '');
+    window.knznReservier.pin = cleaned || null;
+    saveReservierState();
+}
+
+function renderReservierUI() {
+    const cardService = document.getElementById('reservierCardService');
+    const cardSelf = document.getElementById('reservierCardSelf');
+    const selfPanel = document.getElementById('reservierSelfPanel');
+    const pinInput = document.getElementById('reservierPin');
+
+    if (!cardService || !cardSelf || !selfPanel) return;
+
+    const isService = window.knznReservier.mode === 'service';
+
+    cardService.classList.toggle('active', isService);
+    cardService.setAttribute('aria-checked', isService ? 'true' : 'false');
+    cardSelf.classList.toggle('active', !isService);
+    cardSelf.setAttribute('aria-checked', !isService ? 'true' : 'false');
+
+    if (isService) {
+        selfPanel.setAttribute('hidden', '');
+    } else {
+        selfPanel.removeAttribute('hidden');
+    }
+
+    if (pinInput && window.knznReservier.pin && pinInput.value !== window.knznReservier.pin) {
+        pinInput.value = window.knznReservier.pin;
+    }
+}
+
+function initReservierBlock() {
+    window.knznReservier = loadReservierState();
+    renderReservierUI();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReservierBlock);
+} else {
+    initReservierBlock();
+}

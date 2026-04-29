@@ -168,6 +168,122 @@
     </div>
 </section>
 
+<!-- ─────────────────────────────────────────────────────────── -->
+<!-- RESERVIER-BLOCK: Wunschkennzeichen-Reservierungsworkflow    -->
+<!-- ─────────────────────────────────────────────────────────── -->
+<section class="reservier" id="reservier" aria-labelledby="reservier-title">
+    <div class="container reservier-container">
+        <header class="reservier-header">
+            <h2 id="reservier-title">Wunschkennzeichen-Reservierung</h2>
+            <p class="reservier-subtitle">
+                Wähle, wie wir dein Wunschkennzeichen beim Kreis Düren sichern.
+            </p>
+        </header>
+
+        <div class="reservier-cards">
+            <!-- Card A: Komplett-Service (default) -->
+            <div
+                class="reservier-card reservier-card-service active"
+                id="reservierCardService"
+                role="radio"
+                aria-checked="true"
+                tabindex="0"
+                onclick="setReservierMode('service')"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setReservierMode('service')}"
+            >
+                <div class="reservier-card-radio" aria-hidden="true">
+                    <span class="reservier-radio-dot"></span>
+                </div>
+                <div class="reservier-card-icon" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 17a2 2 0 0 0 2 2h.5a2.5 2.5 0 0 0 0-5H10a2 2 0 0 1-2-2v-1l-1.5 1.5"/>
+                        <path d="M14 6l2-2h2l3 3-3 3h-2l-2-2"/>
+                        <path d="M3 11l3-3h2l2 2-2 2H6l-3 3"/>
+                        <path d="M9 14l2 2"/>
+                        <path d="M14 11l-2-2"/>
+                    </svg>
+                </div>
+                <div class="reservier-card-body">
+                    <h3 class="reservier-card-title">Komplett-Service: Reservierung &amp; Schilder aus einer Hand</h3>
+                    <p class="reservier-card-subtitle">Wir kümmern uns um die Reservierung beim Kreis Düren für dich.</p>
+                    <p class="reservier-card-helper">
+                        Geier &amp; Ayhan reservieren dein Wunschkennzeichen direkt nach deiner Bestellung
+                        beim Straßenverkehrsamt Düren. Du erhältst die Reservierungs-PIN per E-Mail.
+                    </p>
+                    <div class="reservier-card-badge">
+                        <span aria-hidden="true">✓</span> Empfohlen
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card B: Selbst reservieren -->
+            <div
+                class="reservier-card reservier-card-self"
+                id="reservierCardSelf"
+                role="radio"
+                aria-checked="false"
+                tabindex="0"
+                onclick="setReservierMode('self')"
+                onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setReservierMode('self')}"
+            >
+                <div class="reservier-card-radio" aria-hidden="true">
+                    <span class="reservier-radio-dot"></span>
+                </div>
+                <div class="reservier-card-icon" aria-hidden="true">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M15 3h6v6"/>
+                        <path d="M10 14L21 3"/>
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                    </svg>
+                </div>
+                <div class="reservier-card-body">
+                    <h3 class="reservier-card-title">Ich reserviere selbst</h3>
+                    <p class="reservier-card-subtitle">Beim Kreis Düren reservieren und Reservierungs-PIN angeben.</p>
+                    <p class="reservier-card-helper">
+                        Reserviere direkt beim offiziellen Portal des Kreises Düren.
+                        Du sparst nichts, hilfst uns aber Bearbeitungszeit zu sparen — danke!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Self-reservation expanded panel (hidden unless mode === 'self') -->
+        <div class="reservier-self-panel" id="reservierSelfPanel" hidden>
+            <a
+                class="reservier-outbound-btn"
+                href="https://kfz-egov.regioit.de/wkz/?LICENSEIDENTIFIER=dueren_kreis"
+                target="_blank"
+                rel="noopener noreferrer"
+            >
+                <span>Beim Kreis Düren reservieren</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"/>
+                    <path d="M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+
+            <div class="reservier-return-banner">
+                <span aria-hidden="true">⏱</span>
+                <span>Wir warten hier auf dich. Komm mit deiner Reservierungs-PIN zurück.</span>
+            </div>
+
+            <label class="reservier-pin-label" for="reservierPin">
+                Deine Reservierungs-PIN vom Kreis Düren
+            </label>
+            <input
+                type="text"
+                id="reservierPin"
+                class="reservier-pin-input"
+                placeholder="z. B. ABC12345"
+                maxlength="20"
+                autocomplete="off"
+                oninput="setReservierPin(this.value)"
+            />
+            <p class="reservier-pin-hint">Die PIN ist 365 Tage gültig.</p>
+        </div>
+    </div>
+</section>
+
 <section class="addons" id="addons">
     <div class="container">
         <div class="section-header">
@@ -250,8 +366,11 @@
                 </div>
                 <div class="plate-availability-note">
                     <div>
-                        <strong>Wichtiger Hinweis zur Verfügbarkeit</strong>
-                        Wunschkennzeichen sind vorbehaltlich der Verfügbarkeit beim Straßenverkehrsamt Düren. Wir prüfen die Verfügbarkeit vor der Bearbeitung und kontaktieren Sie bei Nichtverfügbarkeit umgehend mit einer Alternative.
+                        <strong>Wichtiger Hinweis zur Verfügbarkeit</strong><br>
+                        Die finale Verfügbarkeit deines Wunschkennzeichens bestätigt das
+                        Straßenverkehrsamt Düren mit Auftragseingang. Wähle oben im
+                        Reservier-Block, ob wir das für dich übernehmen oder du selbst
+                        reservierst.
                     </div>
                 </div>
             </div>
