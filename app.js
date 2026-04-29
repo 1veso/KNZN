@@ -1157,10 +1157,9 @@ function renderReservierUI() {
     }
 
     if (pinInput) {
-        if (window.knznReservier.pin && pinInput.value !== window.knznReservier.pin) {
-            pinInput.value = window.knznReservier.pin;
-        } else if (!window.knznReservier.pin && pinInput.value) {
-            pinInput.value = '';
+        const desiredValue = window.knznReservier.pin || '';
+        if (pinInput.value !== desiredValue) {
+            pinInput.value = desiredValue;
         }
     }
 }
