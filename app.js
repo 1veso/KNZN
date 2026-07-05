@@ -1054,7 +1054,7 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'openrouter/free',
+          model: 'deepseek-chat',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             ...chatHistory

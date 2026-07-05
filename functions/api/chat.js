@@ -2,9 +2,9 @@ export async function onRequestPost(context) {
   const { env, request } = context;
   const jsonHeaders = { 'Content-Type': 'application/json' };
 
-  if (!env.OPENROUTER_KEY) {
+  if (!env.DEEPSEEK_API_KEY) {
     return new Response(
-      JSON.stringify({ error: 'Server misconfiguration: missing OPENROUTER_KEY' }),
+      JSON.stringify({ error: 'Server misconfiguration: missing DEEPSEEK_API_KEY' }),
       { status: 500, headers: jsonHeaders }
     );
   }
@@ -19,7 +19,7 @@ export async function onRequestPost(context) {
     });
   }
 
-  const { messages, model, max_tokens, temperature } = body || {};
+  const { messages, max_tokens, temperature } = body || {};
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return new Response(JSON.stringify({ error: 'messages must be a non-empty array' }), {
@@ -57,25 +57,20 @@ export async function onRequestPost(context) {
   );
   const safeTemperature =
     typeof temperature === 'number' && temperature >= 0 && temperature <= 2 ? temperature : 0.7;
-  const safeModel =
-    typeof model === 'string' && model.length > 0 && model.length < 200
-      ? model
-      : 'openrouter/free';
 
-  const origin = request.headers.get('Origin') || request.headers.get('Referer') || '';
+  // Server enforces the model; the client no longer chooses it.
+  const MODEL = 'deepseek-chat';
 
   let upstream;
   try {
-    upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    upstream = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${env.OPENROUTER_KEY}`,
-        'HTTP-Referer': origin,
-        'X-Title': 'KNZN Klaus Agent',
+        Authorization: `Bearer ${env.DEEPSEEK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: safeModel,
+        model: MODEL,
         messages,
         max_tokens: safeMaxTokens,
         temperature: safeTemperature,
