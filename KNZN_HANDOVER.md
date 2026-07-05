@@ -2,7 +2,7 @@
 
 A complete license plate configuration, ordering, and registration service website for Zulassungsdienst Düren (Geier & Ayhan OHG), operating from Weierstraße 10, 52349 Düren.
 
-Deployed on Cloudflare Pages. Built as a single-page application with vanilla HTML, CSS, and JavaScript. Backend via Cloudflare Pages Functions. Payment via Stripe. Customer data via Supabase. Email automation via Brevo. AI customer service via OpenRouter proxy.
+Deployed on Cloudflare Pages. Built as a single-page application with vanilla HTML, CSS, and JavaScript. Backend via Cloudflare Pages Functions. Payment via Stripe. Customer data via Supabase. Email automation via Brevo. AI customer service via a DeepSeek proxy.
 
 ---
 
@@ -27,7 +27,7 @@ The entire customer journey is designed to replace a 45-minute in-person visit t
 - Cloudflare Pages Functions in `/functions/` directory
 - `POST /create-checkout` — validates plate configuration, creates Stripe Checkout session, returns redirect URL
 - `POST /stripe-webhook` — receives Stripe completion events, writes to Supabase orders table
-- `POST /api/chat` — server-side proxy to OpenRouter for Klaus AI chatbot (keeps API key off the client)
+- `POST /api/chat` — server-side proxy to DeepSeek for Klaus AI chatbot (keeps API key off the client)
 
 **Data**
 - Supabase — `leads` and `orders` tables with row-level security and service-role access
@@ -36,7 +36,7 @@ The entire customer journey is designed to replace a 45-minute in-person visit t
 
 **Third-party integrations**
 - Stripe — EUR checkout, three product tiers reflecting plate-only, add-on combinations, and the Komplettpaket (€30 full service)
-- OpenRouter — Klaus chatbot using Meta Llama 3.1 8B (free tier) with a $5/month spend cap for safety
+- DeepSeek — Klaus chatbot using the `deepseek-chat` model (DeepSeek's stable alias for V4 Flash, non-thinking mode), called directly against DeepSeek's pre-paid API. The proxy enforces the model server-side and caps conversation length for cost safety.
 - DHL — referenced in shipping copy, actual integration at the operations level
 - Google Maps — embedded contact location iframe
 
@@ -51,7 +51,7 @@ The canvas plate preview updates on every keystroke. Size (standard 520×110mm o
 The hero features a static Audi image with subtle brightness and saturation tuning, a live typewriter animation cycling through plate examples (DN-AB-1234, DN-JH-42, DN-MX-500-E, DN-LB-88-H), and an animated €30 Komplettpaket mini-bar that slides in after page load. Bento statistics counters (450+ KFZ, 150+ customers, 2+ years, 100% reliable) animate from zero when the "Warum wir?" section enters the viewport.
 
 **Klaus AI customer service**
-A German-speaking chatbot embedded in the bottom right. Scoped to KFZ and Zulassung topics only. Refuses off-topic questions. Answers in ≤3 sentences. Calls `/api/chat` which proxies to OpenRouter with safety limits (40 messages max, 20,000 characters max per conversation) and the API key kept server-side.
+A German-speaking chatbot embedded in the bottom right. Scoped to KFZ and Zulassung topics only. Refuses off-topic questions. Answers in ≤3 sentences. Calls `/api/chat` which proxies to DeepSeek with safety limits (40 messages max, 20,000 characters max per conversation) and the API key kept server-side.
 
 **Vertical step indicator**
 A scroll-driven three-step indicator (Konfigurieren → Extras → Bezahlen) appears on the right side once the user enters the configurator section. Lines between steps fill smoothly with gold as the user scrolls down and unfill when scrolling back up.
@@ -87,8 +87,8 @@ Three breakpoints: 960px (tablet), 768px (large mobile), 480px (small mobile). A
 - Sensitive console logs removed from production
 
 **API key handling**
-- OpenRouter key moved server-side to Cloudflare Pages environment variable (`OPENROUTER_API_KEY`)
-- `/api/chat` function validates requests, caps conversation length, and forwards with the server-side key
+- DeepSeek key stored server-side in Cloudflare Pages environment variable (`DEEPSEEK_API_KEY`)
+- `/api/chat` function validates requests, caps conversation length, enforces the model server-side, and forwards with the server-side key
 - No API keys in client source
 
 **Transport security**
@@ -112,7 +112,7 @@ Functions:    Cloudflare Pages Functions (Node runtime)
 Payments:     Stripe Checkout
 Database:     Supabase (Postgres)
 Email:        Brevo (post-purchase automation)
-AI chat:      OpenRouter → Meta Llama 3.1 8B, proxied server-side
+AI chat:      DeepSeek → deepseek-chat, proxied server-side
 Maps:         Google Maps embed
 Analytics:    (ready for Plausible or similar)
 ```
@@ -129,7 +129,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 SUPABASE_URL=https://...supabase.co
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
 BREVO_API_KEY=xkeysib-...
-OPENROUTER_API_KEY=sk-or-v1-...
+DEEPSEEK_API_KEY=sk-...
 ```
 
 Also set for Preview environment for staging deployments.
