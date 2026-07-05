@@ -963,24 +963,9 @@ function initMobileSticky() {
 
 /* ─── KLAUS CHAT AGENT ─── */
 function initKlausChat() {
-  const SYSTEM_PROMPT = `Du bist Klaus, der freundliche digitale Assistent des Zulassungsdienst Düren. Du hilfst Kunden bei Fragen rund um KFZ-Kennzeichen, Zulassungen und Bestellungen.
-
-Antworte immer auf Deutsch. Sei freundlich, kompetent und kurz. Maximal 3 Sätze pro Antwort.
-
-Was du weißt:
-- Kennzeichen ab €10, Komplettpaket €30
-- Bearbeitung innerhalb von 24 Stunden werktags
-- DHL-Versand €5, deutschlandweit
-- Zulassung, Ummeldung, Abmeldung möglich
-- Abholservice: Stadtgebiet €20, Kreisgebiet €40
-- DIN-zertifiziert, gültig bei jeder Zulassungsstelle
-- Kontakt: info@dueren-zulassungsdienst.de, 02421 5912 286
-- Adresse: Weierstraße 10, 52349 Düren
-
-Wenn der Kunde bestellen möchte, sage ihm er soll den Konfigurator oben auf der Seite nutzen.
-Wenn der Kunde seinen Namen und seine E-Mail nennt, bedanke dich und sage dass sich das Team bald meldet.
-Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
-
+  // The system prompt now lives server-side in functions/api/chat.js, which injects it and
+  // ignores any client-supplied system message. Keeping it out of the client removes a
+  // bypass surface (a scripted caller can no longer override or leak it).
   const chatHistory = [];
   const trigger = document.getElementById('chat-trigger');
   const chatWin = document.getElementById('chat-window');
@@ -1055,10 +1040,7 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'deepseek-chat',
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...chatHistory
-          ],
+          messages: [...chatHistory],
           max_tokens: 200,
           temperature: 0.7
         })
