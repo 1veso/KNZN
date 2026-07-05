@@ -26,6 +26,17 @@ Antworte nie auf Fragen außerhalb des Themas KFZ und Zulassung.`;
 const REFUSAL =
   'Dazu kann ich leider nichts sagen, ich helfe ausschließlich bei Fragen zu unserem Kennzeichen- und Zulassungsservice.';
 
+// Rate-limit config: at most RL_LIMIT messages per RL_WINDOW_MS per caller IP.
+const RL_LIMIT = 10;
+const RL_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
+
+// Weak in-memory fallback, used ONLY when the RATE_LIMIT_KV binding is absent. It resets on
+// every cold start and is NOT shared across Cloudflare's edge isolates/locations, so it is a
+// stopgap, not real protection. The correct fix is to bind a KV namespace named RATE_LIMIT_KV
+// (functions/stripe-webhook.js already expects this binding) or add a Cloudflare WAF Rate
+// Limiting rule (Security > WAF, no code required).
+const memoryBuckets = new Map();
+
 export async function onRequestPost(context) {
   const { env, request } = context;
   const jsonHeaders = { 'Content-Type': 'application/json' };
@@ -34,6 +45,49 @@ export async function onRequestPost(context) {
     return new Response(
       JSON.stringify({ error: 'Server misconfiguration: missing DEEPSEEK_API_KEY' }),
       { status: 500, headers: jsonHeaders }
+    );
+  }
+
+  // Abuse protection (Problem 2): rate-limit per caller IP BEFORE any parsing or model call,
+  // so a single visitor cannot spam the endpoint (scripted abuse, using the paid API as a
+  // free proxy, or running up the bill). Prefer durable KV; fall back to the weak in-memory
+  // counter above only when RATE_LIMIT_KV is not bound.
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const now = Date.now();
+  let limited = false;
+
+  if (env.RATE_LIMIT_KV) {
+    const rlKey = `chat_rl:${ip}`;
+    let entry = null;
+    try {
+      entry = JSON.parse((await env.RATE_LIMIT_KV.get(rlKey)) || 'null');
+    } catch {
+      entry = null;
+    }
+    if (!entry || now - entry.start > RL_WINDOW_MS) entry = { start: now, count: 0 };
+    if (entry.count >= RL_LIMIT) {
+      limited = true;
+    } else {
+      entry.count += 1;
+      await env.RATE_LIMIT_KV.put(rlKey, JSON.stringify(entry), {
+        expirationTtl: Math.ceil(RL_WINDOW_MS / 1000),
+      });
+    }
+  } else {
+    let entry = memoryBuckets.get(ip);
+    if (!entry || now - entry.start > RL_WINDOW_MS) entry = { start: now, count: 0 };
+    if (entry.count >= RL_LIMIT) {
+      limited = true;
+    } else {
+      entry.count += 1;
+      memoryBuckets.set(ip, entry);
+    }
+  }
+
+  if (limited) {
+    return new Response(
+      JSON.stringify({ error: 'Zu viele Anfragen, bitte versuchen Sie es in ein paar Minuten erneut.' }),
+      { status: 429, headers: jsonHeaders }
     );
   }
 
@@ -69,6 +123,14 @@ export async function onRequestPost(context) {
         status: 400,
         headers: jsonHeaders,
       });
+    }
+    // Input length cap: reject any single message over 500 chars so one request can't be
+    // used to send an extremely long prompt that inflates token costs.
+    if (m.content.length > 500) {
+      return new Response(
+        JSON.stringify({ error: 'Nachricht zu lang (max. 500 Zeichen).' }),
+        { status: 400, headers: jsonHeaders }
+      );
     }
     totalChars += m.content.length;
   }
