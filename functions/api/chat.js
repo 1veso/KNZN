@@ -197,17 +197,53 @@ export async function onRequestPost(context) {
         temperature: safeTemperature,
       }),
     });
-  } catch {
+  } catch (fetchErr) {
+    // TEMP DIAGNOSTIC: surface the real network-level failure.
+    console.error('[Klaus DS] fetch threw', {
+      name: fetchErr && fetchErr.name,
+      message: fetchErr && fetchErr.message,
+    });
     return new Response(JSON.stringify({ error: 'Upstream fetch failed' }), {
       status: 502,
       headers: jsonHeaders,
     });
   }
 
+  // TEMP DIAGNOSTIC: read the body once as text so we can log DeepSeek's actual status and
+  // error text, then parse. DeepSeek error/response bodies carry no user PII (auth/quota/
+  // validation messages only), so this is DSGVO-safe.
+  let rawBody = '';
+  try {
+    rawBody = await upstream.text();
+  } catch (readErr) {
+    console.error('[Klaus DS] body read failed', {
+      status: upstream.status,
+      name: readErr && readErr.name,
+      message: readErr && readErr.message,
+    });
+    return new Response(JSON.stringify({ error: 'Upstream read failed' }), {
+      status: 502,
+      headers: jsonHeaders,
+    });
+  }
+
+  if (!upstream.ok) {
+    console.error('[Klaus DS] upstream not ok', {
+      status: upstream.status,
+      body: rawBody.slice(0, 500),
+    });
+  } else {
+    console.log('[Klaus DS] upstream ok', { status: upstream.status });
+  }
+
   let data;
   try {
-    data = await upstream.json();
+    data = JSON.parse(rawBody);
   } catch {
+    console.error('[Klaus DS] json parse failed', {
+      status: upstream.status,
+      bodyPreview: rawBody.slice(0, 300),
+    });
     return new Response(JSON.stringify({ error: 'Upstream returned invalid JSON' }), {
       status: 502,
       headers: jsonHeaders,
