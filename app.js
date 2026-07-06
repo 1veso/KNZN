@@ -1064,7 +1064,7 @@ function initKlausChat() {
     } catch (err) {
       hideTyping();
       addMessage(
-        'Entschuldigung, es gab einen technischen Fehler. Bitte rufen Sie uns an: 02421 5912 286.',
+        'Entschuldigung, es gab einen technischen Fehler. Bitte rufen Sie uns an: 0157 0000000.',
         'bot'
       );
       console.error('[Klaus]', err);

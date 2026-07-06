@@ -90,7 +90,7 @@ export async function onRequestPost(context) {
     params.set('billing_address_collection', 'required');
     params.set('phone_number_collection[enabled]', 'true');
     // Only require shipping address if customer chose Versand add-on.
-    // Pickup customers (Selbstabholung at Weierstraße 10) skip this.
+    // Pickup customers (Selbstabholung at Kölnerstraße 12) skip this.
     if (addons && addons.versand) {
         params.set('shipping_address_collection[allowed_countries][]', 'DE');
     }

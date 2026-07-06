@@ -6,13 +6,13 @@ var IMPRESSUM = `
   <h2>Angaben gemäß § 5 TMG</h2>
   <p>
     <strong>Zulassungsdienst Düren</strong><br>
-    Weierstraße 10<br>
+    Kölnerstraße 12<br>
     52349 Düren<br>
     Deutschland
   </p>
   <h2>Kontakt</h2>
   <p>
-    Tel.: <a href="tel:024215912286">02421 5912 286</a><br>
+    Tel.: <a href="tel:01570000000">0157 0000000</a><br>
     E-Mail: <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a>
   </p>
   <h2>Umsatzsteuer</h2>
@@ -50,10 +50,10 @@ var DATENSCHUTZ = `
   <p><strong>1.2</strong> Verantwortlicher für die Datenverarbeitung auf dieser Website im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:</p>
   <p>
     <strong>Zulassungsdienst Düren</strong><br>
-    Weierstraße 10<br>
+    Kölnerstraße 12<br>
     52349 Düren<br>
     Deutschland<br><br>
-    Telefon: <a href="tel:024215912286">02421 5912 286</a><br>
+    Telefon: <a href="tel:01570000000">0157 0000000</a><br>
     E-Mail: <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a>
   </p>
   <hr>
@@ -125,7 +125,7 @@ var DATENSCHUTZ = `
   <h2>10) Dauer der Speicherung personenbezogener Daten</h2>
   <p>Die Speicherdauer richtet sich nach der jeweiligen Rechtsgrundlage, dem Verarbeitungszweck und den gesetzlichen Aufbewahrungsfristen (insbesondere handels- und steuerrechtliche Fristen von 6 bzw. 10 Jahren).</p>
   <hr>
-  <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026, Zulassungsdienst Düren, Kölnerstraße 12, 52349 Düren</em></p>
 `;
 
 var AGB = `
@@ -205,13 +205,13 @@ var AGB = `
   <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr</a></p>
   <hr>
   <h2>12) Wunschkennzeichen-Reservierung</h2>
-  <p><strong>12.1</strong> Sofern der Kunde bei der Bestellung die Option „Komplett-Service: Reservierung &amp; Schilder aus einer Hand" wählt, beauftragt der Kunde KNZN / Geier &amp; Ayhan OHG, in seinem Namen und in seinem Auftrag eine Wunschkennzeichen-Reservierung bei der Kfz-Zulassungsstelle des Kreises Düren vorzunehmen. Die Reservierung selbst erfolgt ausschließlich durch die zuständige Behörde; KNZN handelt insoweit als Vertreter des Kunden ohne eigene hoheitliche Befugnisse.</p>
+  <p><strong>12.1</strong> Sofern der Kunde bei der Bestellung die Option „Komplett-Service: Reservierung &amp; Schilder aus einer Hand" wählt, beauftragt der Kunde KNZN / Schmidt &amp; Weber OHG, in seinem Namen und in seinem Auftrag eine Wunschkennzeichen-Reservierung bei der Kfz-Zulassungsstelle des Kreises Düren vorzunehmen. Die Reservierung selbst erfolgt ausschließlich durch die zuständige Behörde; KNZN handelt insoweit als Vertreter des Kunden ohne eigene hoheitliche Befugnisse.</p>
   <p><strong>12.2</strong> Die Reservierungsgebühren des Kreises Düren (derzeit 2,60 € für die Reservierung sowie 10,20 € für das Wunschkennzeichen, Stand der Veröffentlichung) werden direkt durch die Behörde bei der Fahrzeugzulassung erhoben. Sie sind nicht Bestandteil des KNZN-Bestellpreises.</p>
   <p><strong>12.3</strong> Ein Rechtsanspruch auf die Zuteilung eines bestimmten Wunschkennzeichens besteht nicht. Sollte das vom Kunden gewählte Wunschkennzeichen zum Zeitpunkt der Reservierung nicht mehr verfügbar sein, kontaktiert KNZN den Kunden umgehend mit Alternativvorschlägen.</p>
   <p><strong>12.4</strong> Wählt der Kunde die Option „Ich reserviere selbst", so erfolgt die Reservierung ausschließlich durch den Kunden über das offizielle Online-Portal des Kreises Düren. Der Kunde teilt KNZN seine Reservierungs-PIN bei der Bestellung mit. KNZN übernimmt in diesem Fall keine Verantwortung für die Verfügbarkeit oder Gültigkeit der Reservierung.</p>
   <p><strong>12.5</strong> Die Vorab-Plausibilitätsprüfung im Konfigurator stellt keine Verfügbarkeitszusage dar. Die finale verbindliche Verfügbarkeitsprüfung erfolgt ausschließlich durch die Kfz-Zulassungsstelle des Kreises Düren bei Auftragseingang.</p>
   <hr>
-  <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026, Zulassungsdienst Düren, Kölnerstraße 12, 52349 Düren</em></p>
 `;
 
 var VERSAND = `
@@ -261,12 +261,12 @@ var VERSAND = `
   <p>Bei Fragen zu Ihrer Lieferung oder Zahlung wenden Sie sich bitte an:</p>
   <p>
     <strong>E-Mail:</strong> <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a><br>
-    <strong>Telefon:</strong> <a href="tel:024215912286">02421 5912 286</a><br>
-    <strong>WhatsApp:</strong> <a href="https://wa.me/49242159122860" target="_blank" rel="noopener">Chat starten</a>
+    <strong>Telefon:</strong> <a href="tel:01570000000">0157 0000000</a><br>
+    <strong>WhatsApp:</strong> <a href="https://wa.me/491570000000" target="_blank" rel="noopener">Chat starten</a>
   </p>
   <p>Montag – Freitag: 09:00 – 13:00 Uhr</p>
   <hr>
-  <p><em>Stand: März 2026, Zulassungsdienst Düren, Weierstraße 10, 52349 Düren</em></p>
+  <p><em>Stand: März 2026, Zulassungsdienst Düren, Kölnerstraße 12, 52349 Düren</em></p>
 `;
 
 var FAQ = `
@@ -368,9 +368,9 @@ var FAQ = `
   <h3>Wie kann ich den Zulassungsdienst Düren erreichen?</h3>
   <ul>
     <li><strong>E-Mail:</strong> <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a></li>
-    <li><strong>Telefon:</strong> <a href="tel:024215912286">02421 5912 286</a></li>
-    <li><strong>WhatsApp:</strong> <a href="https://wa.me/49242159122860" target="_blank" rel="noopener">Chat starten</a></li>
-    <li><strong>Adresse:</strong> Weierstraße 10, 52349 Düren</li>
+    <li><strong>Telefon:</strong> <a href="tel:01570000000">0157 0000000</a></li>
+    <li><strong>WhatsApp:</strong> <a href="https://wa.me/491570000000" target="_blank" rel="noopener">Chat starten</a></li>
+    <li><strong>Adresse:</strong> Kölnerstraße 12, 52349 Düren</li>
   </ul>
   <h3>Wann sind Sie erreichbar?</h3>
   <ul>
@@ -387,16 +387,16 @@ var KONTAKT = `
   <span class="legal-badge">Kontakt</span>
   <h2>Zulassungsdienst Düren</h2>
   <p>
-    Weierstraße 10<br>
+    Kölnerstraße 12<br>
     52349 Düren<br>
     Deutschland
   </p>
   <hr>
   <h2>Kontaktdaten</h2>
   <p>
-    <strong>Telefon:</strong> <a href="tel:024215912286">02421 5912 286</a><br>
+    <strong>Telefon:</strong> <a href="tel:01570000000">0157 0000000</a><br>
     <strong>E-Mail:</strong> <a href="mailto:info@dueren-zulassungsdienst.de">info@dueren-zulassungsdienst.de</a><br>
-    <strong>WhatsApp:</strong> <a href="https://wa.me/49242159122860" target="_blank" rel="noopener">Chat starten</a>
+    <strong>WhatsApp:</strong> <a href="https://wa.me/491570000000" target="_blank" rel="noopener">Chat starten</a>
   </p>
   <hr>
   <h2>Öffnungszeiten</h2>
