@@ -37,6 +37,18 @@ const RL_WINDOW_MS = 5 * 60 * 1000; // 5 minutes
 // Limiting rule (Security > WAF, no code required).
 const memoryBuckets = new Map();
 
+// Weak in-memory rate check (per-isolate, resets on cold start). Used when RATE_LIMIT_KV is
+// unbound, and as graceful degradation if a KV operation fails — so protection never drops
+// fully open. Returns true if the caller is over the limit.
+function memoryRateLimited(ip, now) {
+  let entry = memoryBuckets.get(ip);
+  if (!entry || now - entry.start > RL_WINDOW_MS) entry = { start: now, count: 0 };
+  if (entry.count >= RL_LIMIT) return true;
+  entry.count += 1;
+  memoryBuckets.set(ip, entry);
+  return false;
+}
+
 export async function onRequestPost(context) {
   const { env, request } = context;
   const jsonHeaders = { 'Content-Type': 'application/json' };
@@ -62,9 +74,9 @@ export async function onRequestPost(context) {
     // showed "technischer Fehler" on every request. Here we log the ACTUAL error and FAIL
     // OPEN so Klaus keeps working while we read the logs.
     const rlKey = `chat_rl:${ip}`;
+    let stage = 'get';
     try {
       const raw = await env.RATE_LIMIT_KV.get(rlKey);
-      console.log('[Klaus RL] get ok', { ip, rlKey, raw });
       let entry = null;
       try {
         entry = JSON.parse(raw || 'null');
@@ -76,28 +88,25 @@ export async function onRequestPost(context) {
         limited = true;
       } else {
         entry.count += 1;
+        stage = 'put';
         await env.RATE_LIMIT_KV.put(rlKey, JSON.stringify(entry), {
           expirationTtl: Math.ceil(RL_WINDOW_MS / 1000),
         });
-        console.log('[Klaus RL] put ok', { ip, count: entry.count });
       }
+      // Success marker — no IP or key material (DSGVO); `limited` is not personal data.
+      console.log('[Klaus RL] kv ok', { limited });
     } catch (kvErr) {
+      // Log WHERE (get vs put) and WHY it failed. No IP/key logged.
       console.error('[Klaus RL] KV FAILURE', {
+        stage,
         name: kvErr && kvErr.name,
         message: kvErr && kvErr.message,
         stack: kvErr && kvErr.stack,
       });
-      limited = false; // fail open during diagnosis so Klaus is not broken
+      limited = memoryRateLimited(ip, now); // degrade to in-memory, do not fail fully open
     }
   } else {
-    let entry = memoryBuckets.get(ip);
-    if (!entry || now - entry.start > RL_WINDOW_MS) entry = { start: now, count: 0 };
-    if (entry.count >= RL_LIMIT) {
-      limited = true;
-    } else {
-      entry.count += 1;
-      memoryBuckets.set(ip, entry);
-    }
+    limited = memoryRateLimited(ip, now);
   }
 
   if (limited) {
