@@ -57,21 +57,37 @@ export async function onRequestPost(context) {
   let limited = false;
 
   if (env.RATE_LIMIT_KV) {
+    // TEMP DIAGNOSTIC (remove once root cause is confirmed): the previous version left the
+    // `.put()` outside any try/catch, so a KV failure became an unhandled 500 and the client
+    // showed "technischer Fehler" on every request. Here we log the ACTUAL error and FAIL
+    // OPEN so Klaus keeps working while we read the logs.
     const rlKey = `chat_rl:${ip}`;
-    let entry = null;
     try {
-      entry = JSON.parse((await env.RATE_LIMIT_KV.get(rlKey)) || 'null');
-    } catch {
-      entry = null;
-    }
-    if (!entry || now - entry.start > RL_WINDOW_MS) entry = { start: now, count: 0 };
-    if (entry.count >= RL_LIMIT) {
-      limited = true;
-    } else {
-      entry.count += 1;
-      await env.RATE_LIMIT_KV.put(rlKey, JSON.stringify(entry), {
-        expirationTtl: Math.ceil(RL_WINDOW_MS / 1000),
+      const raw = await env.RATE_LIMIT_KV.get(rlKey);
+      console.log('[Klaus RL] get ok', { ip, rlKey, raw });
+      let entry = null;
+      try {
+        entry = JSON.parse(raw || 'null');
+      } catch {
+        entry = null;
+      }
+      if (!entry || now - entry.start > RL_WINDOW_MS) entry = { start: now, count: 0 };
+      if (entry.count >= RL_LIMIT) {
+        limited = true;
+      } else {
+        entry.count += 1;
+        await env.RATE_LIMIT_KV.put(rlKey, JSON.stringify(entry), {
+          expirationTtl: Math.ceil(RL_WINDOW_MS / 1000),
+        });
+        console.log('[Klaus RL] put ok', { ip, count: entry.count });
+      }
+    } catch (kvErr) {
+      console.error('[Klaus RL] KV FAILURE', {
+        name: kvErr && kvErr.name,
+        message: kvErr && kvErr.message,
+        stack: kvErr && kvErr.stack,
       });
+      limited = false; // fail open during diagnosis so Klaus is not broken
     }
   } else {
     let entry = memoryBuckets.get(ip);
