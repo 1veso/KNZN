@@ -1,3 +1,12 @@
+// TODO(diagnostic cleanup): Remove the temporary diagnostic scaffolding once DeepSeek is
+// topped up and Klaus is confirmed working via a real successful reply. Specifically:
+//   - the [Klaus RL] rate-limiter logging AND the degraded in-memory fallback — revert to a
+//     clean KV-only limiter (no verbose logging, no fail-open/degrade path).
+//   - the [Klaus DS] DeepSeek-call logging — the raw-body-as-text read and the status/error
+//     console output added to surface the upstream failure.
+// These were added only to diagnose the "technischer Fehler on every request" issue and must
+// not remain in production.
+
 // Server owns Klaus's system prompt so a caller cannot override, strip, or leak it.
 // The highest-priority rule comes FIRST and explicitly overrides everything after it;
 // the existing KNZN service/pricing/policy content is preserved unchanged below it.
